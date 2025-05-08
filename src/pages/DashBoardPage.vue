@@ -19,19 +19,19 @@
           <div class="flex justify-between mt-6">
             <div class="text-center">
               <div class="text-xl font-semibold text-blue-600">
-                {{ routesCount }}
+                {{ counterData.routes || 0 }}
               </div>
               <div class="text-sm text-gray-500">Rutas</div>
             </div>
             <div class="text-center">
               <div class="text-xl font-semibold text-blue-600">
-                {{ membersCount }}
+                {{ counterData.members || 0 }}
               </div>
               <div class="text-sm text-gray-500">Miembros</div>
             </div>
             <div class="text-center">
               <div class="text-xl font-semibold text-blue-600">
-                {{ creditsCount }}
+                {{ counterData.credits || 0 }}
               </div>
               <div class="text-sm text-gray-500">Créditos</div>
             </div>
@@ -190,6 +190,7 @@
 // imports
 import { ref, onMounted, computed } from "vue";
 import { useAuth } from "src/composables/useAuth";
+import { useDashboard } from "src/composables/useDashboard";
 
 // references
 const columns = [
@@ -251,6 +252,7 @@ const routesCount = ref(0);
 const membersCount = ref(0);
 const creditsCount = ref(0);
 const { user } = useAuth();
+const { loadCounterEntities, counterData } = useDashboard();
 
 // methods
 const fetchData = async () => {
@@ -264,8 +266,9 @@ const fetchData = async () => {
 };
 
 // hooks
-onMounted(() => {
+onMounted(async () => {
   fetchData();
+  await loadCounterEntities();
 });
 </script>
 
