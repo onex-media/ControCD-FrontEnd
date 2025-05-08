@@ -3,19 +3,20 @@
     <div class="container mx-auto px-4 py-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <!-- User Profile Section -->
-        <div class="lg:col-span-4 card-user bg-f5f5f5 rounded-xl">
+        <div class="lg:col-span-4 card-user rounded-xl p-6 shadow-sm">
           <div class="flex items-center">
             <q-avatar size="64px">
-              <img src="https://i.pravatar.cc/150" alt="Profile" />
+              <img src="https://img.freepik.com/vector-gratis/circulo-azul-usuario-blanco_78370-4707.jpg"
+                alt="Profile" />
             </q-avatar>
             <div class="ml-4">
               <h2 class="text-xl font-medium">
-                Hola, <span class="text-blue-600">Jhon Doe</span>
+                Hola, <span class="text-blue-600">{{ user?.name }}</span>
               </h2>
-              <p class="text-gray-500 text-sm">Medellín, Colombia</p>
+              <p class="text-gray-500 text-sm">{{ user?.city?.name }}, {{ user?.address }}</p>
             </div>
           </div>
-          <div class="flex gap-40 mt-6">
+          <div class="flex justify-between mt-6">
             <div class="text-center">
               <div class="text-xl font-semibold text-blue-600">
                 {{ routesCount }}
@@ -46,7 +47,7 @@
           </div>
           <div class="mb-6">
             <div class="text-sm opacity-80">Saldo actual</div>
-            <div class="text-3xl font-bold">$ 22.317,00</div>
+            <div class="text-3xl font-bold">$ 0</div>
           </div>
           <div class="grid grid-cols-3 gap-4">
             <div>
@@ -186,9 +187,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "../axios";
-import vault from "/icons/Vault.svg";
+// imports
+import { ref, onMounted, computed } from "vue";
+import { useAuth } from "src/composables/useAuth";
+
+// references
 const columns = [
   {
     name: "route",
@@ -221,7 +224,6 @@ const columns = [
     align: "right",
   },
 ];
-
 const pendingPortfolios = ref([
   {
     route: "Tamarindo",
@@ -245,37 +247,29 @@ const pendingPortfolios = ref([
     total: "$ 000.000,00",
   },
 ]);
-
 const routesCount = ref(0);
 const membersCount = ref(0);
 const creditsCount = ref(0);
+const { user } = useAuth();
 
+// methods
 const fetchData = async () => {
   try {
-    const [routesResponse, membersResponse, creditsResponse] =
-      await Promise.all([
-        axios.get("/api/rutas"),
-        axios.get("/api/members"),
-        axios.get("/api/credits"),
-      ]);
-    routesCount.value = routesResponse.data.length;
-    membersCount.value = membersResponse.data.length;
-    creditsCount.value = creditsResponse.data.length;
+    routesCount.value = 0;
+    membersCount.value = 0;
+    creditsCount.value = 0;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 };
 
+// hooks
 onMounted(() => {
   fetchData();
 });
 </script>
 
 <style>
-.bg-f5f5f5 {
-  background-color: #F5F5F5;
-}
-
 .pending-portfolios-table .q-table thead tr th {
   font-weight: 500;
   color: #6b7280;

@@ -1,13 +1,15 @@
 import { ref } from "vue";
-import { loginReq } from "src/services/auth.services";
-import { loginPayload } from "@/types/auth.types";
 import { useRouter } from "vue-router";
 import { handleMessages } from "src/utils/notify";
+import { loginReq } from "src/services/auth.services";
+import { loginPayload, UserInterface } from "@/types/auth.types";
 
 export const useAuth = () => {
-  const user = ref<boolean>(false);
+  const user = ref(JSON.parse(localStorage.getItem("user") as string));
   const router = useRouter();
-  const isAuth = localStorage.getItem("access_token") || null;
+  const isAuth = ref<boolean>(
+    localStorage.getItem("access_token") ? true : false
+  );
 
   const handleLogin = async (payload: loginPayload) => {
     const res = await loginReq(payload);
@@ -15,16 +17,20 @@ export const useAuth = () => {
     if (res.code === "error") return false;
 
     localStorage.setItem("access_token", res.data.access_token);
+    localStorage.setItem("user", JSON.stringify(res.data.user));
     handleMessages({
       message: "Inicio de sesión exitoso",
       color: "green",
       icon: "check",
     });
-    router.push("/dashboard/members");
+    isAuth.value = true;
+    user.value = res.data.user;
+    router.push("/dashboard");
     return res.data;
   };
 
   return {
+    user,
     isAuth,
     handleLogin,
   };
