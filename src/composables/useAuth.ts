@@ -7,6 +7,7 @@ import { handleMessages } from "src/utils/notify";
 export const useAuth = () => {
   const user = ref<boolean>(false);
   const router = useRouter();
+  const isAuth = localStorage.getItem("access_token") || null;
 
   const handleLogin = async (payload: loginPayload) => {
     const res = await loginReq(payload);
@@ -22,7 +23,9 @@ export const useAuth = () => {
     router.push("/dashboard/members");
     return res.data;
   };
+
   return {
+    isAuth,
     handleLogin,
   };
 };

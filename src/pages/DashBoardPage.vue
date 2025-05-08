@@ -1,9 +1,9 @@
 <template>
-  <div class="bg-gray-50 min-h-screen">
+  <div class="bg-white min-h-screen">
     <div class="container mx-auto px-4 py-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <!-- User Profile Section -->
-        <div class="lg:col-span-4 bg-white rounded-xl p-6 shadow-sm">
+        <div class="lg:col-span-4 card-user bg-f5f5f5 rounded-xl">
           <div class="flex items-center">
             <q-avatar size="64px">
               <img src="https://i.pravatar.cc/150" alt="Profile" />
@@ -15,7 +15,7 @@
               <p class="text-gray-500 text-sm">Medellín, Colombia</p>
             </div>
           </div>
-          <div class="flex justify-between mt-6">
+          <div class="flex gap-40 mt-6">
             <div class="text-center">
               <div class="text-xl font-semibold text-blue-600">
                 {{ routesCount }}
@@ -89,12 +89,7 @@
                 <span class="text-sm">Ingresos</span>
                 <span class="text-sm text-green-500">$ 000.000.000,00</span>
               </div>
-              <q-linear-progress
-                rounded
-                size="10px"
-                :value="0.7"
-                color="green"
-              />
+              <q-linear-progress rounded size="10px" :value="0.7" color="green" />
             </div>
             <div>
               <div class="flex justify-between items-center mb-2">
@@ -107,30 +102,18 @@
         </div>
 
         <!-- Pending Portfolios -->
-        <div
-          class="lg:col-span-8 bg-white rounded-xl shadow-sm overflow-hidden"
-        >
+        <div class="lg:col-span-8 bg-white rounded-xl shadow-sm overflow-hidden">
           <div class="p-6 border-b">
             <h3 class="text-lg font-medium">Últimas carteras pendientes</h3>
           </div>
           <!-- Desktop Table -->
           <div class="hidden lg:block">
-            <q-table
-              :rows="pendingPortfolios"
-              :columns="columns"
-              row-key="route"
-              flat
-              :pagination="{ rowsPerPage: 5 }"
-              class="pending-portfolios-table"
-            />
+            <q-table :rows="pendingPortfolios" :columns="columns" row-key="route" flat :pagination="{ rowsPerPage: 5 }"
+              class="pending-portfolios-table" />
           </div>
           <!-- Mobile List -->
           <div class="lg:hidden">
-            <div
-              v-for="portfolio in pendingPortfolios"
-              :key="portfolio.route"
-              class="p-4 border-b"
-            >
+            <div v-for="portfolio in pendingPortfolios" :key="portfolio.route" class="p-4 border-b">
               <div class="flex justify-between items-center mb-2">
                 <div>
                   <div class="font-medium">{{ portfolio.route }}</div>
@@ -164,51 +147,29 @@
         <div class="lg:col-span-4 bg-white rounded-xl p-6 shadow-sm">
           <h3 class="text-lg font-medium mb-6">Consolidado general</h3>
           <div class="text-sm text-gray-600 mb-4">
-            Lorem ipsum (<span class="font-medium">{{ routesCount }} rutas</span
-            >) dolor sit (<span class="font-medium"
-              >{{ creditsCount }} créditos</span
-            >) amet consectetur. Ac pellentesque amet amet tincidunt volutpat
+            Lorem ipsum (<span class="font-medium">{{ routesCount }} rutas</span>) dolor sit (<span
+              class="font-medium">{{ creditsCount }} créditos</span>) amet consectetur. Ac pellentesque amet amet
+            tincidunt volutpat
             cursus pellentesque sapien. Especificar que es por cobrar.
           </div>
           <div class="grid grid-cols-3 gap-4 mb-6">
             <div class="relative">
-              <q-circular-progress
-                show-value
-                :value="75"
-                size="90px"
-                :thickness="0.2"
-                color="green"
-                track-color="green-2"
-                class="q-ma-md"
-              >
+              <q-circular-progress show-value :value="75" size="90px" :thickness="0.2" color="green"
+                track-color="green-2" class="q-ma-md">
                 <div class="text-xs">$ 00K</div>
               </q-circular-progress>
               <div class="text-xs text-center mt-2">Capital</div>
             </div>
             <div class="relative">
-              <q-circular-progress
-                show-value
-                :value="65"
-                size="90px"
-                :thickness="0.2"
-                color="blue"
-                track-color="blue-2"
-                class="q-ma-md"
-              >
+              <q-circular-progress show-value :value="65" size="90px" :thickness="0.2" color="blue" track-color="blue-2"
+                class="q-ma-md">
                 <div class="text-xs">$ 00K</div>
               </q-circular-progress>
               <div class="text-xs text-center mt-2">Utilidad</div>
             </div>
             <div class="relative">
-              <q-circular-progress
-                show-value
-                :value="45"
-                size="90px"
-                :thickness="0.2"
-                color="yellow"
-                track-color="yellow-2"
-                class="q-ma-md"
-              >
+              <q-circular-progress show-value :value="45" size="90px" :thickness="0.2" color="yellow"
+                track-color="yellow-2" class="q-ma-md">
                 <div class="text-xs">$ 00K</div>
               </q-circular-progress>
               <div class="text-xs text-center mt-2">Carteras</div>
@@ -311,6 +272,10 @@ onMounted(() => {
 </script>
 
 <style>
+.bg-f5f5f5 {
+  background-color: #F5F5F5;
+}
+
 .pending-portfolios-table .q-table thead tr th {
   font-weight: 500;
   color: #6b7280;

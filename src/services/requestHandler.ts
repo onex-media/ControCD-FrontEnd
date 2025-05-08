@@ -49,16 +49,18 @@ const doRequest = async <T>(
         message = isValidError.data.message;
       }
 
-      const { data } = error.response as any;
-      if (data) {
-        const message = data?.message;
-        const arrayMessages = Object.values(message);
-        if (arrayMessages && arrayMessages.length > 0) {
-          handleMessages({
-            message: arrayMessages.shift() as string,
-            color: "red",
-            icon: "close",
-          });
+      if (error?.response) {
+        const { data } = error?.response as any;
+        if (data) {
+          const message = data?.message;
+          const arrayMessages = Object.values(message);
+          if (arrayMessages && arrayMessages.length > 0) {
+            handleMessages({
+              message: arrayMessages.shift() as string,
+              color: "red",
+              icon: "close",
+            });
+          }
         }
       }
       console.error("Axios error response:", error.response);

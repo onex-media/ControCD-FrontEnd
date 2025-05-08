@@ -59,7 +59,7 @@
             <router-link to="#"> ¿Olvidaste tu contraseña? </router-link>
           </div>
 
-          <q-btn type="submit" :loading="loading"
+          <q-btn type="submit" :loading="loading" unelevated
             class="w-full bg-blue-600 text-white hover:bg-blue-700 py-3 rounded-lg transition-colors"
             :disable="v$.$invalid || loading">
             Iniciar sesión
@@ -217,7 +217,7 @@ const login = async () => {
 
   form {
     display: grid;
-    gap: 16px;
+    gap: 0px;
 
     @media (width >=$desktop) {
       gap: 24px;
@@ -226,7 +226,7 @@ const login = async () => {
     .label {
       font-size: $regular;
       color: $darkGrey;
-      margin-bottom: 8px;
+      margin-bottom: px;
       display: block;
 
       @media (width >=$widescreen) {
