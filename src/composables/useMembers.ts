@@ -66,15 +66,15 @@ export const useMembers = () => {
   });
 
   const memberForm: Ref<MemberForm> = ref({
-    name: "Juan",
-    email: "juan@controlcd.com",
-    identification: 1234576554,
-    department: "Departamento",
+    name: "",
+    email: "",
+    identification: null,
+    department: "",
     city_id: null,
-    address: "bogota",
-    password: "12341234",
+    address: "",
+    password: "",
     role_id: null,
-    phone: 5554445566,
+    phone: null,
     routes: [],
   });
 
@@ -105,7 +105,6 @@ export const useMembers = () => {
       },
       role_id: { required },
       department: {},
-      city_id: { required },
       address: { required, minLength: minLength(5) },
       email: { required, email },
       phone: {

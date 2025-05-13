@@ -29,13 +29,13 @@ const columns: QTableProps["columns"] = [
     field: "routes",
     sortable: false,
   },
-  {
-    name: "address",
-    align: "left",
-    label: "Dirección",
-    field: "address",
-    sortable: false,
-  },
+  // {
+  //   name: "address",
+  //   align: "left",
+  //   label: "Dirección",
+  //   field: "address",
+  //   sortable: false,
+  // },
 
   {
     name: "email",

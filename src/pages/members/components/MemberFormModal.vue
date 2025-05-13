@@ -1,16 +1,17 @@
 <template>
-  <q-dialog :model-value="modelValue" persistent @update:model-value="updateShow" @before-show="loadData">
-    <q-card style="width: 96%; max-width: 700px" class="q-pa-md">
+  <q-dialog :model-value="modelValue" persistent @update:model-value="updateShow" @before-show="loadData"
+    @before-hide="handlerCloseModal">
+    <q-card class="member-card">
+      <!--Header form-->
       <q-card-section>
         <div class="flex justify-between items-center">
-          <h3 class="text-lg font-medium">
+          <h3 class="member-card__title">
             {{ isEditing ? "Editar miembro" : "Nuevo miembro" }}
           </h3>
           <q-btn flat round dense icon="close" @click="closeModal" />
         </div>
-
         <div>
-          <p class="text-grey-7 text-subtitle2">
+          <p class="member-card__description">
             Estás a punto de crear un nuevo miembro en el equipo. Este tendrá
             acceso a las funcionalidades y beneficios de la plataforma como,
             Gestión de clientes, Gestión de cobros y Otras funcionalidades
@@ -18,14 +19,19 @@
           </p>
         </div>
       </q-card-section>
+      <!--End header form-->
 
-      <q-card-section class="q-py-none">
-        <q-tabs v-model="currentTab" dense class="text-grey" active-color="primary" indicator-color="primary"
-          align="justify" narrow-indicator>
+      <!--Body form-->
+      <q-card-section>
+        <!--Tab panel header-->
+        <q-tabs no-caps v-model="currentTab" dense class="text-grey" indicator-color="primary" align="justify"
+          narrow-indicator>
           <q-tab name="personal" label="Info. Personal" />
           <q-tab name="routes" label=" Asignar ruta" />
         </q-tabs>
-        <q-tab-panels v-model="currentTab" animated>
+        <!--End tab panel header-->
+
+        <q-tab-panels v-model="currentTab" animated class="q-mt-md">
           <q-tab-panel name="personal">
             <div class="row q-col-gutter-sm" v-if="memberForm">
               <div class="col-12 col-md-6">
@@ -63,17 +69,6 @@
                 </q-input>
               </div>
               <div class="col-12 col-md-6">
-                <label> Ciudad </label>
-                <q-select v-model="memberForm.city_id" :options="cities" emit-value option-value="id"
-                  option-label="name" map-options outlined dense behavior="menu" class="mt-1"
-                  placeholder="Seleccione la ciudad" :error="v$.form.city_id.$invalid && v$.form.city_id.$dirty"
-                  @blur="v$.form.city_id.$touch">
-                  <template v-slot:error v-if="v$.form.city_id.$invalid && v$.form.city_id.$dirty">
-                    {{ getErrorMessage(v$.form.city_id.$errors, "city") }}
-                  </template>
-                </q-select>
-              </div>
-              <div class="col-12 col-md-6">
                 <label>
                   Dirección
                   <span class="text-red-500" v-if="!isEditing">*</span>
@@ -87,6 +82,19 @@
                 </q-input>
               </div>
               <div class="col-12 col-md-6">
+                <label>
+                  Teléfono
+                  <span class="text-red-500" v-if="!isEditing">*</span>
+                </label>
+                <q-input v-model="memberForm.phone" type="number" outlined dense maxlength="25" class="mt-1"
+                  placeholder="Ingrese el teléfono" :error="v$.form.phone.$invalid && v$.form.phone.$dirty"
+                  @blur="v$.form.phone.$touch">
+                  <template v-slot:error v-if="v$.form.phone.$invalid && v$.form.phone.$dirty">
+                    {{ getErrorMessage(v$.form.phone.$errors, "phone") }}
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-12 col-md-12">
                 <label>
                   Correo
                   <span class="text-red-500" v-if="!isEditing">*</span>
@@ -120,22 +128,9 @@
                   Rol del miembro
                   <span class="text-red-500">*</span>
                 </label>
-                <q-select v-model="memberForm.role_id" :options="roles" emit-value map-options option-value="id"
-                  option-label="name" outlined dense behavior="menu" class="mt-1"
+                <q-select label="Selecciona el rol del miembro" v-model="memberForm.role_id" :options="roles" emit-value
+                  map-options option-value="id" option-label="name" outlined dense behavior="menu" class="mt-1"
                   :error="v$.form.role_id.$invalid && v$.form.role_id.$dirty" @blur="v$.form.role_id.$touch" />
-              </div>
-              <div class="col-12 col-md-6">
-                <label>
-                  Teléfono
-                  <span class="text-red-500" v-if="!isEditing">*</span>
-                </label>
-                <q-input v-model="memberForm.phone" type="number" outlined dense maxlength="25" class="mt-1"
-                  placeholder="Ingrese el teléfono" :error="v$.form.phone.$invalid && v$.form.phone.$dirty"
-                  @blur="v$.form.phone.$touch">
-                  <template v-slot:error v-if="v$.form.phone.$invalid && v$.form.phone.$dirty">
-                    {{ getErrorMessage(v$.form.phone.$errors, "phone") }}
-                  </template>
-                </q-input>
               </div>
             </div>
           </q-tab-panel>
@@ -143,25 +138,29 @@
           <q-tab-panel name="routes">
             <div>
               <label> Rutas </label>
-              <q-select v-model="memberForm.routes" :options="routes" multiple dense outlined emit-value map-options
-                use-chips option-value="id" option-label="name" behavior="menu" placeholder="Seleccione las rutas"
-                class="mt-1" />
+              <q-select label="Selecciona una ruta" v-model="memberForm.routes" :options="routes" multiple dense
+                outlined emit-value map-options use-chips option-value="id" option-label="name" behavior="menu"
+                placeholder="Seleccione las rutas" class="mt-1" />
               <p class="mt-2 text-sm text-gray-500">
                 Seleccione las rutas a las que pertenecerá este miembro
               </p>
             </div>
           </q-tab-panel>
         </q-tab-panels>
-        <div class="row q-col-gutter-sm">
-          <div class="col-12 col-md-6">
-            <q-btn flat no-caps label="Cancelar" color="grey-7" class="full-width" @click="closeModal" />
+
+        <div class="row q-col-gutter-sm q-mt-lg">
+          <div class="col-12 col-md-2 offset-md-8">
+            <q-btn :loading="savingMember" v-if="currentTab === 'routes'" unelevated class="full-width" no-caps
+              :label="isEditing ? 'Guardar' : 'Crear'" color="primary" @click="saveMember" />
+            <q-btn v-if="currentTab === 'personal'" unelevated class="full-width" no-caps label="Siguiente"
+              color="primary" @click="currentTab = 'routes'" />
           </div>
-          <div class="col-12 col-md-6">
-            <q-btn unelevated class="full-width" no-caps :label="isEditing ? 'Guardar' : 'Crear'" color="primary"
-              @click="saveMember" />
+          <div class="col-12 col-md-2">
+            <q-btn flat no-caps label="Cancelar" class="full-width cancel-button" @click="closeModal" />
           </div>
         </div>
       </q-card-section>
+      <!--End body form-->
     </q-card>
   </q-dialog>
 </template>
@@ -202,6 +201,10 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
+  savingMember: {
+    type: Boolean,
+    default: () => false
+  }
 });
 
 const emit = defineEmits(["update:modelValue", "save-member", "close-modal", "load-data"]);
@@ -213,6 +216,7 @@ const routes = computed(() => props.routesOptions.data);
 const closeModal = () => {
   closeModalWithoutValidation();
   emit("update:modelValue", false);
+  handlerCloseModal();
 };
 
 const updateShow = (value: boolean) => {
@@ -241,6 +245,10 @@ const saveMember = () => {
 
 const loadData = () => {
   emit('load-data')
+}
+
+const handlerCloseModal = () => {
+  emit('close-modal')
 }
 
 watch(

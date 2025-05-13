@@ -1,0 +1,47 @@
+.member-card {
+  max-width: 640px !important;
+  border-radius: 4px !important;
+
+  .q-tab-panel {
+    padding: 0px;
+  }
+
+  &__title {
+    font-size: 24px;
+    line-height: 125%;
+    color: #000;
+    font-weight: 500;
+  }
+
+  &__description {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+    color: #424242;
+    margin-top: 8px;
+  }
+
+  .q-tab__content {
+    width: 100%;
+  }
+
+  .q-tab {
+    padding: 0px;
+  }
+
+  .q-tab--active {
+    color: #424242 !important;
+  }
+
+  label {
+    color: #424242;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+  }
+
+  .cancel-button {
+    background-color: #efefef;
+    color: #2b69e8;
+  }
+}

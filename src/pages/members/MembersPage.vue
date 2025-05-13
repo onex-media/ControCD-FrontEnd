@@ -1,8 +1,9 @@
 <template>
   <section class="min-h-screen q-mt-xl container-app">
     <MemberFormModal v-if="showCreateModal" v-model:modelValue="showCreateModal" :isEditing="isEditing"
-      :memberForm="memberForm" :departments="departments" :routesOptions="dataRoutes" :roles="roles" :cities="cities"
-      @save-member="saveMember" @close-modal="closeModal" @load-data="loadData" />
+      :memberForm="memberForm" :departments="departments" :routesOptions="dataRoutes" :roles="rolesOptions"
+      :cities="cities" @save-member="saveMember" @close-modal="closeModal" @load-data="loadData"
+      :saving-member="loading" />
 
     <DialogConfirmation v-model="showDeleteModal" title="¡Atención! Eliminación de miembro" icon="warning"
       :description="`¿Está seguro de que desea eliminar al miembro ${selectedMember?.name}? Esta acción es irreversible y eliminará permanentemente toda la información asociada a este miembro.`"
@@ -38,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useMembers } from "src/composables/useMembers";
 import TabletMembers from "./components/TabletMembers.vue";
 import MemberFormModal from "./components/MemberFormModal.vue";
@@ -73,6 +74,9 @@ const {
 const { fetchRoutes, dataRoutes } = useRoutes();
 const { getCitiesSelect, cities } = useCities();
 const { getRolesData, roles } = useRoles();
+const loading = ref<boolean>(false)
+
+const rolesOptions = computed(() => roles.value.filter((el) => el.name === 'Asistente' || el.name === 'Socio' || el.name === 'Revisador'));
 
 const fetchMembers = async () => {
   await fetchMembersFunc();
@@ -88,7 +92,14 @@ const confirmToggle = async () => {
 };
 
 const saveMember = async () => {
-  await saveMemberFunc();
+  loading.value = true;
+  try {
+    await saveMemberFunc();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const confirmDeleteMember = (member: any) => {
