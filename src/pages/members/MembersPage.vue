@@ -2,7 +2,7 @@
   <section class="min-h-screen q-mt-xl container-app">
     <MemberFormModal v-if="showCreateModal" v-model:modelValue="showCreateModal" :isEditing="isEditing"
       :memberForm="memberForm" :departments="departments" :routesOptions="dataRoutes" :roles="roles" :cities="cities"
-      @save-member="saveMember" @close-modal="closeModal" />
+      @save-member="saveMember" @close-modal="closeModal" @load-data="loadData" />
 
     <DialogConfirmation v-model="showDeleteModal" title="¡Atención! Eliminación de miembro" icon="warning"
       :description="`¿Está seguro de que desea eliminar al miembro ${selectedMember?.name}? Esta acción es irreversible y eliminará permanentemente toda la información asociada a este miembro.`"
@@ -76,7 +76,6 @@ const { getRolesData, roles } = useRoles();
 
 const fetchMembers = async () => {
   await fetchMembersFunc();
-  await getCitiesSelect();
 };
 
 const editMember = (member: any) => {
@@ -114,9 +113,11 @@ const onRequest = async () => {
   fetchMembers();
 };
 
+const loadData = async () => {
+  Promise.all([getRolesData(), fetchRoutes(), getCitiesSelect()]);
+}
+
 onMounted(async () => {
-  await getRolesData();
-  await fetchRoutes();
   await fetchMembers();
 });
 </script>

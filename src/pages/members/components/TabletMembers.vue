@@ -6,10 +6,10 @@
       <template #body-cell-name="props">
         <td :props="props">
           <div class="cursor-pointer" @click="goToDetails(props.row.id)">
-            <div class="text-table-name">
-              {{ props.row.name }} {{ props.row.status }}
+            <div class="table-title">
+              {{ props.row.name }}
             </div>
-            <div class="identification">
+            <div class="table-subtitle">
               {{ props.row.identification }}
             </div>
           </div>
@@ -34,18 +34,18 @@
       </template>
       <template #body-cell-address="props">
         <td :props="props">
-          <div class="text-sm text-gray-900">
+          <div class="table-title">
             {{ props.row.address }}
           </div>
-          <div class="text-sm text-gray-500">{{ props.row.city }}</div>
+          <div class="table-subtitle">{{ props.row.city?.name || 'No posee' }}</div>
         </td>
       </template>
       <template #body-cell-routes="props">
         <td :props="props">
           <div v-if="props.row.routes.length">
             <div v-for="route in props.row.routes" :key="route.id">
-              <div class="text-sm text-gray-900">{{ route.name }}</div>
-              <div class="text-sm text-gray-500">{{ route.sector }}</div>
+              <div class="table-title">{{ route.name }}</div>
+              <div class="table-subtitle">{{ route.sector }}</div>
             </div>
           </div>
           <div v-else class="text-sm text-gray-500"></div>
@@ -53,8 +53,8 @@
       </template>
       <template #body-cell-email="props">
         <td :props="props">
-          <div class="text-sm text-blue-600">{{ props.row.email }}</div>
-          <div class="text-sm text-gray-500">{{ props.row.phone }}</div>
+          <div class="table-title">{{ props.row.email }}</div>
+          <div class="table-subtitle">{{ props.row.phone }}</div>
         </td>
       </template>
 
