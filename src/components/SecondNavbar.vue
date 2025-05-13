@@ -3,50 +3,23 @@
     <div class="mx-auto max-w-full">
       <div class="flex justify-between h-16">
         <div class="w-full flex justify-between">
-          <q-btn-dropdown
-            flat
-            square
-            no-caps
-            label="Generales"
-            dropdown-icon="keyboard_arrow_down"
-            class="h-full bg-blue-600 text-white"
-          >
+          <q-btn-dropdown flat square no-caps label="Generales" dropdown-icon="keyboard_arrow_down"
+            class="h-full bg-blue-600 text-white">
             <q-list>
               <q-item clickable v-close-popup to="/dashboard/routes">
-                <q-item-section>Rutas</q-item-section>
+                <q-item-section>Gestion de Vendedores</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/dashboard/members">
-                <q-item-section>Miembros</q-item-section>
+                <q-item-section>Gestion de Usuarios</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/dashboard/clients">
-                <q-item-section>Clientes</q-item-section>
+                <q-item-section>Gestion de Clientes</q-item-section>
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn
-            flat
-            square
-            no-caps
-            label="Créditos"
-            class="h-full"
-            to="/dashboard/creditos"
-          />
-          <q-btn
-            flat
-            square
-            no-caps
-            label="Liquidaciones"
-            class="h-full"
-            to="/liquidaciones"
-          />
-          <q-btn-dropdown
-            flat
-            square
-            no-caps
-            dropdown-icon="keyboard_arrow_down"
-            label="Administración"
-            class="h-full"
-          >
+          <q-btn flat square no-caps label="Créditos" class="h-full" to="/dashboard/creditos" />
+          <q-btn flat square no-caps label="Liquidaciones" class="h-full" to="/liquidaciones" />
+          <!--<q-btn-dropdown flat square no-caps dropdown-icon="keyboard_arrow_down" label="Administración" class="h-full">
             <q-list>
               <q-item clickable v-close-popup to="/banks-cash-flow">
                 <q-item-section>Bancos y flujo de caja</q-item-section>
@@ -80,14 +53,7 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn-dropdown
-            flat
-            square
-            no-caps
-            dropdown-icon="keyboard_arrow_down"
-            label="Información"
-            class="h-full"
-          >
+          <q-btn-dropdown flat square no-caps dropdown-icon="keyboard_arrow_down" label="Información" class="h-full">
             <q-list>
               <q-item clickable v-close-popup to="/closings">
                 <q-item-section>Cierres</q-item-section>
@@ -97,23 +63,12 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn-dropdown
-            flat
-            square
-            no-caps
-            dropdown-icon="keyboard_arrow_down"
-            label="Reportes"
-            class="h-full"
-          >
+          <q-btn-dropdown flat square no-caps dropdown-icon="keyboard_arrow_down" label="Reportes" class="h-full">
             <q-list>
               <q-item clickable v-close-popup to="/report-center">
                 <q-item-section>Centro de reportes</q-item-section>
               </q-item>
-              <q-item
-                clickable
-                v-close-popup
-                to="/client-collection-management"
-              >
+              <q-item clickable v-close-popup to="/client-collection-management">
                 <q-item-section>Gestión clientes cobros</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/sales-and-profits-report">
@@ -132,15 +87,8 @@
                 <q-item-section>Datos Generales</q-item-section>
               </q-item>
             </q-list>
-          </q-btn-dropdown>
-          <q-btn-dropdown
-            flat
-            square
-            no-caps
-            dropdown-icon="keyboard_arrow_down"
-            label="Parámetros"
-            class="h-full"
-          >
+          </q-btn-dropdown>-->
+          <q-btn-dropdown flat square no-caps dropdown-icon="keyboard_arrow_down" label="Parámetros" class="h-full">
             <q-list>
               <q-item clickable v-close-popup to="/parameters">
                 <q-item-section>Parámetros generales</q-item-section>
