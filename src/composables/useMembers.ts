@@ -269,19 +269,18 @@ export const useMembers = () => {
   const createMember = async (payload: createMemberPayload) => {
     const res = await createMemberReq(payload);
 
-    if (res.code === "error")
-      return handleMessages({
-        message: res.error.message,
-        color: "red",
-        icon: "close",
-      });
+    if (res.code === "error") {
+      console.log(res);
+      return;
+    }
 
     handleMessages({
       message: res.data.message,
       color: "primary",
       icon: "check",
     });
-
+    await fetchMembers();
+    closeModal();
     return res.data;
   };
 
@@ -433,9 +432,6 @@ export const useMembers = () => {
       } else {
         await createMember(memberData);
       }
-
-      await fetchMembers();
-      closeModal();
     } catch (error) {
       console.error("Error saving member:", error);
       $q.notify({

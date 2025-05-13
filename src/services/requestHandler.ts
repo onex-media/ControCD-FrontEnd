@@ -50,13 +50,22 @@ const doRequest = async <T>(
       }
 
       if (error?.response) {
-        const { data } = error?.response as any;
-        if (data) {
+        const { data, status } = error?.response as any;
+        if (data && status !== 422) {
           const message = data?.message;
           const arrayMessages = Object.values(message);
           if (arrayMessages && arrayMessages.length > 0) {
             handleMessages({
               message: arrayMessages.shift() as string,
+              color: "red",
+              icon: "close",
+            });
+          }
+        } else {
+          const { data } = error?.response as any;
+          if (data && data.message) {
+            handleMessages({
+              message: data.message,
               color: "red",
               icon: "close",
             });
