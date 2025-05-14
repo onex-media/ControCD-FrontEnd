@@ -45,3 +45,58 @@
     color: #2b69e8;
   }
 }
+
+.breadcrumb {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 125%;
+  color: #000;
+
+  .no-active {
+    color: #000;
+  }
+
+  .separator-icon {
+    color: #424242;
+  }
+}
+
+.member-information {
+  padding: 16px 24px;
+  flex-direction: column;
+  &__column {
+    display: flex;
+    gap: 24px;
+
+    .name {
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 125%;
+      color: #000;
+    }
+  }
+}
+
+.name-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+
+.user-presentation {
+  gap: 24px;
+}
+
+.identification {
+  font-size: 16px;
+  color: #757575;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+.delete-button {
+  border-radius: 8px !important;
+  background: #a82525 !important;
+  color: white !important;
+  padding: 8px 16px !important;
+}

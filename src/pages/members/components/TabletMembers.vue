@@ -5,7 +5,7 @@
       rowsPerPageLabel="Registros por página" no-data-label="No se ha encontrado datos" hide-pagination>
       <template #body-cell-name="props">
         <td :props="props">
-          <div class="cursor-pointer" @click="goToDetails(props.row.id)">
+          <div class="cursor-pointer" @click="goToDetails(props.row.uuid)">
             <div class="table-title">
               {{ props.row.name }}
             </div>
@@ -24,10 +24,11 @@
         <td :props="props">
           <span class="table-chip">
             {{
-              getRoleLabel(props.row.role_id)
+              props.row.role_name
             }}
             <figure>
-              <GlassesIcon />
+              <GlassesIcon v-if="props.row.role_name === 'Asistente'" />
+              <SocioIcon v-else />
             </figure>
           </span>
         </td>
@@ -82,9 +83,10 @@
 
 <script setup lang="ts">
 import { computed, watch } from "vue";
+import { useRouter } from "vue-router";
 import { columns } from "./ColumnsMembers";
 import { Role } from "@/types/roles.types";
-import { useRouter } from "vue-router";
+import SocioIcon from "src/components/assets/SocioIcon.vue";
 import ToggleButtom from "src/components/ToggleButtom.vue";
 import GlassesIcon from "src/components/assets/GlassesIcon.vue";
 import { DataMembers, MemberForm } from "@/types/members.types";
