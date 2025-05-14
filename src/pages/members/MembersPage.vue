@@ -5,7 +5,8 @@
       :cities="cities" @save-member="saveMember" @close-modal="closeModal" @load-data="loadData"
       :saving-member="loading" />
 
-    <DialogConfirmation v-model="showDeleteModal" title="¡Atención! Eliminación de miembro" icon="warning"
+    <DialogConfirmation type="danger" btnLabel="Eliminar" v-model="showDeleteModal"
+      title="¡Atención! Eliminación de miembro" icon="warning"
       :description="`¿Está seguro de que desea eliminar al miembro ${selectedMember?.name}? Esta acción es irreversible y eliminará permanentemente toda la información asociada a este miembro.`"
       @confirm="deleteMember" />
 

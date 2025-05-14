@@ -1,5 +1,7 @@
 @use "./pages/_members.scss";
+@use "./components/__confirmationDialog.scss";
 @import "./quasar.variables";
+
 body {
   font-family: "Inter", sans-serif;
 }
