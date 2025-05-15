@@ -73,6 +73,11 @@ const routes = [{
                     import ("pages/LiquidacionesPage.vue"),
             },
             {
+                path: "ciudades",
+                component: () =>
+                    import ("pages/cities/CitiesPage.vue"),
+            },
+            {
                 path: "banks-cash-flow",
                 component: () =>
                     import ("pages/BanksCashFlowPage.vue"),
