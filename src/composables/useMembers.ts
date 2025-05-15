@@ -320,6 +320,12 @@ export const useMembers = () => {
         icon: "close",
       });
 
+    handleMessages({
+      message: res.data.message,
+      color: "primary",
+      icon: "check",
+    });
+    closeModal();
     return res.data.data;
   };
 
@@ -427,6 +433,11 @@ export const useMembers = () => {
               color: "red",
             });
           }
+        }
+        if (memberData?.routes && memberData?.routes.length > 0) {
+          memberData.routes = memberData?.routes.map((el: any) => {
+            return el?.id || el;
+          });
         }
         await updateMember(memberData, selectedMember.value.id);
       } else {
