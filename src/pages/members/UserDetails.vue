@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen q-py-xl container-app">
+  <section class="q-py-xl container-app users-details">
     <div class="flex items-center justify-between q-mb-md">
       <q-breadcrumbs class="breadcrumb">
         <template v-slot:separator>
@@ -10,7 +10,7 @@
       </q-breadcrumbs>
       <div class="flex q-gutter-x-sm">
         <q-btn unelevated no-caps label="Eliminar" class="delete-button" @click="confirmDeleteMember" />
-        <q-btn unelevated no-caps label="Editar" color="primary" @click="editUser" />
+        <q-btn unelevated no-caps label="Editar" class="edit-button" color="primary" @click="editUser" />
       </div>
     </div>
     <div class="flex member-information">
@@ -38,65 +38,25 @@
           </div>
         </div>
       </div>
-      <div class="q-pa-md">
-        <div class="row q-col-gutter-lg">
-          <div class="col-12 col-sm-6 col-md-4">
-            <div class="flex q-gutter-x-sm text-subtitle1">
-              <q-avatar size="60px" square color="grey-4" icon="person" />
-              <div>
-                <p class="no-margin text-h6">{{ user?.name }}</p>
-                <p class="text-caption text-grey-8">{{ user?.name }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4">
-            <div class="flex q-gutter-x-sm text-subtitle1">
-              <q-avatar size="60px" square color="grey-4" icon="badge" />
-              <div>
-                <p class="no-margin text-h6">Cédula</p>
-                <p class="text-caption text-grey-8">{{ user?.dni }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4">
-            <div class="flex q-gutter-x-sm text-subtitle1">
-              <q-avatar size="60px" square color="grey-4" icon="location_city" />
-              <div>
-                <p class="no-margin text-h6">Ciudad</p>
-                <p class="text-caption text-grey-8" v-if="user?.city_id">
-                  {{ user?.city.name }}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4">
-            <div class="flex q-gutter-x-sm text-subtitle1">
-              <q-avatar size="60px" square color="grey-4" icon="home" />
-              <div>
-                <p class="no-margin text-h6">Dirección</p>
-                <p class="text-caption text-grey-8">{{ user?.address }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4">
-            <div class="flex q-gutter-x-sm text-subtitle1">
-              <q-avatar size="60px" square color="grey-4" icon="phone" />
-              <div>
-                <p class="no-margin text-h6">Teléfono</p>
-                <p class="text-caption text-grey-8">{{ user?.phone }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4">
-            <div class="flex q-gutter-x-sm text-subtitle1">
-              <q-avatar size="60px" square color="grey-4" icon="email" />
-              <div>
-                <p class="no-margin text-h6">Correo</p>
-                <p class="text-caption text-grey-8">{{ user?.email }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="full-width">
+        <!--Tab panel header-->
+        <q-tabs v-if="user" no-caps v-model="tab" dense class="text-grey" indicator-color="primary" align="justify"
+          narrow-indicator>
+          <q-tab name="user" label="Información General" />
+          <q-tab name="routes" label=" Rutas Asignadas" />
+        </q-tabs>
+        <!--End tab panel header-->
+
+        <!--tab body-->
+        <q-tab-panels v-model="tab" animated class="q-mt-md">
+          <q-tab-panel name="user">
+            <UserData v-if="user" :user="user" />
+          </q-tab-panel>
+
+          <q-tab-panel name="routes">
+            <RoutesList v-if="user" />
+          </q-tab-panel>
+        </q-tab-panels>
       </div>
     </div>
 
@@ -109,7 +69,9 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import UserData from "./components/UserData.vue";
 import { useRoles } from "src/composables/useRoles";
+import RoutesList from "./components/RoutesList.vue";
 import { useMembers } from "src/composables/useMembers";
 import ToggleButtom from "src/components/ToggleButtom.vue";
 import SocioIcon from "src/components/assets/SocioIcon.vue";
@@ -121,6 +83,7 @@ const router = useRouter();
 const { roles } = useRoles();
 const { getUser, confirmDeleteMember: confirmDeleteMemberFunc, showDeleteModal, deleteMember } = useMembers();
 const user = ref<any | null>(null);
+const tab = ref('user');
 
 const editUser = () => {
   if (user.value) {
