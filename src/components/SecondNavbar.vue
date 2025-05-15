@@ -90,8 +90,8 @@
           </q-btn-dropdown>-->
           <q-btn-dropdown flat square no-caps dropdown-icon="keyboard_arrow_down" label="Parámetros" class="h-full">
             <q-list>
-              <q-item clickable v-close-popup to="/parameters">
-                <q-item-section>Parámetros generales</q-item-section>
+              <q-item clickable v-close-popup to="/dashboard/ciudades">
+                <q-item-section>Ciudades</q-item-section>
               </q-item>
             </q-list>
           </q-btn-dropdown>
