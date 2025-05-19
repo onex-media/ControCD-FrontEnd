@@ -4,33 +4,60 @@
       v-model="showCreateModal"
       :isEditing="isEditing"
       :selectedCity="selectedCity"
+      :selectedCountry="selectedCountry"
       :cityForm="cityForm"
       :routeOptions="routeOptions"
+      :loadingCities="loadingCities"
       :countries="countries"
       @save-city="saveCity"
       @close-modal="close"
+      :selectedCountryId="selectedCountryId"
     />
 
     <div>
-  
       <div class="flex justify-between items-center q-mb-md">
         <div class="flex items-center gap-2">
-          <h1 class="text-2xl font-semibold">Ciudades</h1>
+          <h1 class="text-2xl font-semibold">Parametrización de países</h1>
         </div>
         <div class="flex gap-4">
           <div>
-            <q-input outlined dense v-model="search" placeholder="Buscar" bg-color="white" debounce="500">
+            <q-input
+              outlined
+              dense
+              v-model="search"
+              placeholder="Buscar país"
+              bg-color="white"
+              debounce="500"
+              @update:model-value="handleSearch"
+            >
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
             </q-input>
           </div>
-          <q-btn unelevated color="primary" label="Nueva ciudad" no-caps @click="showCreateModal = true">
-            <img src="/images/city.png" class="ml-4 svg-white-invert" />
-          </q-btn>
         </div>
       </div>
-      <TableCities class="q-mt-lg q-pt-lg" :cities="cities" @edit="editCity" @confirm-delete-row="confirmDeleteCity" :pagination="pagination" />
+      <TableCities
+        class="q-mt-lg q-pt-lg"
+        :loadingCities="loadingCities"
+        :showCities="showCities"
+        :cities="cities"
+        @fetch-cities="handleFetchCities"
+        @show-create-modal="handleShowCreateModal"
+        :countries="countries"
+        @edit="editCity"
+        @save-city="saveCity"
+        @confirm-delete-row="confirmDeleteCity"
+        :pagination="{
+          page: pagination.page,
+          rowsPerPage: pagination.rowsPerPage,
+          rowsNumber: pagination.rowsNumber,
+          last_page: pagination.countPage,
+          sortBy: pagination.sortBy,
+          descending: pagination.descending,
+        }"
+        @update:pagination="handlePagination"
+      />
     </div>
 
     <DialogConfirmation
@@ -40,7 +67,6 @@
       :description="`¿Está seguro de que desea eliminar la ciudad ${selectedCity?.name}?.`"
       @confirm="deleteCity"
     />
-
   </section>
 </template>
 
@@ -59,26 +85,44 @@ const {
   isEditing,
   routeOptions,
   selectedCity,
-  pagination,
   editCity,
   fetchCities,
   closeModal,
   deleteCity,
-  deleting,
   showDeleteModal,
   confirmDeleteCity,
   saveCity,
+  loadingCities,
+  getCitiesByCountry,
+  showCities,
 } = useCities();
 
+const handleFetchCities = (countryId) => {
+  getCitiesByCountry(countryId);
+};
 
-const { countries } = useCountries();
+const selectedCountryId = ref(null);
+const {
+  countries,
+  pagination,
+  getAllCountries,
+  handlePagination,
+  handleSearch,
+  search,
+} = useCountries();
 
 const close = () => {
   closeModal();
 };
 
+const handleShowCreateModal = (country) => {
+  showCreateModal.value = true;
+  selectedCountryId.value = country;
+  cityForm.value.country_id = country.id;
+};
 
 onMounted(async () => {
+  await getAllCountries();
   await fetchCities();
 });
 // Computed
