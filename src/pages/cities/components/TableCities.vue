@@ -21,7 +21,7 @@
                   {{ country.name }}
                 </h3>
                 <div class="text-caption text-grey q-mt-xs">
-                  {{ citiesCount(country.id) }} Ciudades • Moneda: 
+                  {{ citiesCount(country.id) }} Ciudades • Moneda:
                   {{ country.currency }}
                 </div>
               </div>
@@ -63,7 +63,7 @@
                         color="primary"
                         @click="emit('edit', props.row)"
                       >
-                        <img src="/icons/edit.svg" alt="Editar">
+                        <img src="/icons/edit.svg" alt="Editar" />
                       </q-btn>
                       <q-btn
                         flat
@@ -71,7 +71,7 @@
                         color="negative"
                         @click="emit('confirm-delete-row', props.row)"
                       >
-                        <img src="/icons/trash-2.svg" alt="Eliminar">
+                        <img src="/icons/trash-2.svg" alt="Eliminar" />
                       </q-btn>
                     </div>
                   </q-td>
@@ -112,59 +112,53 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { columns } from './ColumnsCities';
-import { City, Country, Pagination } from '../../../types/cities.types';
+import { computed, ref } from "vue";
+import { columns } from "./ColumnsCities";
+import { City, Country, Pagination } from "../../../types/cities.types";
 
 interface Props {
   cities: City[];
   countries: Country[];
   pagination: Pagination;
-  showCities: Record<number, City[]>;
+  showCities: any;
   loadingCities: boolean;
 }
 
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'update:pagination', value: Pagination): void;
-  (e: 'show-create-modal', country: Country): void;
-  (e: 'edit', city: City): void;
-  (e: 'confirm-delete-row', city: City): void;
-  (e: 'fetch-cities', countryId: number): void;
+  (e: "update:pagination", value: Pagination): void;
+  (e: "show-create-modal", country: Country): void;
+  (e: "edit", city: City): void;
+  (e: "confirm-delete-row", city: City): void;
+  (e: "fetch-cities", countryId: number): void;
 }>();
 
 const selectedCountryId = ref<number | null>(null);
 
 const currentPage = computed({
   get: () => props.pagination.page,
-  set: (value) => handlePageChange(value)
+  set: (value) => handlePageChange(value),
 });
 
-const maxPages = computed(() => 
-  Math.max(props.pagination.last_page || 1, 1)
-);
+const maxPages = computed(() => Math.max(props.pagination.last_page || 1, 1));
 
-const citiesCount = (countryId: number) => 
-  props.showCities[countryId]?.length;
+const citiesCount = (countryId: number) => props.showCities[countryId]?.length;
 
-const hasCities = (countryId: number) => 
-  citiesCount(countryId) > 0;
+const hasCities = (countryId: number) => citiesCount(countryId) > 0;
 
-const currentCities = (countryId: number) => 
-  props.showCities[countryId] || [];
+const currentCities = (countryId: number) => props.showCities[countryId] || [];
 
 const toggleCountry = (id: number) => {
   selectedCountryId.value = selectedCountryId.value === id ? null : id;
-  emit('fetch-cities', id);
+  emit("fetch-cities", id);
 };
 
-const isExpanded = (id: number) => 
-  selectedCountryId.value === id;
+const isExpanded = (id: number) => selectedCountryId.value === id;
 
 const handlePageChange = (newPage: number) => {
   const updatedPagination = { ...props.pagination, page: newPage };
-  emit('update:pagination', updatedPagination);
+  emit("update:pagination", updatedPagination);
 };
 </script>
 

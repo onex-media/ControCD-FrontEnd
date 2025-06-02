@@ -28,6 +28,8 @@ export const useCities = () => {
   const showDeleteModal = ref(false);
   const citiesByCountry = ref<any[]>([]);
   const showCities = ref<any[]>([]);
+  const showCitiesByCountry = ref<any[]>([]);
+
   const loadingCities = ref(false);
   const showAddCityInput = ref(false);
   const newCityName = ref("");
@@ -92,6 +94,33 @@ export const useCities = () => {
       }
 
       countries.value = res.data.data;
+    } catch (error) {
+      handleMessages({
+        message: "Error al obtener los países",
+        color: "red",
+        icon: "close",
+      });
+    }
+  };
+
+  const getCountryAll = async () => {
+    try {
+      const res: any = await getData({
+        path: "/countries",
+        payload: {
+          per_page: "all",
+        },
+      });
+
+      if (res.code === "error") {
+        return handleMessages({
+          message: res.error.message,
+          color: "red",
+          icon: "close",
+        });
+      }
+
+      countries.value = res;
     } catch (error) {
       handleMessages({
         message: "Error al obtener los países",
@@ -214,6 +243,12 @@ export const useCities = () => {
         ...showCities.value,
         [countryId]: response || [],
       };
+
+      showCitiesByCountry.value = response.map((city: any) => ({
+        id: city.id,
+        name: city.name,
+      }));
+      console.log("showCities.value", showCities.value);
     } catch (error) {
     } finally {
       loadingCities.value = false;
@@ -308,6 +343,7 @@ export const useCities = () => {
     cityFormData,
     showCreateModal,
     showDeleteModal,
+    getCountryAll,
     saveCity,
     fetchCities,
     editCity,
@@ -325,6 +361,7 @@ export const useCities = () => {
     loadingCities,
     citiesByCountry,
     showCities,
+    showCitiesByCountry,
     getCitiesByCountry,
   };
 };

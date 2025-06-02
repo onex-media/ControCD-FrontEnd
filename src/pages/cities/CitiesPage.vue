@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen q-py-xl container-app">
+  <section class="min-h-screen q-py-xl container-app cities-page">
     <CityFormModal
       v-model="showCreateModal"
       :isEditing="isEditing"
@@ -15,7 +15,7 @@
     />
 
     <div>
-      <div class="flex justify-between items-center q-mb-md">
+      <div class="flex justify-between items-center q-mb-md q-ml-xl q-mr-xl">
         <div class="flex items-center gap-2">
           <h1 class="text-2xl font-semibold">Parametrización de países</h1>
         </div>
@@ -38,7 +38,7 @@
         </div>
       </div>
       <TableCities
-        class="q-mt-lg q-pt-lg"
+        class="q-mt-lg q-pt-lg q-ml-xl q-mr-xl"
         :loadingCities="loadingCities"
         :showCities="showCities"
         :cities="cities"
@@ -127,38 +127,3 @@ onMounted(async () => {
 });
 // Computed
 </script>
-
-<style scoped>
-.pagination-custom {
-  .q-btn {
-    padding: 8px 12px;
-    font-size: 14px;
-    min-height: unset;
-    height: unset;
-  }
-}
-
-:deep(.q-field) {
-  margin-bottom: 0;
-}
-
-:deep(.q-field--outlined .q-field__control) {
-  border-radius: 0.375rem;
-}
-
-:deep(.q-field--outlined .q-field__control:hover) {
-  border-color: #d1d5db;
-}
-
-:deep(.q-field--focused .q-field__control) {
-  border-color: #3b82f6;
-}
-
-:deep(.q-btn) {
-  border-radius: 0.375rem;
-}
-
-:deep(.q-dialog__inner--minimized > div) {
-  max-width: 600px;
-}
-</style>
