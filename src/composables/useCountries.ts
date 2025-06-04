@@ -1,158 +1,124 @@
 import { handleMessages } from "src/utils/notify";
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { createClientReq, getClientReq } from "src/services/client.services";
-import {
-  deleteData,
-  getData,
-  postData,
-  putData,
-} from "../services/api.services";
-import axios from "@/boot/axios";
+import { getData } from "../services/api.services";
 
-interface CountryForm {
-  name: string | null;
-
+interface Country {
+  id: number;
+  name: string;
 }
 
-const pagination = reactive<Pagination>({
-  sortBy: "desc",
-  descending: false,
-  page: 1,
-  countPage: 1,
-  rowsNumber: 1,
-  rowsPerPage: 50,
-});
+interface Pagination {
+  sortBy: string;
+  descending: boolean;
+  page: number;
+  lastPage: number;
+  countPage: number;
+  total?: number;
+  rowsNumber: number;
+  rowsPerPage: number;
+}
+
+interface CountriesResponse {
+  data: Country[];
+  pagination: {
+    total: number;
+    current_page: number;
+    per_page: number;
+    last_page: number;
+  };
+}
 
 export function useCountries() {
-  const countryForm = ref<CountryForm>({
-    name: null,
-
+  const search = ref<string>("");
+  const loading = ref(false);
+  const countries = ref<Country[]>([]);
+  const showCreateModal = ref(false);
+  const countryForm = ref({ name: null });
+  
+  const pagination = reactive<Pagination>({
+    sortBy: "name",
+    descending: false,
+    page: 1,
+    countPage: 1,
+    rowsNumber: 0,
+    rowsPerPage: 10,
   });
 
-  const search = ref<string>("");
-  const countries = ref<{ id: number; name: string }[]>([]);
-  const showCreateModal = ref(false);
-
-  const fetchCountries = async () => {
+  const getAllCountries = async () => {
     try {
-      const response = (await getData({ path: "/countries" })) as any;
-      console.log("response: ", response);
-      countries.value = response;
-      console.log("countries.value: ", countries.value);
-    } catch (error) {
-      console.error("Error fetching routes:", error);
-      handleMessages({
-        message: "Error al cargar las creditos",
-        color: "red",
-        icon: "close",
+      loading.value = true;
+      const payload = {
+        page: pagination.page,
+        perPage: pagination.rowsPerPage,
+        search: search.value,
+        sortBy: pagination.sortBy,
+        last_page: pagination.countPage,
+        descending: pagination.descending ? "desc" : "asc",
+      };
+
+      const response = await getData<CountriesResponse>({
+        path: "/countries/all",
+        payload,
       });
+
+      if (response.data) {
+        countries.value = response.data;
+        updatePagination(response.pagination);
+      }
+    } catch (error) {
+      showError("Error al cargar países");
+    } finally {
+      loading.value = false;
     }
   };
 
-  const filteredCredits = computed(() => {
-    return countries.value.filter((country: any) => {
-      return country.name.toLowerCase().includes(search.value.toLowerCase());
-    });
-  });
+  const updatePagination = (meta: CountriesResponse["pagination"]) => {
+    pagination.rowsNumber = meta.total;
+    pagination.page = meta.current_page;
+    pagination.rowsPerPage = meta.per_page;
+    pagination.countPage = meta.last_page;
+  };
 
+  const showError = (message: string) => {
+    handleMessages({ message, color: "red", icon: "close" });
+  };
 
+  const handleSearch = () => {
+    pagination.page = 1;
+    getAllCountries();
+  };
 
-
-
-
+  const handlePagination = (newPagination: Pagination) => {
+    pagination.page = newPagination.page;
+    pagination.rowsPerPage = newPagination.rowsPerPage;
+    pagination.sortBy = newPagination.sortBy;
+    pagination.descending = newPagination.descending;
+    getAllCountries();
+  };
 
   const closeModal = () => {
     showCreateModal.value = false;
     countryForm.value.name = null;
-   
   };
 
-
-
-  /*  const filterClients = (val: any, update: any) => {
-    if (val === "") {
-      update(() => {
-        clientOptions.value = clients.value.map((client: any) => ({
-          label: `${client.name} (${client.identification})`,
-          value: client.id,
-        }));
-      });
-      return;
-    }
-
-    update(() => {
-      const needle = val.toLowerCase();
-      clientOptions.value = clients.value
-        .filter(
-          (client: any) =>
-            client.name.toLowerCase().includes(needle) ||
-            client.identification.includes(needle)
-        )
-        .map((client: any) => ({
-          label: `${client.name} (${client.identification})`,
-          value: client.id,
-        }));
-    });
-  };
- */
-
-  const toggleCredit = async (credit: any) => {
-    try {
-      const data = {
-        path: `/api/countries/${credit.id}`,
-        payload: {
-          active: credit.active,
-        },
-      };
-      await putData(data);
-      handleMessages({
-        color: "green",
-        icon: "close",
-        message: `Crédito ${credit.active ? "activado" : "desactivado"
-          } exitosamente`,
-      });
-    } catch (error) {
-      console.error("Error toggling credit:", error);
-      credit.active = !credit.active;
-      handleMessages({
-        color: "red",
-        icon: "close",
-        message: "Error al cambiar el estado del crédito",
-      });
-    }
-  };
-
-  
-
-
-
-  
-
-
+  watch(search, handleSearch);
   watch(
-    () => countries.value,
-    (newVal: any) => {
-/*       pagination.page = newVal.current_page;
-      pagination.countPage = newVal.last_page;
-      pagination.rowsNumber = newVal.total;
-      pagination.rowsPerPage = newVal.per_page; */
-    },
+    () => pagination,
+    () => getAllCountries(),
     { deep: true }
   );
 
-
-  onMounted(() => {
-    fetchCountries();
-  });
+  onMounted(getAllCountries);
 
   return {
     countryForm,
     countries,
-    filteredCredits,
-    showCreateModal,
     search,
     pagination,
-    toggleCredit,
+    loading,
+    showCreateModal,
     closeModal,
+    handlePagination,
+    getAllCountries
   };
 }

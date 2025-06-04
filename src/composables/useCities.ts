@@ -1,4 +1,4 @@
-import { onMounted, reactive, ref, Ref } from "vue";
+import { reactive, ref, Ref, watch } from "vue";
 import { getCitiesSelectReq } from "src/services/cities.services";
 import { handleMessages } from "src/utils/notify";
 import {
@@ -20,14 +20,19 @@ export const useCities = () => {
   });
   const countries = ref<any[]>([]);
   const cities: Ref<any[]> = ref([]);
-  const totalCities = ref(0);
   const isSaving = ref<boolean>(false);
   const isEditing = ref<boolean>(false);
   const selectedCity = ref<any | null>(null);
   const deleting = ref(false);
-  const saving = ref(false);
   const showCreateModal = ref(false);
   const showDeleteModal = ref(false);
+  const citiesByCountry = ref<any[]>([]);
+  const showCities = ref<any[]>([]);
+  const showCitiesByCountry = ref<any[]>([]);
+
+  const loadingCities = ref(false);
+  const showAddCityInput = ref(false);
+  const newCityName = ref("");
 
   const pagination = reactive<Pagination>({
     sortBy: "desc",
@@ -46,6 +51,7 @@ export const useCities = () => {
     try {
       const response = (await getData({ path: "/cities" })) as any;
       cities.value = response.data;
+      citiesByCountry.value = response.data;
     } catch (error) {
       handleMessages({
         message: "Error al cargar las creditos",
@@ -89,9 +95,66 @@ export const useCities = () => {
 
       countries.value = res.data.data;
     } catch (error) {
-      console.error("Error fetching country:", error);
       handleMessages({
-        message: "Error al obtener los paises",
+        message: "Error al obtener los países",
+        color: "red",
+        icon: "close",
+      });
+    }
+  };
+
+  const getCountryAll = async () => {
+    try {
+      const res: any = await getData({
+        path: "/countries",
+        payload: {
+          per_page: "all",
+        },
+      });
+
+      if (res.code === "error") {
+        return handleMessages({
+          message: res.error.message,
+          color: "red",
+          icon: "close",
+        });
+      }
+
+      countries.value = res;
+    } catch (error) {
+      handleMessages({
+        message: "Error al obtener los países",
+        color: "red",
+        icon: "close",
+      });
+    }
+  };
+
+  const addNewCity = async () => {
+    try {
+      if (!newCityName.value.trim() || !cityForm.value.country_id) return;
+
+      const response = await postData({
+        path: "cities/create",
+        payload: {
+          name: newCityName.value,
+          country_id: cityForm.value.country_id,
+        },
+      });
+
+      if (response.success) {
+        await getCitiesByCountry(cityForm.value.country_id);
+        newCityName.value = "";
+        showAddCityInput.value = false;
+        handleMessages({
+          message: "Ciudad creada exitosamente",
+          color: "green",
+          icon: "check",
+        });
+      }
+    } catch (error) {
+      handleMessages({
+        message: "Error creando ciudad",
         color: "red",
         icon: "close",
       });
@@ -106,14 +169,12 @@ export const useCities = () => {
           message: "Rellena todos los campos requeridos",
           color: "red",
           icon: "close",
-          
         });
         return;
       }
 
       isSaving.value = true;
 
-      // 2. Preparar payload
       const cityData = {
         name: cityForm.value.name,
         country_id: cityForm.value.country_id,
@@ -149,13 +210,48 @@ export const useCities = () => {
         }
       }
 
-      await fetchCities();
+      await getCitiesByCountry(cityForm.value.country_id || 0);
       closeModalWithoutValidation();
       closeModal();
     } catch (error) {
       throw error; //
     } finally {
       isSaving.value = false;
+    }
+  };
+
+  watch(
+    () => cityForm.value.country_id,
+    (newCountryId: number | null) => {
+      if (newCountryId) {
+        getCitiesByCountry(newCountryId);
+      } else {
+        citiesByCountry.value = [];
+      }
+    },
+  );
+
+  const getCitiesByCountry = async (countryId: number) => {
+    try {
+      loadingCities.value = true;
+
+      const response: any = await getData({
+        path: `/cities/country/${countryId}`,
+      });
+
+      showCities.value = {
+        ...showCities.value,
+        [countryId]: response || [],
+      };
+
+      showCitiesByCountry.value = response.map((city: any) => ({
+        id: city.id,
+        name: city.name,
+      }));
+      console.log("showCities.value", showCities.value);
+    } catch (error) {
+    } finally {
+      loadingCities.value = false;
     }
   };
 
@@ -192,8 +288,11 @@ export const useCities = () => {
 
       if (!selectedCity.value) return;
       await deleteData(`/cities/delete/${selectedCity.value.id}`);
-      await fetchCities();
       showDeleteModal.value = false;
+
+      await getCitiesByCountry(selectedCity.value?.country_id);
+
+      selectedCity.value = null;
     } catch (error) {
       console.error("Error deleting city:", error);
       handleMessages({
@@ -244,6 +343,7 @@ export const useCities = () => {
     cityFormData,
     showCreateModal,
     showDeleteModal,
+    getCountryAll,
     saveCity,
     fetchCities,
     editCity,
@@ -255,5 +355,13 @@ export const useCities = () => {
     getCitiesSelect,
     countries,
     getCountrySelect,
+    showAddCityInput,
+    newCityName,
+    addNewCity,
+    loadingCities,
+    citiesByCountry,
+    showCities,
+    showCitiesByCountry,
+    getCitiesByCountry,
   };
 };

@@ -13,14 +13,13 @@
           {{
             isEditing
               ? `Estás editando la ciudad ${selectedCity?.name}`
-              : "Estás creando ciudad. Para que esta ciudad se cree exitosamente, es necesario que rellenes todos los campos obligatorios."
+              : "Estás creando una ciudad. Para que esta ciudad se cree exitosamente, es necesario que rellenes todos los campos obligatorios."
           }}
         </p>
-
         <div class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700">
-              País <span class="text-red-500">*</span>
+              País
             </label>
             <q-select
               behavior="menu"
@@ -32,28 +31,36 @@
               dense
               emit-value
               map-options
-             aria-placeholder="Selecciona un país"
               class="mt-1"
               placeholder="Selecciona un país"
+              disable
             />
-            <p class="mt-2 text-sm text-gray-500">
-              Selecciona el país correspondiente a la ciudad
-            </p>
           </div>
+
           <div>
             <label class="block text-sm font-medium text-gray-700">
               Ciudad <span class="text-red-500">*</span>
             </label>
-            <q-input
-              v-model="cityForm.name"
-              outlined
-              dense
-              class="mt-1"
-              placeholder="Escribe el nombre de la ciudad"
-            />
-            <p class="mt-2 text-sm text-gray-500">
-              Ingresa manualmente el nombre de la ciudad
-            </p>
+
+            <template v-if="isEditing">
+              <q-input
+                v-model="cityForm.name"
+                outlined
+                dense
+                class="mt-1"
+                placeholder="Nombre de la ciudad"
+              />
+            </template>
+
+            <template v-else>
+              <q-input
+                v-model="cityForm.name"
+                outlined
+                dense
+                class="mt-1"
+                placeholder="Nombre de la ciudad"
+              />
+            </template>
           </div>
         </div>
       </q-card-section>
@@ -74,21 +81,26 @@
           class="mr-3"
           @click="closeModal"
         />
-       
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, ref, watch } from "vue";
 
-const emit = defineEmits(["update:modelValue", "save-city", "close-modal"]);
+const emit = defineEmits([
+  "update:modelValue",
+  "save-city",
+  "close-modal",
+  "add-city",
+]);
 
 const props = defineProps({
   modelValue: Boolean,
   isEditing: Boolean,
   selectedCity: Object,
+  selectedCountry: Object,
   cityForm: {
     type: Object,
     required: true,
@@ -102,13 +114,37 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
+  loadingCities: Boolean,
 
-  cities: {
-    type: Array,
-    required: true,
-    default: () => [],
-  },
 });
+
+const showAddCityInput = ref(false);
+const newCityName = ref("");
+
+const cancelNewCity = () => {
+  showAddCityInput.value = false;
+  newCityName.value = "";
+};
+
+watch(
+  () => props.cityForm.country_id,
+  (newVal) => {
+    if (newVal) {
+      showAddCityInput.value = false;
+      newCityName.value = "";
+    }
+  },
+);
+
+watch(
+  () => props.selectedCountry,
+  (newVal) => {
+    if (newVal) {
+      cityForm.value.country_id = newVal.id;
+      getCitiesByCountry(newVal.id);
+    }
+  },
+);
 
 const saveCity = () => {
   emit("save-city");

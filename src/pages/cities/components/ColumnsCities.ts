@@ -8,13 +8,7 @@ const columns: QTableProps["columns"] = [
     field: "id",
     sortable: true,
   },
-  {
-    name: "country",
-    align: "left",
-    label: "País",
-    field: "country",
-    sortable: true,
-  },
+
   {
     name: "name",
     align: "left",
@@ -28,7 +22,7 @@ const columns: QTableProps["columns"] = [
     label: "Acciones",
     field: "opt",
     sortable: false,
-},
+  },
 ];
 
 export { columns };
