@@ -34,7 +34,7 @@ export function useCountries() {
   const countries = ref<Country[]>([]);
   const showCreateModal = ref(false);
   const countryForm = ref({ name: null });
-  
+
   const pagination = reactive<Pagination>({
     sortBy: "name",
     descending: false,
@@ -42,6 +42,7 @@ export function useCountries() {
     countPage: 1,
     rowsNumber: 0,
     rowsPerPage: 10,
+    lastPage: 0,
   });
 
   const getAllCountries = async () => {
@@ -119,6 +120,6 @@ export function useCountries() {
     showCreateModal,
     closeModal,
     handlePagination,
-    getAllCountries
+    getAllCountries,
   };
 }

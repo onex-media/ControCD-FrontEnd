@@ -1,27 +1,12 @@
 <template>
   <section class="q-pa-md">
-    <q-table
-      flat
-      separator="none"
-      table-header-class="control-table-header"
-      :rows="settlements"
-      :columns="columns"
-      row-key="id"
-      @row-click="onRowClick"
-      rows-per-page-label="Filas por página"
-      :pagination-label="(first, end, total) => `${first}-${end} de ${total}`"
-      no-data-label="No hay datos disponibles"
-      loading-label="Cargando..."
-    >
+    <q-table flat separator="none" table-header-class="control-table-header" :rows="settlements" :columns="columns"
+      row-key="id" @row-click="onRowClick" rows-per-page-label="Filas por página"
+      :pagination-label="(first, end, total) => `${first}-${end} de ${total}`" no-data-label="No hay datos disponibles"
+      loading-label="Cargando...">
       <template #body-cell-actions="props">
         <q-td :props="props" class="q-gutter-xs">
-          <q-btn
-            dense
-            round
-            color="primary"
-            icon="visibility"
-            @click="viewDetails(props.row)"
-          />
+          <q-btn dense round color="primary" icon="visibility" @click="viewDetails(props.row)" />
         </q-td>
       </template>
       <template #body-cell-status="props">
@@ -55,7 +40,7 @@ const formatCurrency = (val: number) => `$${val.toLocaleString()}`;
 
 const showDetailDialog = ref(false);
 
-const columns = [
+const columns: any = [
   { name: "id", label: "Nro. de liquidación", field: "id", align: "left" },
   {
     name: "period",

@@ -8,8 +8,8 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export const baseURL = "http://127.0.0.1:8000/api";
-export const pathImage = "http://localhost:8000/storage/";
+export const baseURL = "https://api.controlcd.com/public/api";
+export const pathImage = "https://api.controlcd.com/public/storage/";
 export const api = axios.create({ baseURL: baseURL });
 
 export default boot(async ({ app }) => {

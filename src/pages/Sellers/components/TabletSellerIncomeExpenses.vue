@@ -2,39 +2,17 @@
   <section>
     <div class="q-mb-md full-width container-app">
       <div class="flex justify-between full-width">
-        <q-btn
-          v-for="option in typeOptions"
-          :key="option.value"
-          flat
-          no-caps
-          :label="option.label"
-          :color="'dark'"
-          class="text-weight-medium full-width"
-          @click="currentType = option.value"
-          style="flex: 1"
-        >
-          <div
-            class="underline-indicator"
-            :class="{ active: currentType === option.value }"
-          />
+        <q-btn v-for="option in typeOptions" :key="option.value" flat no-caps :label="option.label" :color="'dark'"
+          class="text-weight-medium full-width" @click="currentType = option.value" style="flex: 1">
+          <div class="underline-indicator" :class="{ active: currentType === option.value }" />
         </q-btn>
       </div>
     </div>
 
-    <div
-      v-if="currentType === 'income'"
-      class="flex justify-end items-center q-mb-md"
-    >
+    <div v-if="currentType === 'income'" class="flex justify-end items-center q-mb-md">
       <div class="flex gap-4">
         <div>
-          <q-input
-            outlined
-            dense
-            v-model="search"
-            placeholder="Buscar"
-            bg-color="white"
-            debounce="500"
-          >
+          <q-input outlined dense v-model="search" placeholder="Buscar" bg-color="white" debounce="500">
             <template v-slot:append>
               <q-icon name="search" />
             </template>
@@ -43,15 +21,8 @@
       </div>
     </div>
 
-    <q-table
-      flat
-      separator="none"
-      table-header-class="control-table-header"
-      :rows="currentData"
-      :columns="columns"
-      row-key="id"
-      hide-pagination
-    >
+    <q-table flat separator="none" table-header-class="control-table-header" :rows="currentData" :columns="columns"
+      row-key="id" hide-pagination>
       <template v-if="currentType === 'income'" #body-cell-date="props">
         <q-td :props="props" class="q-py-sm">
           <div class="text-caption">{{ formatDate(props.row.date) }}</div>
@@ -85,11 +56,8 @@
             <div class="row justify-center items-center">
               <span class="text-weight-bold text-grey-8 q-mr-sm">
                 Total
-                {{ currentType === "income" ? "ingresos" : "gastos" }}:</span
-              >
-              <span
-                :class="currentType === 'income' ? 'text-green' : 'text-red'"
-              >
+                {{ currentType === "income" ? "ingresos" : "gastos" }}:</span>
+              <span :class="currentType === 'income' ? 'text-green' : 'text-red'">
                 $ {{ formatNumber(totalAmount) }}
               </span>
             </div>
@@ -111,31 +79,31 @@ const props = defineProps<{
 const emit = defineEmits(["edit", "delete"]);
 const search = ref("");
 
-const currentType = ref<"income" | "expense">("income");
+const currentType = ref<"income" | "expense" | any>("income");
 const typeOptions = [
   { label: "Ingresos", value: "income" },
   { label: "Egresos", value: "expense" },
 ];
-const columns = computed(() => {
+const columns: any = computed(() => {
   return currentType.value === "income"
     ? [
-        { name: "date", label: "Fecha / Hora", field: "date", align: "left" },
-        { name: "route", label: "Ruta", field: "route", align: "left" },
+      { name: "date", label: "Fecha / Hora", field: "date", align: "left" },
+      { name: "route", label: "Ruta", field: "route", align: "left" },
 
-        {
-          name: "description",
-          label: "Descripción",
-          field: "description",
-          align: "left",
-        },
-        { name: "amount", label: "Valor", field: "amount", align: "center" },
-      ]
+      {
+        name: "description",
+        label: "Descripción",
+        field: "description",
+        align: "left",
+      },
+      { name: "amount", label: "Valor", field: "amount", align: "center" },
+    ]
     : [
-        { name: "name", label: "Nombre", field: "name", align: "left" },
-        { name: "category", label: "Categoria", field: "category" },
-        { name: "routes", label: "Rutas", field: "routes" },
-        { name: "amount", label: "Gastos", field: "amount", align: "right" },
-      ];
+      { name: "name", label: "Nombre", field: "name", align: "left" },
+      { name: "category", label: "Categoria", field: "category" },
+      { name: "routes", label: "Rutas", field: "routes" },
+      { name: "amount", label: "Gastos", field: "amount", align: "right" },
+    ];
 });
 
 const currentData = computed(() => {
@@ -217,10 +185,12 @@ const deleteItem = (item: any) => {
   from {
     transform: scaleX(0.9);
   }
+
   to {
     transform: scaleX(1);
   }
 }
+
 .q-table {
   thead tr th {
     font-size: 0.9rem;

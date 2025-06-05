@@ -118,7 +118,7 @@ export const useRoutes = () => {
     isEditing.value = true;
     routeForm.value = {
       name: route.name,
-      sector: route.sector,
+      sector: route.sector as string,
       members: route.user_routes.map((member) => ({
         id: member.user.id,
         name: member.user.name,
@@ -222,7 +222,7 @@ export const useRoutes = () => {
       };
 
       if (isEditing.value) {
-        await updateRoute(routeData, selectedRoute.value.id);
+        await updateRoute(routeData as any, selectedRoute.value.id);
       } else {
         await createRoute();
       }
