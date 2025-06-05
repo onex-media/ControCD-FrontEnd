@@ -16,13 +16,6 @@ const columns: QTableProps["columns"] = [
     field: "address",
     sortable: true,
   },
-  {
-    name: "sector_name",
-    align: "left",
-    label: "Sector",
-    field: "sector_name",
-    sortable: true,
-  },
 
   {
     name: "total_credit_value",

@@ -34,17 +34,6 @@
         </q-td>
       </template>
 
-      <template v-slot:body-cell-sector_name="props">
-        <q-td :props="props">
-          <div class="text-sm text-gray-900">
-            {{ props.row.route.name }}
-          </div>
-          <div class="text-gray-500 text-caption">
-            {{ props.row.route.sector }}
-          </div>
-        </q-td>
-      </template>
-
       <template v-slot:body-cell-total_credits="props">
         <q-td :props="props">
           <div class="text-primary">

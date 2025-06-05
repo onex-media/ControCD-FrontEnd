@@ -22,13 +22,7 @@ const columns: QTableProps["columns"] = [
     field: "parent_id",
     sortable: false,
   },
-  {
-    name: "routes",
-    align: "left",
-    label: "Ruta asignada",
-    field: "routes",
-    sortable: false,
-  },
+
   // {
   //   name: "address",
   //   align: "left",
