@@ -12,7 +12,7 @@ import axios from "@/boot/axios";
 interface CreditForm {
   client_id: string | null;
   guarantor_id: string | null;
-  route_id: string | null;
+  seller_id: string | null;
   credit_value: number | null;
   number_installments: number | null;
   first_quota_date: string;
@@ -38,7 +38,7 @@ export function useCredits() {
   const creditForm = ref<CreditForm>({
     client_id: null,
     guarantor_id: null,
-    route_id: null,
+    seller_id: null,
     credit_value: null,
     number_installments: null,
     first_quota_date: "",
@@ -152,7 +152,7 @@ export function useCredits() {
       const creditData = {
         client_id: creditForm.value.client_id,
         guarantor_id: creditForm.value.guarantor_id,
-        route_id: creditForm.value.route_id,
+        seller_id: creditForm.value.seller_id,
         credit_value:
           creditForm.value.credit_value !== null
             ? creditForm.value.credit_value
@@ -238,7 +238,7 @@ export function useCredits() {
     const errors = [];
     if (!creditForm.value.client_id || !creditForm.value.client_id)
       errors.push("El cliente es requerido");
-    if (!creditForm.value.route_id || !creditForm.value.route_id)
+    if (!creditForm.value.seller_id || !creditForm.value.seller_id)
       errors.push("La ruta es requerida");
     if (!creditForm.value.credit_value || creditForm.value.credit_value <= 0)
       errors.push("El valor total debe ser mayor que 0");
@@ -264,7 +264,7 @@ export function useCredits() {
     isEditing.value = false;
     selectedCredit.value = null;
     creditForm.value.client_id = null;
-    creditForm.value.route_id = null;
+    creditForm.value.seller_id = null;
     creditForm.value.credit_value = null;
     creditForm.value.number_installments = null;
     creditForm.value.first_quota_date = "";
@@ -307,7 +307,7 @@ export function useCredits() {
     creditForm.value = {
       guarantor_id: credit.guarantor_id,
       client_id: credit.client.id,
-      route_id: credit.ruta.id,
+      seller_id: credit.ruta.id,
       credit_value: credit.credit_value,
       number_installments: credit.number_installments,
       first_quota_date: credit.first_quota_date,

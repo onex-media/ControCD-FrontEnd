@@ -26,7 +26,7 @@ type RequestReturn<T = unknown> = Promise<SuccessResponse<T> | ErrorResponse>;
 
 const doRequest = async <T>(
   request: RequestCallback,
-  parser: RequestParseCallback<T>
+  parser: RequestParseCallback<T>,
 ): RequestReturn<T> => {
   try {
     const response = await request();
@@ -34,7 +34,6 @@ const doRequest = async <T>(
       return { code: "success", data: response.data };
     }
     const parsed = parser(response.data);
-    console.log("parsed: ", parsed);
 
     return { code: "success", data: parsed };
   } catch (error: unknown) {
@@ -72,7 +71,6 @@ const doRequest = async <T>(
           }
         }
       }
-      console.error("Axios error response:", error.response);
     }
 
     return {
@@ -85,42 +83,62 @@ const doRequest = async <T>(
 export const doGet = async <T>(
   path: string,
   parser: RequestParseCallback<T>,
-  payload?: any
+  payload?: any,
 ) => {
   const response = await doRequest(
     () => axiosInstance.get(path, { params: payload }),
-    parser
+    parser,
   );
   return response;
 };
 
 export const doPost = async <T>(
   path: string,
-  body: Record<string, unknown>,
-  parser: RequestParseCallback<T>
+  body: FormData | Record<string, unknown>,
+  parser: RequestParseCallback<T>,
 ) => {
-  return doRequest(() => axiosInstance.post(path, body), parser);
+  const config =
+    body instanceof FormData
+      ? { headers: { "Content-Type": "multipart/form-data" } }
+      : {};
+
+  return doRequest(() => axiosInstance.post(path, body, config), parser);
 };
 
 export const doPut = async <T>(
   path: string,
-  body: Record<string, unknown>,
-  parser: RequestParseCallback<T>
+  body: FormData | Record<string, unknown>,
+  parser: RequestParseCallback<T>,
 ) => {
-  return doRequest(() => axiosInstance.put(path, body), parser);
+  const config =
+    body instanceof FormData
+      ? { headers: { "Content-Type": "multipart/form-data" } }
+      : {};
+
+  return doRequest(
+    () =>
+      axiosInstance.post(path, body, {
+        ...config,
+        headers: {
+          ...config.headers,
+          "X-HTTP-Method-Override": "PUT",
+        },
+      }),
+    parser,
+  );
 };
 
 export const doPatch = async <T>(
   path: string,
   body: Record<string, unknown>,
-  parser: RequestParseCallback<T>
+  parser: RequestParseCallback<T>,
 ) => {
   return doRequest(() => axiosInstance.patch(path, body), parser);
 };
 
 export const doDelete = async <T>(
   path: string,
-  parser: RequestParseCallback<T>
+  parser: RequestParseCallback<T>,
 ) => {
   return doRequest(() => axiosInstance.delete(path), parser);
 };

@@ -15,7 +15,10 @@ interface User {
 export interface Route {
   id: number;
   name: string;
-  sector: string;
+  dni: string;
+  country_id: number;
+  city_id: number;
+  profilePhoto: any
   user_routes: UserRoute[];
 }
 
@@ -47,13 +50,17 @@ export interface dataRoutes {
 
 export type createRoutePayload = {
   name: string;
-  sector: string;
+  dni: string;
+  country_id: number;
+  city_id: number;
   members?: any[] | undefined;
+  profilePhoto?: File;
 };
 
 export type updateRoutePayload = {
-  name?: string;
-  sector?: string;
+  name: string;
+  dni: string;
+  city_id: number;
   members?: any[];
 };
 

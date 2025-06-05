@@ -1,0 +1,70 @@
+.cities-page {
+    .pagination-custom {
+      .q-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+        min-height: unset;
+        height: unset;
+      }
+    }
+  
+    .q-field {
+      margin-bottom: 0;
+  
+      &--outlined .q-field__control {
+        border-radius: 0.375rem;
+  
+        &:hover {
+          border-color: #d1d5db;
+        }
+      }
+  
+      &--focused .q-field__control {
+        border-color: #3b82f6;
+      }
+    }
+  
+    .q-btn {
+      border-radius: 0.375rem;
+    }
+  
+    .q-dialog__inner--minimized > div {
+      max-width: 600px;/*  */
+    }
+  
+    .city-table {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+  
+      &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+  
+      &__search {
+        background-color: white;
+        border-radius: 0.375rem;
+      }
+    }
+  
+    .city-modal {
+      &__title {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+        font-weight: 500;
+      }
+  
+      &__description {
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+  
+      &__section-title {
+        text-align: center;
+        color: var(--q-primary);
+        margin-bottom: 1rem;
+      }
+    }
+  }
