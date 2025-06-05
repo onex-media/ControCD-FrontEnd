@@ -1,0 +1,96 @@
+// __seller.scss
+.seller-card {
+  .q-card {
+    width: 96%;
+    max-width: 700px;
+    padding: 16px;
+  }
+
+  .avatar-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 50%;
+
+    .avatar-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:hover .avatar-overlay {
+      opacity: 1;
+    }
+  }
+
+  .q-btn {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .q-avatar {
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .q-separator {
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .text-caption {
+    color: #6b7280;
+  }
+
+  .text-red-500 {
+    color: #ef4444;
+  }
+
+  .relative-position {
+    position: relative;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .justify-between {
+    justify-content: space-between;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .q-col-gutter-lg {
+    margin: -12px;
+    > * {
+      padding: 12px;
+    }
+  }
+
+  .q-mb-md {
+    margin-bottom: 16px;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  // Agrega otras utilidades según sea necesario
+}

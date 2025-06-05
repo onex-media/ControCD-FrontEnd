@@ -15,11 +15,11 @@ import {
 } from "../schemas/routes.schema";
 import { any } from "zod";
 
-export const createRouteReq = async (payload: createRoutePayload) => {
-  return await doPost<createRouteResponse>(
+export const createRouteReq = async (payload: any) => {
+  return await doPost(
     "/route/create",
     payload,
-    createRouteResponseSchema.parse
+    (response) => createRouteResponseSchema.parse(response)
   );
 };
 
@@ -28,7 +28,7 @@ export const getRoutesReq = async (payload: any) => {
 };
 
 export const updateRouteReq = async (
-  payload: updateRoutePayload,
+  payload: any,
   id: string | number
 ) => {
   return await doPut<updateRouteResponse>(

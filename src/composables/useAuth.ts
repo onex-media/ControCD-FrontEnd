@@ -29,9 +29,26 @@ export const useAuth = () => {
     return res.data;
   };
 
+    const logout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+    
+    isAuth.value = false;
+    user.value = null;
+    
+    router.push("/login");
+    
+    handleMessages({
+      message: "Sesión cerrada correctamente",
+      color: "green",
+      icon: "exit_to_app",
+    });
+  };
+
   return {
     user,
     isAuth,
     handleLogin,
+    logout,
   };
 };

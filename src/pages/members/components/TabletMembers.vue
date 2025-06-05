@@ -1,8 +1,17 @@
 <template>
   <section>
-    <q-table flat separator="none" table-header-class="control-table-header" :rows="dataMembers.data || []"
-      :columns="columns" row-key="id" v-model:pagination="props.paginationMembers"
-      rowsPerPageLabel="Registros por página" no-data-label="No se ha encontrado datos" hide-pagination>
+    <q-table
+      flat
+      separator="none"
+      table-header-class="control-table-header"
+      :rows="dataMembers.data || []"
+      :columns="columns"
+      row-key="id"
+      v-model:pagination="props.paginationMembers"
+      rowsPerPageLabel="Registros por página"
+      no-data-label="No se ha encontrado datos"
+      hide-pagination
+    >
       <template #body-cell-name="props">
         <td :props="props">
           <div class="cursor-pointer" @click="goToDetails(props.row.uuid)">
@@ -17,15 +26,16 @@
       </template>
       <template #body-cell-active="props">
         <td :props="props" style="width: 80px">
-          <ToggleButtom v-model="props.row.status" @update:model-value="$emit('toggle-member', props.row)" />
+          <ToggleButtom
+            v-model="props.row.status"
+            @update:model-value="$emit('toggle-member', props.row)"
+          />
         </td>
       </template>
       <template #body-cell-role="props">
         <td :props="props">
           <span class="table-chip">
-            {{
-              props.row.role_name
-            }}
+            {{ props.row.role_name }}
             <figure>
               <GlassesIcon v-if="props.row.role_name === 'Asistente'" />
               <SocioIcon v-else />
@@ -38,20 +48,12 @@
           <div class="table-title">
             {{ props.row.address }}
           </div>
-          <div class="table-subtitle">{{ props.row.city?.name || 'No posee' }}</div>
-        </td>
-      </template>
-      <template #body-cell-routes="props">
-        <td :props="props">
-          <div v-if="props.row.routes.length">
-            <div v-for="route in props.row.routes" :key="route.id">
-              <div class="table-title">{{ route.name }}</div>
-              <div class="table-subtitle">{{ route.sector }}</div>
-            </div>
+          <div class="table-subtitle">
+            {{ props.row.city?.name || "No posee" }}
           </div>
-          <div v-else class="text-sm text-gray-500"></div>
         </td>
       </template>
+
       <template #body-cell-email="props">
         <td :props="props">
           <div class="table-title">{{ props.row.email }}</div>
@@ -62,10 +64,20 @@
       <template #body-cell-opt="props">
         <td :props="props" style="width: 130px">
           <div class="flex justify-end items-center q-gutter-x-xs">
-            <q-btn flat dense color="primary" @click="$emit('edit-member', props.row)">
+            <q-btn
+              flat
+              dense
+              color="primary"
+              @click="$emit('edit-member', props.row)"
+            >
               <img src="/icons/edit.svg" alt="" />
             </q-btn>
-            <q-btn flat dense color="negative" @click="$emit('confirm-delete-member', props.row)">
+            <q-btn
+              flat
+              dense
+              color="negative"
+              @click="$emit('confirm-delete-member', props.row)"
+            >
               <img src="/icons/trash-2.svg" alt="" />
             </q-btn>
           </div>
@@ -73,10 +85,21 @@
       </template>
     </q-table>
     <div class="flex justify-end items-center q-mt-md">
-      <q-pagination v-model="paginationMembers.page" color="grey-9" active-color="primary" :max="maxPages"
-        :max-pages="8" size="md" gutter="10px" direction-links icon-first="keyboard_double_arrow_left"
-        icon-last="keyboard_double_arrow_right" icon-prev="chevron_left" icon-next="chevron_right"
-        @update:model-value="sendEmitPagination" />
+      <q-pagination
+        v-model="paginationMembers.page"
+        color="grey-9"
+        active-color="primary"
+        :max="maxPages"
+        :max-pages="8"
+        size="md"
+        gutter="10px"
+        direction-links
+        icon-first="keyboard_double_arrow_left"
+        icon-last="keyboard_double_arrow_right"
+        icon-prev="chevron_left"
+        icon-next="chevron_right"
+        @update:model-value="sendEmitPagination"
+      />
     </div>
   </section>
 </template>
@@ -107,7 +130,7 @@ const sendEmitPagination = () => {
 
 const maxPages = computed(() => {
   const calculatedPages = Math.ceil(
-    props.dataMembers.total / props.paginationMembers.rowsPerPage
+    props.dataMembers.total / props.paginationMembers.rowsPerPage,
   );
   return calculatedPages;
 });

@@ -6,7 +6,7 @@
           <q-btn-dropdown flat square no-caps label="Generales" dropdown-icon="keyboard_arrow_down"
             class="h-full bg-blue-600 text-white">
             <q-list>
-              <q-item clickable v-close-popup to="/dashboard/routes">
+              <q-item clickable v-close-popup to="/dashboard/sellers">
                 <q-item-section>Gestion de Vendedores</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/dashboard/members">
@@ -19,6 +19,7 @@
           </q-btn-dropdown>
           <q-btn flat square no-caps label="Créditos" class="h-full" to="/dashboard/creditos" />
           <q-btn flat square no-caps label="Liquidaciones" class="h-full" to="/liquidaciones" />
+            <q-btn flat square no-caps label="Administración" class="h-full" to="" />
           <!--<q-btn-dropdown flat square no-caps dropdown-icon="keyboard_arrow_down" label="Administración" class="h-full">
             <q-list>
               <q-item clickable v-close-popup to="/banks-cash-flow">
