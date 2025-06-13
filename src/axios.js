@@ -2,8 +2,8 @@ import axios from "axios";
 // import Cookies from 'js-cookie';
 
 const instance = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-  // baseURL: "https://controlcd.com/backend/public",
+  // baseURL: "http://127.0.0.1:8000",
+  baseURL: "https://controlcd.com/backend123/public/api/",
   withCredentials: true,
   headers: {
     "X-Request-With": "XMLHttpRequest",
@@ -11,16 +11,16 @@ const instance = axios.create({
   },
 });
 instance.defaults.withXSRFToken = true;
-// instance.interceptors.request.use(
-//   async (config) => {
-//     const token = Cookies.get('XSRF-TOKEN');
-//     if (token) {
-//       config.headers['X-CSRF-TOKEN'] = token;
-//       console.log(token)
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
+instance.interceptors.request.use(
+  async (config) => {
+    const token = Cookies.get("XSRF-TOKEN");
+    if (token) {
+      config.headers["X-CSRF-TOKEN"] = token;
+      console.log(token);
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default instance;

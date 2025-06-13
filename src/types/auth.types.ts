@@ -1,5 +1,6 @@
 import { loginResponse } from "@/schemas/auth.schema";
 import { z } from "zod";
+import { Route } from "./routes.type";
 
 export type loginPayload = {
   email: string;
@@ -22,6 +23,7 @@ export interface UserInterface {
   deleted_at?: string | null;
   created_at?: string;
   updated_at?: string;
+  routes?: Route[];
 }
 
 export type User = z.infer<typeof loginResponse>;
