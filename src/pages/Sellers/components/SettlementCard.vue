@@ -1,11 +1,16 @@
 <template>
   <div class="row q-col-gutter-md">
-    <div class="col-12 col-md-4">
-      <SectionItem title="Caja Inicial" value="0.00" custom-class="grey-card">
+    <div class="col-12 col-md-6">
+      <SectionItem
+        title="Caja Inicial"
+        value="0.00"
+        icon="point_of_sale"
+        custom-class="grey-card"
+      >
       </SectionItem>
     </div>
 
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-6">
       <SectionItem
         title="Caja final"
         value="2200.00"
@@ -15,17 +20,9 @@
       />
     </div>
 
-    <div class="col-12 col-md-4">
-      <SectionItem
-        title="Caja Microseguros"
-        value="0.00"
-        custom-class="blue-card"
-        icon="point_of_sale"
-        color="primary"
-      />
-    </div>
 
-    <div class="col-12 col-md-2">
+
+    <div class="col-12 col-md-3">
       <SectionItem
         title="Pagos"
         value="0.00"
@@ -37,7 +34,7 @@
         @click="handleCardClick('pagos', $event)"
       />
     </div>
-    <div class="col-12 col-md-2">
+    <div class="col-12 col-md-3">
       <SectionItem
         title="Ingreso"
         value="0.00"
@@ -50,7 +47,7 @@
       />
     </div>
 
-    <div class="col-12 col-md-2">
+    <div class="col-12 col-md-3">
       <SectionItem
         title="Ventas"
         value="100.00"
@@ -61,7 +58,7 @@
         @click="handleCardClick('ventas', $event)"
       />
     </div>
-    <div class="col-12 col-md-2">
+    <div class="col-12 col-md-3">
       <SectionItem
         title="Egresos"
         value="0.00"
@@ -70,30 +67,6 @@
         icon="trending_down"
         :clickable="true"
         @click="handleCardClick('egresos', $event)"
-      />
-    </div>
-    <div class="col-12 col-md-2">
-      <SectionItem
-        title="Retiros"
-        value="0.00"
-        custom-class="card-white"
-        height="100px"
-        icon="logout"
-        :clickable="true"
-        @click="handleCardClick('retiros', $event)"
-      />
-    </div>
-
-    <div class="col-12 col-md-2">
-      <SectionItem
-        title="Ingreso"
-        value="0.00"
-        custom-class="green-card"
-        color="secondary"
-        height="100px"
-        icon="payments"
-        :clickable="true"
-        @click="handleCardClick('ingreso', $event)"
       />
     </div>
 
@@ -145,6 +118,40 @@
         </template>
       </SectionItem>
     </div>
+    <div class="col-12 col-md-4">
+      <SectionItem
+        title="Caja Microseguros"
+        value="0.00"
+        custom-class="blue-card"
+        icon="point_of_sale"
+        color="primary"
+      />
+    </div>
+    <div class="col-12 col-md-4">
+      <SectionItem
+        title="Retiros de caja microseguros"
+        value="0.00"
+        custom-class="card-white"
+        height="100px"
+        icon="logout"
+        :clickable="true"
+        @click="handleCardClick('retiros', $event)"
+      />
+    </div>
+
+    <div class="col-12 col-md-4">
+      <SectionItem
+        title="Ingreso de caja microseguros"
+        value="0.00"
+        custom-class="green-card"
+        color="secondary"
+        height="100px"
+        icon="payments"
+        :clickable="true"
+        @click="handleCardClick('ingreso', $event)"
+      />
+    </div>
+
     <div class="col-12">
       <div class="text-h6 text-blue-grey-8">Observaciones</div>
       <q-card class="q-pa-sm shadow-none card-item">

@@ -8,16 +8,16 @@ export const useAuth = () => {
   const user = ref(JSON.parse(localStorage.getItem("user") as string));
   const router = useRouter();
   const isAuth = ref<boolean>(
-    localStorage.getItem("access_token") ? true : false
+    localStorage.getItem("access_token") ? true : false,
   );
 
   const handleLogin = async (payload: loginPayload) => {
     const res = await loginReq(payload);
 
     if (res.code === "error") return false;
-
     localStorage.setItem("access_token", res.data.access_token);
     localStorage.setItem("user", JSON.stringify(res.data.user));
+
     handleMessages({
       message: "Inicio de sesión exitoso",
       color: "green",
@@ -29,15 +29,15 @@ export const useAuth = () => {
     return res.data;
   };
 
-    const logout = () => {
+  const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user");
-    
+
     isAuth.value = false;
     user.value = null;
-    
+
     router.push("/login");
-    
+
     handleMessages({
       message: "Sesión cerrada correctamente",
       color: "green",

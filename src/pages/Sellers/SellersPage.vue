@@ -23,10 +23,10 @@
 
       <DialogConfirmation
         v-model="showDeleteModal"
-        title="¡Atención! Eliminación de ruta"
+        title="¡Atención! Eliminación de vendedor"
         icon="warning"
-        :description="`¿Está seguro de que desea eliminar la ruta ${selectedRoute?.name}? Esta acción es irreversible y eliminará permanentemente toda
-                    la información asociada a esta ruta, incluyendo, Clientes,
+        :description="`¿Está seguro de que desea eliminar el vendedor? Esta acción es irreversible y eliminará permanentemente toda
+                    la información asociada a este vendedor, incluyendo, Clientes,
                     Miembros y toda la información asociada.`"
         @confirm="deleteRoute"
       />
@@ -59,6 +59,7 @@
                 placeholder="Buscar"
                 bg-color="white"
                 debounce="500"
+                 @update:model-value="handleSearch"
               >
                 <template v-slot:append>
                   <q-icon name="search" />
@@ -78,13 +79,22 @@
         </div>
         <TabletSellers
           v-if="dataRoutes"
-          :data="dataRoutes"
-          :paginationRoutes="paginationRoutes"
+          :data="{ data: dataRoutes }"
+      
           @show-create-modal="showCreateModal = true"
           @edit-row="editRoute"
           @toggle-route="toggleRoute"
           @confirm-delete-row="confirmDeleteRoute"
           @row-clicked="showVendorDetails"
+          :pagination="{
+            page: paginationRoutes.page,
+            rowsPerPage: paginationRoutes.rowsPerPage,
+            rowsNumber: paginationRoutes.rowsNumber,
+            last_page: paginationRoutes.countPage,
+            sortBy: paginationRoutes.sortBy,
+            descending: paginationRoutes.descending,
+          }"
+          @update:pagination="handlePagination"
         />
       </div>
     </div>
@@ -130,6 +140,8 @@ const {
   deleteRoute,
   fetchRoutes,
   cancelToggle,
+  handlePagination,
+  handleSearch,
   clearForm,
   vendorClients,
   vendorClientsPagination,

@@ -4,9 +4,9 @@
       flat
       separator="none"
       table-header-class="control-table-header"
-      :rows="data.data || []"
+      :rows="props.data.data || []"
       :columns="columns"
-      v-model:pagination="props.paginationRoutes"
+      v-model:pagination="props.pagination"
       row-key="id"
       rowsPerPageLabel="Registros por página"
       no-data-label="No se ha encontrado datos"
@@ -128,10 +128,10 @@
     </q-table>
     <div class="flex justify-end items-center q-mt-md">
       <q-pagination
-        v-model="paginationRoutes.page"
+        v-model="currentPage"
         color="grey-9"
         active-color="primary"
-        :max="maxPages || 1"
+        :max="maxPages"
         :max-pages="8"
         size="md"
         gutter="10px"
@@ -140,7 +140,7 @@
         icon-last="keyboard_double_arrow_right"
         icon-prev="chevron_left"
         icon-next="chevron_right"
-        @update:model-value="sendEmitPagination"
+        @update:model-value="handlePageChange"
       />
     </div>
   </section>
@@ -153,31 +153,31 @@ import { useMembers } from "src/composables/useMembers";
 import { dataRoutes, Route } from "src/types/routes.type";
 
 const { search } = useMembers();
+
+const currentPage = computed({
+  get: () => props.pagination.page,
+  set: (value) => handlePageChange(value),
+});
 const emits = defineEmits<{
   (e: "edit-row", route: Route): void;
   (e: "confirm-delete-row", route: Route): void;
   (e: "toggle-route", route: Route): void;
-  (e: "update-pagination", pagination: any): void;
+  (e: "update:pagination", pagination: any): void;
   (e: "show-create-modal"): void;
   (e: "row-clicked", route: Route): void;
 }>();
 
-const sendEmitPagination = () => {
-  emits("update-pagination", props.paginationRoutes);
-};
-
-const maxPages = computed(() => {
-  if (!props.data.total) return;
-  const calculatedPages = Math.ceil(
-    props.data.total / props.paginationRoutes.rowsPerPage,
-  );
-  return calculatedPages;
-});
+const maxPages = computed(() => Math.max(props.pagination.last_page || 1, 1));
 
 const props = defineProps<{
   data: dataRoutes;
-  paginationRoutes: any;
+  pagination: any;
 }>();
+
+const handlePageChange = (newPage: number) => {
+  const updatedPagination = { ...props.pagination, page: newPage };
+  emits("update:pagination", updatedPagination);
+};
 </script>
 
 <style scoped></style>

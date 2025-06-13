@@ -37,7 +37,7 @@ const columns: QTableProps["columns"] = [
     align: "center",
     label: "Saldo actual",
     field: "total_credits",
-    format: (val) => "$" + val,
+    format: (val) => "$" + 0 || "$0",
     sortable: false,
   },
   {

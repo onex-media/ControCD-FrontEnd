@@ -5,11 +5,25 @@ import {
   getRoutesReq,
   toggleRouteStatusReq,
 } from "src/services/routes.services";
-import { Route, updateRoutePayload } from "src/types/routes.type";
+import {
+  Route,
+  routesResponse,
+  updateRoutePayload,
+} from "src/types/routes.type";
 import { handleMessages } from "src/utils/notify";
 import { ref, reactive, watch } from "vue";
 import { useQuasar } from "quasar";
 import { getData } from "src/services/api.services";
+
+interface SellersResponse {
+  data: any[];
+  pagination: {
+    total: number;
+    current_page: number;
+    per_page: number;
+    last_page: number;
+  };
+}
 
 export const useSellers = () => {
   const dataRoutes = ref<any>();
@@ -72,21 +86,29 @@ export const useSellers = () => {
 
   const fetchRoutes = async () => {
     try {
-      const resp = await getRoutesReq({
-        ...paginationRoutes,
+      const payload = {
+        page: paginationRoutes.page,
+        perPage: paginationRoutes.rowsPerPage,
         search: search.value,
+        sortBy: paginationRoutes.sortBy,
+        last_page: paginationRoutes.countPage,
+        descending: paginationRoutes.descending ? "desc" : "asc",
+      };
+
+      const response = await getData<SellersResponse>({
+        path: "/routes",
+        payload,
       });
 
-      if (resp.code === "error") {
-        handleMessages({
-          message: resp.error.message,
-          color: "red",
-          icon: "close",
-        });
-        return;
+      console.log("Response from getRoutesReq:", response);
+      console.log("Payload sent to getRoutesReq:", response.data);
+
+      if (response.data) {
+        dataRoutes.value = response.data;
+        updatePagination(response.pagination);
       }
 
-      dataRoutes.value = resp.data.data;
+      console.log("Routes fetched successfully:", dataRoutes.value);
     } catch (error) {
       console.error("Error fetching routes:", error);
       handleMessages({
@@ -97,17 +119,24 @@ export const useSellers = () => {
     }
   };
 
-  const getRoutes = async () => {
-    const res = await getRoutesReq(paginationRoutes);
+  const updatePagination = (meta: any["pagination"]) => {
+    paginationRoutes.rowsNumber = meta.total;
+    paginationRoutes.page = meta.current_page;
+    paginationRoutes.rowsPerPage = meta.per_page;
+    paginationRoutes.countPage = meta.last_page;
+  };
 
-    if (res.code === "error")
-      return handleMessages({
-        message: res.error.message,
-        color: "red",
-        icon: "close",
-      });
+  const handleSearch = () => {
+    paginationRoutes.page = 1;
+    fetchRoutes();
+  };
 
-    return res.data.data;
+  const handlePagination = (newPagination: Pagination) => {
+    paginationRoutes.page = newPagination.page;
+    paginationRoutes.rowsPerPage = newPagination.rowsPerPage;
+    paginationRoutes.sortBy = newPagination.sortBy;
+    paginationRoutes.descending = newPagination.descending;
+    fetchRoutes();
   };
 
   const editRoute = (route: any) => {
@@ -146,14 +175,12 @@ export const useSellers = () => {
   };
 
   const deleteRoute = async () => {
-    const res = await deleteRouteReq(selectedRoute.value.id);
-
     try {
       await deleteRouteReq(selectedRoute.value.id);
       await fetchRoutes();
       $q.notify({
         type: "positive",
-        message: "Ruta eliminada exitosamente",
+        message: "Vendedor eliminado exitosamente",
       });
       showDeleteModal.value = false;
     } catch (error) {
@@ -310,19 +337,10 @@ export const useSellers = () => {
       members: [],
     };
   };
-
-  watch(search, () => {
-    fetchRoutes();
-  });
-
+  watch(search, handleSearch);
   watch(
-    () => dataRoutes.value,
-    (newVal: any) => {
-      paginationRoutes.page = newVal.current_page;
-      paginationRoutes.countPage = newVal.last_page;
-      paginationRoutes.rowsNumber = newVal.total;
-      paginationRoutes.rowsPerPage = newVal.per_page;
-    },
+    () => paginationRoutes,
+    () => fetchRoutes(),
     { deep: true },
   );
 
@@ -344,13 +362,14 @@ export const useSellers = () => {
     confirmToggle,
     cancelToggle,
     closeModal,
-    getRoutes,
     fetchRoutes,
     updateRoute,
     deleteRoute,
     confirmDeleteRoute,
     saveRoute,
     clearForm,
+    handlePagination,
+    handleSearch,
     vendorClients,
     vendorClientsPagination,
     fetchVendorClients,

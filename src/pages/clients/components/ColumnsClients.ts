@@ -66,4 +66,15 @@ const columns: QTableProps["columns"] = [
     },
 ];
 
-export { columns };
+const columnsMobile: QTableProps["columns"] = [
+  {
+    name: "client",
+    align: "left",
+    label: "Clientes",
+    field: "client",
+    sortable: false,
+  },
+
+];
+
+export { columns, columnsMobile };

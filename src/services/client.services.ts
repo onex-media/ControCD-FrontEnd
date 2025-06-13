@@ -26,4 +26,8 @@ export const getClientReq = async () => {
     const response = await doGet<ClientGetResponse>("/clients", clientGetSchema.parse);
     return response;
 };
+export const getClientTotalReq = async () => {
+    const response = await doGet<ClientGetResponse>("/clients/total", clientGetSchema.parse);
+    return response;
+};
 

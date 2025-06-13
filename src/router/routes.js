@@ -52,6 +52,11 @@ const routes = [
         },
       },
       {
+        path: "/dashboard/clients/:id",
+        name: "clientDetail",
+        component: () => import("pages/clients/ClientDetailView.vue"),
+      },
+      {
         path: "/dashboard/members/:id",
         component: () => import("pages/members/UserDetails.vue"),
         name: "UserDetails",

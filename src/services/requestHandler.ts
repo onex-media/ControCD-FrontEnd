@@ -105,6 +105,25 @@ export const doPost = async <T>(
   return doRequest(() => axiosInstance.post(path, body, config), parser);
 };
 
+export const doRequestFormData = async <T>(
+  axiosCall: () => Promise<AxiosResponse>,
+  parser: RequestParseCallback<T>
+): Promise<T> => {
+  try {
+    const response = await axiosCall();
+    
+   
+    return parser(response.data);
+  } catch (error) {
+    // Manejo de errores
+    if (axios.isAxiosError(error)) {
+      const errorData = error.response?.data || error.message;
+      throw new Error(errorData);
+    }
+    throw error;
+  }
+};
+
 export const doPut = async <T>(
   path: string,
   body: FormData | Record<string, unknown>,
