@@ -11,7 +11,10 @@
     />
 
     <div>
-      <div class="flex justify-between items-center q-mb-md">
+      <div
+        :class="$q.screen.lt.md && 'q-px-md'"
+        class="flex justify-between items-center q-mb-md"
+      >
         <div class="flex items-center gap-2">
           <h1 class="text-2xl font-semibold">Clientes</h1>
         </div>
@@ -24,7 +27,6 @@
               placeholder="Buscar"
               bg-color="white"
               debounce="500"
-              
             >
               <template v-slot:append>
                 <q-icon name="search" />
@@ -34,10 +36,9 @@
 
           <q-btn
             unelevated
-            v-if="role === 5"
+            v-if="!$q.screen.lt.md && role === 5"
             color="primary"
             label="Nuevo cliente"
-            :class="$q.screen.lt.md && 'w-full'"
             no-caps
             @click="showCreateModal = true"
           >
@@ -53,7 +54,7 @@
       <TabletClients
         v-if="clients.data"
         :dataClients="clients"
-        :paginationClients="paginationClients"
+        :paginationcustom-client-table="paginationClients"
         @edit="editClient"
       />
     </div>
@@ -65,6 +66,31 @@
       :description="`¿Está seguro de que desea eliminar al cliente ${selectedClient?.name}? Esta acción es irreversible y eliminará permanentemente toda la información asociada a este cliente.`"
       @confirm="deleteClient"
     />
+
+    <q-page-sticky
+      v-if="$q.screen.lt.md && role === 5"
+      position="bottom-right"
+      :offset="[18, 18]"
+    >
+      <!--       <q-btn
+          unelevated
+          icon="add"
+          color="primary"
+          @click="showCreateModal = true"
+          label="Nuevo cliente"
+        /> -->
+
+      <q-btn
+        unelevated
+        v-if="role === 5"
+        color="primary"
+        label="Nuevo cliente"
+        no-caps
+        @click="showCreateModal = true"
+      >
+        <img src="/icons/FolderSimpleStar.svg" class="ml-4 svg-white" alt="" />
+      </q-btn>
+    </q-page-sticky>
   </section>
 </template>
 

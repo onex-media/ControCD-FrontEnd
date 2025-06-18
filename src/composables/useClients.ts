@@ -19,6 +19,7 @@ import axios from "src/axios";
 import { handleMessages } from "src/utils/notify";
 import { createClientReq, getClientReq } from "src/services/client.services";
 import { getData } from "src/services/api.services";
+import { CreateCreditPayload } from "@/types/credits.types";
 
 export function useClients() {
   const showCreateModal = ref(false);
@@ -67,6 +68,19 @@ export function useClients() {
     galleryPhotos: [] as File[],
     email: "",
     guarantorId: null,
+  });
+
+  const creditFormData: Ref<CreateCreditPayload> = ref({
+    creditValue: null,
+    interestRate: null,
+    installmentCount: null,
+    paymentFrequency: null,
+    excludedDays: [],
+    microInsurancePercentage: null,
+    microInsuranceAmount: null,
+    firstInstallmentDate: null,
+    clientId: null,
+    galleryPhotos: [] as File[],
   });
 
   const fiadorFormData: Ref<any> = ref({
@@ -284,7 +298,7 @@ export function useClients() {
         clientFormData.value.paymentFrequency,
       );
     }
-  /*   if (clientFormData.value.excludedDays) {
+    /*   if (clientFormData.value.excludedDays) {
       clientData.append(
         "excluded_days",
         JSON.stringify(clientFormData.value.excludedDays),
@@ -346,7 +360,7 @@ export function useClients() {
         await updateClientReq(selectedClient.value?.id, clientData);
       } else {
         const res = await createClientReq(clientData);
-        if (res.code === "error")
+      /*   if (res.code === "error")
           return handleMessages({
             message: res.error.message,
             color: "red",
@@ -357,13 +371,13 @@ export function useClients() {
           message: res.data.message,
           color: "primary",
           icon: "check",
-        });
+        }); */
       }
       await fetchClients();
-      Notify.create({
+   /*    Notify.create({
         type: "positive",
         message: `Cliente ${isEditing.value ? "actualizado" : "creado"} exitosamente`,
-      });
+      }); */
       closeModalWithoutValidation();
     } catch (error) {
       console.error("Error saving client:", error);
@@ -402,6 +416,113 @@ export function useClients() {
       Notify.create({
         type: "negative",
         message: "Error al eliminar el cliente",
+      });
+    }
+  };
+
+  const createCreditFormData = () => {
+    console.log("clientFormData.value: ", clientFormData.value);
+    const creditData = new FormData();
+
+    if (creditFormData.value.creditValue) {
+      creditData.append(
+        "credit_value",
+        creditFormData.value.creditValue.toString(),
+      );
+    }
+    if (creditFormData.value.interestRate) {
+      creditData.append(
+        "interest_rate",
+        creditFormData.value.interestRate.toString(),
+      );
+    }
+    if (creditFormData.value.installmentCount) {
+      creditData.append(
+        "installment_count",
+        creditFormData.value.installmentCount.toString(),
+      );
+    }
+    if (creditFormData.value.paymentFrequency) {
+      creditData.append(
+        "payment_frequency",
+        creditFormData.value.paymentFrequency,
+      );
+    }
+
+    if (creditFormData.value.excludedDays) {
+      creditFormData.value.excludedDays.forEach((day, index) => {
+        creditData.append(`excluded_days[${index}]`, day);
+      });
+    }
+    if (creditFormData.value.microInsurancePercentage) {
+      creditData.append(
+        "micro_insurance_percentage",
+        creditFormData.value.microInsurancePercentage.toString(),
+      );
+    }
+    if (creditFormData.value.microInsuranceAmount) {
+      creditData.append(
+        "micro_insurance_amount",
+        creditFormData.value.microInsuranceAmount.toString(),
+      );
+    }
+    if (creditFormData.value.firstInstallmentDate) {
+      creditData.append(
+        "first_installment_date",
+        creditFormData.value.firstInstallmentDate,
+      );
+    }
+
+    creditData.append("seller_id", sellerId);
+
+    creditFormData.value.galleryPhotos.forEach((file, index) => {
+      if (file) {
+        creditData.append(
+          `images[${index + creditFormData.value.galleryPhotos.length}][file]`,
+          file,
+        );
+        creditData.append(
+          `images[${index + creditFormData.value.galleryPhotos.length}][type]`,
+          "gallery",
+        );
+      }
+    });
+
+    return creditData;
+  };
+
+    const saveCredit = async () => {
+    try {
+      const creditData = createCreditFormData();
+
+      if (isEditing.value) {
+        await updateClientReq(selectedClient.value?.id, creditData);
+      } else {
+        const res = await createClientReq(creditData);
+        if (res.code === "error")
+          return handleMessages({
+            message: res.error.message,
+            color: "red",
+            icon: "close",
+          });
+
+        handleMessages({
+          message: res.data.message,
+          color: "primary",
+          icon: "check",
+        });
+      }
+      await fetchClients();
+      Notify.create({
+        type: "positive",
+        message: `Credito ${isEditing.value ? "actualizado" : "creado"} exitosamente`,
+      });
+      closeModalWithoutValidation();
+    } catch (error) {
+      console.error("Error saving client:", error);
+      Notify.create({
+        type: "negative",
+        message: "Error al guardar el cliente",
       });
     }
   };

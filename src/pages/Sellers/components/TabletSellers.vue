@@ -18,9 +18,9 @@
         <q-td :props="props">
           <div class="row items-center gap-sm">
             <q-avatar size="40px" text-color="white" class="q-mr-sm">
-              <template v-if="props.row.user?.profilePhoto?.path">
+              <template v-if="props.row.images?.length">
                 <img
-                  :src="`${props.row.user.profilePhoto.path}`"
+                  :src="`${pathImage}${props.row.images[0].path}`"
                   alt="Avatar del vendedor"
                 />
               </template>
@@ -151,6 +151,7 @@ import { computed } from "vue";
 import { columns } from "./ColumnsSellers";
 import { useMembers } from "src/composables/useMembers";
 import { dataRoutes, Route } from "src/types/routes.type";
+import { pathImage } from "src/boot/axios";
 
 const { search } = useMembers();
 

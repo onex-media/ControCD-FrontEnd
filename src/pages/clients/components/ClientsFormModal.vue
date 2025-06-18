@@ -4,12 +4,21 @@
     persistent
     @update:model-value="updateShow"
   >
-    <q-card class="client-card">
-      <q-card-section class="flex justify-between items-center">
-        <h3 class="client-card__title">
-          {{ isEditing ? "Editar cliente" : "Nuevo cliente" }}
-        </h3>
-        <q-btn flat round dense icon="close" @click="closeModal" />
+    <q-card class="credit-card">
+      <q-card-section class="justify-between items-center">
+        <div class="flex justify-between items-center">
+          <h3 class="client-card__title">
+            {{ isEditing ? "Editar cliente" : "Nuevo cliente" }}
+          </h3>
+          <q-btn flat round dense icon="close" @click="closeModal" />
+        </div>
+        <!--   <div>
+          <p class="client-card__description">
+            Estás a punto de crear un nuevo cliente. Al hacerlo, el cliente tendrá acceso a las
+            funcionalidades y beneficios de la ruta, incluyendo acceso a
+            Créditos y Otras funcionalidades.
+          </p>
+        </div> -->
       </q-card-section>
 
       <q-card-section class="q-pt-none">
@@ -21,6 +30,7 @@
             active-color="primary"
             indicator-color="primary"
             align="justify"
+            no-caps
             narrow-indicator
           >
             <q-tab name="client" label="Deudor" />
@@ -39,30 +49,30 @@
                     <q-avatar size="100px">
                       <img :src="profilePhotoSrc || '/default.png'" />
                     </q-avatar>
-                    <div
-                      class="avatar-overlay flex justify-center items-center"
-                    >
-                      <q-btn
-                        round
-                        dense
-                        unelevated
-                        padding="5px"
-                        icon="photo_camera"
-                        color="primary"
-                        class="q-mx-xs"
-                        @click.stop="openFileBrowser('profilePhotoInput')"
-                      />
-                      <q-btn
-                        round
-                        dense
-                        padding="5px"
-                        v-if="profilePhotoSrc"
-                        unelevated
-                        icon="close"
-                        color="red"
-                        class="q-mx-xs"
-                        @click.stop="clearProfilePhoto"
-                      />
+                    <div class="avatar-overlay flex justify-end items-end">
+                      <div class="button-group q-pa-xs">
+                        <q-btn
+                          round
+                          dense
+                          unelevated
+                          padding="5px"
+                          icon="photo_camera"
+                          color="primary"
+                          class="q-mx-xs"
+                          @click.stop="openFileBrowser('profilePhotoInput')"
+                        />
+                        <q-btn
+                          round
+                          dense
+                          padding="5px"
+                          v-if="profilePhotoSrc"
+                          unelevated
+                          icon="close"
+                          color="red"
+                          class="q-mx-xs"
+                          @click.stop="clearProfilePhoto"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -87,11 +97,15 @@
                       outlined
                       dense
                       class="mt-1"
-                      placeholder="Ingrese el correo"
-                      :rules="[(val) => !!val || 'Documento requerido']"
+                      placeholder="Ingrese el documento"
+                      :rules="[
+                        (val) => !!val || 'Documento requerido',
+                        (val) =>
+                          /^[0-9]+$/.test(val) || 'Solo números permitidos',
+                      ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="badge" />
+                        <q-icon name="badge" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -107,10 +121,16 @@
                       maxlength="25"
                       class="mt-1"
                       placeholder="Ingrese el nombre"
-                      :rules="[(val) => !!val || 'Campo requerido']"
+                      :rules="[
+                        (val) => !!val || 'Campo requerido',
+                        (val) => val.length <= 45 || 'Máximo 45 caracteres',
+                        (val) =>
+                          /^[a-zA-Z ]+$/.test(val) ||
+                          'Solo letras y espacios permitidos',
+                      ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="person" />
+                        <q-icon name="person" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -126,13 +146,16 @@
                       dense
                       class="mt-1"
                       placeholder="Haga clic para seleccionar en el mapa"
-                      readonly
+                      :rules="[
+                        (val) => !!val || 'Dirección de cobro requerida',
+                      ]"
                       @click="openMapDialog"
                     >
                       <template v-slot:prepend>
                         <q-icon
                           name="place"
                           class="cursor-pointer"
+                          size="20px"
                           @click.stop="openMapDialog"
                         />
                       </template>
@@ -149,10 +172,15 @@
                       dense
                       class="mt-1"
                       placeholder="Ingrese el teléfono"
-                      :rules="[(val) => !!val || 'Teléfono requerido']"
+                      :rules="[
+                        (val) => !!val || 'Teléfono requerido',
+                        (val) =>
+                          /^[0-9]+$/.test(val) || 'Solo números permitidos',
+                        (val) => val.length <= 13 || 'Máximo 13 caracteres',
+                      ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="phone" />
+                        <q-icon name="phone" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -174,7 +202,7 @@
                       ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="mail" />
+                        <q-icon name="mail" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -191,10 +219,11 @@
                       placeholder="Ingrese el nombre de la empresa"
                       :rules="[
                         (val) => !!val || 'Nombre de la empresa requerido',
+                        (val) => val.length <= 45 || 'Máximo 45 caracteres',
                       ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="business" />
+                        <q-icon name="business" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -220,10 +249,12 @@
                       placeholder="Ingrese el documento del fiador"
                       :rules="[
                         (val) => !!val || 'Documento del fiador requerido',
+                        (val) =>
+                          /^[0-9]+$/.test(val) || 'Solo números permitidos',
                       ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="badge" />
+                        <q-icon name="badge" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -239,10 +270,16 @@
                       maxlength="25"
                       class="mt-1"
                       placeholder="Ingrese el nombre del fiador"
-                      :rules="[(val) => !!val || 'Nombre del fiador requerido']"
+                      :rules="[
+                        (val) => !!val || 'Nombre del fiador requerido',
+                        (val) => val.length <= 45 || 'Máximo 45 caracteres',
+                        (val) =>
+                          /^[a-zA-Z ]+$/.test(val) ||
+                          'Solo letras y espacios permitidos',
+                      ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="person" />
+                        <q-icon name="person" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -260,10 +297,13 @@
                       placeholder="Ingrese el teléfono"
                       :rules="[
                         (val) => !!val || 'Teléfono del fiador requerido',
+                        (val) =>
+                          /^[0-9]+$/.test(val) || 'Solo números permitidos',
+                        (val) => val.length <= 13 || 'Máximo 13 caracteres',
                       ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="phone" />
+                        <q-icon name="phone" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -280,10 +320,11 @@
                       placeholder="Ingrese la dirección del fiador"
                       :rules="[
                         (val) => !!val || 'Dirección del fiador requerida',
+                        (val) => val.length <= 45 || 'Máximo 45 caracteres',
                       ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="location_on" />
+                        <q-icon name="location_on" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -308,11 +349,15 @@
                       type="number"
                       class="mt-1"
                       placeholder="Ingrese el valor"
-                      :rules="[(val) => !!val || 'Valor requerido']"
+                      :rules="[
+                        (val) => !!val || 'Valor requerido',
+                        (val) =>
+                          /^[0-9]+$/.test(val) || 'Solo números permitidos',
+                      ]"
                       @update:model-value="calculateInstallmentValue"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="attach_money" />
+                        <q-icon name="attach_money" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -330,11 +375,14 @@
                       type="number"
                       class="mt-1"
                       placeholder="Ingrese la tasa"
-                      :rules="[(val) => !!val || 'Tasa requerida']"
+                      :rules="[
+                        (val) => !!val || 'Tasa requerida',
+                        (val) => val <= 100 || 'Máximo 100%',
+                      ]"
                       @update:model-value="calculateInstallmentValue"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="percent" />
+                        <q-icon name="percent" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -352,11 +400,15 @@
                       type="number"
                       class="mt-1"
                       placeholder="Número de cuotas"
-                      :rules="[(val) => !!val || 'Cuotas requeridas']"
+                      :rules="[
+                        (val) => !!val || 'Cuotas requeridas',
+                        (val) =>
+                          /^[0-9]+$/.test(val) || 'Solo números permitidos',
+                      ]"
                       @update:model-value="calculateInstallmentValue"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="list_alt" />
+                        <q-icon name="list_alt" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -371,12 +423,16 @@
                       dense
                       type="number"
                       class="mt-1"
-                      readonly
+                      disable
                       placeholder="Valor de la cuota"
-                      :rules="[(val) => !!val || 'Valor requerido']"
+                      :rules="[
+                        (val) => !!val || 'Valor requerido',
+                        (val) =>
+                          /^[0-9]+$/.test(val) || 'Solo números permitidos',
+                      ]"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="list_alt" />
+                        <q-icon name="list_alt" size="20px" />
                       </template>
                     </q-input>
                   </div>
@@ -396,7 +452,7 @@
                       :rules="[(val) => !!val || 'Frecuencia requerida']"
                     >
                       <template v-slot:prepend>
-                        <q-icon name="repeat" />
+                        <q-icon name="repeat" size="20px" />
                       </template>
                     </q-select>
                   </div>
@@ -409,6 +465,7 @@
                       Excepto los días
                       <span class="text-red-500">*</span>
                     </label>
+
                     <div class="q-gutter-sm q-mt-sm">
                       <q-chip
                         v-for="day in weekDays"
@@ -421,8 +478,25 @@
                         "
                         text-color="white"
                         @click="toggleExcludedDay(day)"
+                        class="q-pa-xs flex justify-center items-center"
+                        style="
+                          min-width: 75px;
+                          height: 30px;
+                          padding: 0;
+                          line-height: normal;
+                        "
                       >
-                        {{ day }}
+                        <span
+                          style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 100%;
+                            font-size: 12px;
+                          "
+                        >
+                          {{ day }}
+                        </span>
                       </q-chip>
                     </div>
                   </div>
@@ -431,9 +505,8 @@
                   <div class="col-12">
                     <q-expansion-item
                       v-model="microInsuranceExpanded"
+                      header-class=" custom-expansion-header"
                       label="Microseguros"
-                      caption="(Opcional)"
-                      class="q-mt-md"
                       dense
                       expand-icon-class="text-primary"
                     >
@@ -449,9 +522,15 @@
                             placeholder="0-100%"
                             min="0"
                             max="100"
+                            :rules="[
+                              (val) =>
+                                /^[0-9]+$/.test(val) ||
+                                'Solo números permitidos',
+                              (val) => val <= 100 || 'Máximo 100%',
+                            ]"
                           >
                             <template v-slot:prepend>
-                              <q-icon name="percent" />
+                              <q-icon name="percent" size="20px" />
                             </template>
                           </q-input>
                         </div>
@@ -464,10 +543,10 @@
                             type="number"
                             class="mt-1"
                             placeholder="Monto"
-                            readonly
+                            disable
                           >
                             <template v-slot:prepend>
-                              <q-icon name="attach_money" />
+                              <q-icon name="attach_money" size="20px" />
                             </template>
                           </q-input>
                         </div>
@@ -483,7 +562,7 @@
                     <label class="text-caption"> Pago adelantado </label>
                   </div>
 
-                  <div class="col-12 col-md-6">
+                  <!--     <div  class=" col-12 col-md-6">
                     <label>
                       Fecha primera cuota
                       <span class="text-red-500">*</span>
@@ -494,14 +573,14 @@
                       dense
                       class="mt-1"
                       placeholder="Seleccione fecha"
-                      readonly
+                      disabled
                       :rules="[(val) => !!val || 'Fecha requerida']"
                     >
                       <template v-slot:prepend>
                         <q-icon name="event" />
                       </template>
                     </q-input>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -510,7 +589,6 @@
             <div class="row flex items-center q-col-gutter-sm mb-5">
               <div class="col-12">
                 <div class="row q-col-gutter-sm q-mb-md">
-                  <!-- Inputs de archivo ocultos -->
                   <input
                     type="file"
                     ref="galleryPhotoInput1"
@@ -533,7 +611,6 @@
                     @change="(event) => handleGalleryPhotoChange(event, 2)"
                   />
 
-                  <!-- Contenedor para las tres imágenes -->
                   <div class="col-12 flex justify-center q-gutter-sm">
                     <div
                       v-for="(item, index) in galleryItems"
@@ -583,7 +660,7 @@
               flat
               no-caps
               :label="previousTabLabel()"
-              color="grey-7"
+              color="grey"
               class="full-width"
               @click="previousTab"
             />
@@ -752,7 +829,6 @@ const toggleAdvancedPayment = (value: boolean) => {
   advancedPayment.value = value;
   props.clientFormData.firstInstallmentDate = firstInstallmentDate.value;
 };
-
 
 const paymentFrequencyOptions = ref([
   "Diaria",
@@ -974,7 +1050,7 @@ const updateShow = (value: boolean) => {
 };
 
 const saveClient = () => {
-  if (!validateGuarantor()) {
+  /*  if (!validateGuarantor()) {
     alert("Por favor complete todos los campos del fiador o deje todos vacíos");
     return;
   }
@@ -984,7 +1060,7 @@ const saveClient = () => {
       "Por favor complete todos los campos del crédito o deje todos vacíos",
     );
     return;
-  }
+  } */
 
   if (currentTab.value === "client") {
     currentTab.value = "guarantor";
@@ -1146,39 +1222,31 @@ watch(
   border-radius: 50%;
 
   .avatar-overlay {
+    position: absolute;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: opacity 0.3s ease;
+    display: flex;
+
+    .button-group {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      display: flex;
+    }
+  }
+
+  &:hover .avatar-overlay {
     opacity: 1;
   }
 }
 
-.avatar-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.q-btn {
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-}
-.q-avatar {
-  transition: transform 0.3s ease;
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-}
 .client-card {
   width: 96%;
   max-width: 700px;
@@ -1193,45 +1261,6 @@ watch(
 
   .q-separator {
     border-color: rgba(0, 0, 0, 0.08);
-  }
-
-  .text-caption {
-    color: #6b7280;
-  }
-
-  .text-red-500 {
-    color: #ef4444;
-  }
-
-  .relative-position {
-    position: relative;
-  }
-
-  .flex {
-    display: flex;
-  }
-
-  .justify-between {
-    justify-content: space-between;
-  }
-
-  .items-center {
-    align-items: end;
-  }
-
-  .q-col-gutter-lg {
-    margin: -12px;
-    > * {
-      padding: 12px;
-    }
-  }
-
-  .q-mb-md {
-    margin-bottom: 16px;
-  }
-
-  .full-width {
-    width: 100%;
   }
 }
 
@@ -1253,5 +1282,37 @@ watch(
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.q-item {
+  min-height: 48px;
+  padding: 8px 0px !important;
+  color: inherit;
+  transition:
+    color 0.3s,
+    background-color 0.3s;
+}
+.custom-expansion-header {
+  padding: 0 !important;
+}
+
+:deep(.custom-expansion-header) {
+  padding: 0 !important;
+}
+/* :deep(.q-card__section--vert) {
+  padding: 16px 0;
+} */
+
+@media (max-width: 600px) {
+  :deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
+    height: 33px !important;
+  }
+
+  :deep(
+    .q-field--auto-height.q-field--dense .q-field__control,
+    .q-field--auto-height.q-field--dense .q-field__native
+  ) {
+    min-height: 33px !important;
+  }
 }
 </style>
