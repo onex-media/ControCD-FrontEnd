@@ -157,10 +157,10 @@ export const useSellers = () => {
 
   const updateRoute = async (
     payload: updateRoutePayload,
-    id: string | number,
+    id: string | number
   ) => {
     try {
-      const res = await updateRouteReq(payload, id);
+      const res: any = await updateRouteReq(payload, id);
       closeModal();
       await fetchRoutes();
       return res.data;

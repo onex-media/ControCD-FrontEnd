@@ -1,25 +1,13 @@
 <template>
   <section>
-    <q-table
-      flat
-      separator="none"
-      table-header-class="control-table-header"
-      :rows="dataClients || []"
-      :columns="columns"
-      row-key="id"
-      v-model:pagination="props.paginationClients"
-      rowsPerPageLabel="Registros por página"
-      no-data-label="No se ha encontrado datos"
-      hide-pagination
-    >
+    <q-table flat separator="none" table-header-class="control-table-header" :rows="dataClients || []"
+      :columns="columns" row-key="id" v-model:pagination="props.paginationClients"
+      rowsPerPageLabel="Registros por página" no-data-label="No se ha encontrado datos" hide-pagination>
       <template #body-cell-avatar="props">
         <td :props="props" style="width: 50px">
           <q-avatar size="40px">
             <template v-if="props.row.images && props.row.images.length">
-              <img
-                :src="`${pathImage}${props.row.images[0].path}`"
-                alt="Avatar"
-              />
+              <img :src="`${pathImage}${props.row.images[0].path}`" alt="Avatar" />
             </template>
             <template v-else>
               <span>{{ getInitials(props.row.name) }}</span>
@@ -29,13 +17,8 @@
       </template>
       <template #body-cell-active="props">
         <td :props="props" style="width: 80px">
-          <q-toggle
-            v-model="props.row.status"
-            true-value="active"
-            false-value="inactive"
-            color="primary"
-            @update:model-value="$emit('toggle-member', props.row)"
-          />
+          <q-toggle v-model="props.row.status" true-value="active" false-value="inactive" color="primary"
+            @update:model-value="$emit('toggle-member', props.row)" />
         </td>
       </template>
 
@@ -73,12 +56,7 @@
       </template>
       <template #body-cell-images="props">
         <td :props="props">
-          <q-btn
-            flat
-            dense
-            color="primary"
-            @click="showImages(props.row.images)"
-          >
+          <q-btn flat dense color="primary" @click="showImages(props.row.images)">
             Imágenes
           </q-btn>
         </td>
@@ -89,12 +67,7 @@
             <q-btn flat dense color="primary" @click="$emit('edit', props.row)">
               <img src="/icons/edit.svg" alt="" />
             </q-btn>
-            <q-btn
-              flat
-              dense
-              color="negative"
-              @click="$emit('confirm-delete-member', props.row)"
-            >
+            <q-btn flat dense color="negative" @click="$emit('confirm-delete-member', props.row)">
               <img src="/icons/trash-2.svg" alt="" />
             </q-btn>
           </div>
@@ -109,20 +82,10 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-carousel
-            v-if="selectedImages.length"
-            v-model="selectedImageIndex"
-            arrows
-            infinite
-            control-color="primary"
-            control-type="push"
-          >
-            <q-carousel-slide
-              v-for="(image, index) in selectedImages"
-              :key="index"
-              :name="index"
-              class="flex justify-center items-center"
-            >
+          <q-carousel v-if="selectedImages.length" v-model="selectedImageIndex" arrows infinite control-color="primary"
+            control-type="push">
+            <q-carousel-slide v-for="(image, index) in selectedImages" :key="index" :name="index"
+              class="flex justify-center items-center">
               <img :src="`${pathImage}${image.path}`" alt="Client Image" />
             </q-carousel-slide>
           </q-carousel>
@@ -130,21 +93,10 @@
       </q-card>
     </q-dialog>
     <div class="flex justify-end items-center q-mt-md">
-      <q-pagination
-        v-model="props.paginationClients.page"
-        color="grey-9"
-        active-color="primary"
-        :max="maxPages"
-        :max-pages="8"
-        size="md"
-        gutter="10px"
-        direction-links
-        icon-first="keyboard_double_arrow_left"
-        icon-last="keyboard_double_arrow_right"
-        icon-prev="chevron_left"
-        icon-next="chevron_right"
-        @update:model-value="sendEmitPagination"
-      />
+      <q-pagination v-model="props.paginationClients.page" color="grey-9" active-color="primary" :max="maxPages"
+        :max-pages="8" size="md" gutter="10px" direction-links icon-first="keyboard_double_arrow_left"
+        icon-last="keyboard_double_arrow_right" icon-prev="chevron_left" icon-next="chevron_right"
+        @update:model-value="sendEmitPagination" />
     </div>
   </section>
 </template>
@@ -167,7 +119,7 @@ const emits = defineEmits<{
 }>();
 
 const props = defineProps<{
-  dataClients: ClientData;
+  dataClients: ClientData | any;
   paginationClients: any;
 }>();
 

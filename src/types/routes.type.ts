@@ -6,7 +6,6 @@ import {
 } from "../schemas/routes.schema";
 import { z } from "zod";
 
-
 interface User {
   id: number;
   name: string;
@@ -15,17 +14,17 @@ interface User {
 export interface Route {
   id: number;
   name: string;
+  sector?: string;
   dni: string;
   country_id: number;
   city_id: number;
-  profilePhoto: any
+  profilePhoto: any;
   user_routes: UserRoute[];
 }
 
 interface UserRoute {
   user: User;
 }
-
 
 export interface dataRoutes {
   current_page: number;
@@ -46,7 +45,6 @@ export interface dataRoutes {
   to?: number | null;
   total?: number;
 }
-
 
 export type createRoutePayload = {
   name: string;

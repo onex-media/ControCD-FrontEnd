@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: process.env.BASE_URL || "http://127.0.0.1:8000/api/",
+  baseURL: process.env.BASE_URL || "https://api.controlcd.com/public/api/",
   withCredentials: true,
   headers: {
     "X-Request-With": "XMLHttpRequest",

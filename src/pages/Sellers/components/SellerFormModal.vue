@@ -1,9 +1,5 @@
 <template>
-  <q-dialog
-    :model-value="modelValue"
-    persistent
-    @update:model-value="updateShow"
-  >
+  <q-dialog :model-value="modelValue" persistent @update:model-value="updateShow">
     <q-card class="q-pa-md seller-card">
       <q-form @submit.prevent="saveVendor" ref="form">
         <q-card-section class="flex justify-between items-center">
@@ -16,7 +12,7 @@
         <q-card-section class="q-pt-none">
           <div class="row q-col-gutter-sm q-mb-md">
             <div class="col-12 col-md-4 flex justify-center items-center">
-              <div class="col-12 flex justify-center">
+                <div class="col-12 flex justify-center">
                 <div class="avatar-container relative-position">
                   <q-avatar size="100px">
                     <img :src="profilePhotoSrc || '/default.png'" />
@@ -48,14 +44,8 @@
                   </div>
                 </div>
               </div>
-              <input
-                type="file"
-                ref="profilePhotoInput"
-                accept="image/*"
-                style="display: none"
-                class="q-mx-xs"
-                @change="handleProfilePhotoChange"
-              />
+              <input type="file" ref="profilePhotoInput" accept="image/*" style="display: none" class="q-mx-xs"
+                @change="handleProfilePhotoChange" />
             </div>
 
             <div class="col-12 col-md-8">
@@ -64,14 +54,8 @@
                   Nombre
                   <span class="text-red-500">*</span>
                 </label>
-                <q-input
-                  v-model="vendorForm.name"
-                  outlined
-                  dense
-                  label="Nombre Completo *"
-                  maxlength="50"
-                  :rules="[(val) => !!val || 'Campo requerido']"
-                >
+                <q-input v-model="vendorForm.name" outlined dense label="Nombre Completo *" maxlength="50"
+                  :rules="[(val) => !!val || 'Campo requerido']">
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
@@ -82,18 +66,11 @@
                   Documento
                   <span class="text-red-500">*</span>
                 </label>
-                <q-input
-                  v-model="vendorForm.dni"
-                  outlined
-                  dense
-                  label="Documento *"
-                  :disable="isEditing"
-                  mask="###########"
-                  :rules="[
+                <q-input v-model="vendorForm.dni" outlined dense label="Documento *" :disable="isEditing"
+                  mask="###########" :rules="[
                     (val) => !!val || 'Campo requerido',
                     (val) => val.length >= 7 || 'Debe tener al menos 7 dígitos',
-                  ]"
-                >
+                  ]">
                   <template v-slot:prepend>
                     <q-icon name="badge" />
                   </template>
@@ -108,16 +85,10 @@
                 Correo
                 <span class="text-red-500">*</span>
               </label>
-              <q-input
-                v-model="vendorForm.email"
-                outlined
-                dense
-                label="Correo Electrónico *"
-                :rules="[
-                  (val) => !!val || 'Campo requerido',
-                  (val) => /.+@.+\..+/.test(val) || 'Correo no válido',
-                ]"
-              >
+              <q-input v-model="vendorForm.email" outlined dense label="Correo Electrónico *" :rules="[
+                (val) => !!val || 'Campo requerido',
+                (val) => /.+@.+\..+/.test(val) || 'Correo no válido',
+              ]">
                 <template v-slot:prepend>
                   <q-icon name="alternate_email" />
                 </template>
@@ -129,20 +100,13 @@
                 Contraseña
                 <span class="text-red-500">*</span>
               </label>
-              <q-input
-                v-model="vendorForm.password"
-                outlined
-                dense
-                :disabled="isEditing"
-                label="Contraseña *"
-                type="password"
-                :rules="[
+              <q-input v-model="vendorForm.password" outlined dense :disabled="isEditing" label="Contraseña *"
+                type="password" :rules="[
                   (val) =>
                     (!vendorForm.passwordConfirmation && !isEditing) ||
                     val === vendorForm.passwordConfirmation ||
                     'Las contraseñas no coinciden',
-                ]"
-              >
+                ]">
                 <template v-slot:prepend>
                   <q-icon name="lock" />
                 </template>
@@ -154,19 +118,13 @@
                 Repetir Contraseña
                 <span class="text-red-500">*</span>
               </label>
-              <q-input
-                v-model="vendorForm.passwordConfirmation"
-                outlined
-                dense
-                label="Repetir Contraseña *"
-                type="password"
-                :rules="[
+              <q-input v-model="vendorForm.passwordConfirmation" outlined dense label="Repetir Contraseña *"
+                type="password" :rules="[
                   (val) =>
                     (!vendorForm.password && !isEditing) ||
                     val === vendorForm.password ||
                     'Las contraseñas no coinciden',
-                ]"
-              >
+                ]">
                 <template v-slot:prepend>
                   <q-icon name="lock_reset" />
                 </template>
@@ -180,22 +138,12 @@
                 País de la ruta
                 <span class="text-red-500">*</span>
               </label>
-              <q-select
-                v-model="vendorForm.country_id"
-                :options="countries"
-                outlined
-                dense
-                label="Seleccione país de la ruta"
-                emit-value
-                map-options
-                option-value="id"
-                option-label="name"
-                @update:model-value="handleCountryChange"
-                :rules="[
+              <q-select v-model="vendorForm.country_id" :options="countries" outlined dense
+                label="Seleccione país de la ruta" emit-value map-options option-value="id" option-label="name"
+                @update:model-value="handleCountryChange" :rules="[
                   (val) => !!val || 'Campo requerido',
                   (val) => val > 0 || 'Seleccione un país válido',
-                ]"
-              >
+                ]">
                 <template v-slot:prepend>
                   <q-icon name="public" />
                 </template>
@@ -207,23 +155,12 @@
                 Ciudad de la ruta
                 <span class="text-red-500">*</span>
               </label>
-              <q-select
-                v-model="vendorForm.city_id"
-                :options="cities"
-                outlined
-                dense
-                label="Seleccione ciudad de la ruta"
-                :disable="!vendorForm.country_id"
-                option-value="id"
-                option-label="name"
-                emit-value
-                map-options
-                :rules="[
+              <q-select v-model="vendorForm.city_id" :options="cities" outlined dense
+                label="Seleccione ciudad de la ruta" :disable="!vendorForm.country_id" option-value="id"
+                option-label="name" emit-value map-options :rules="[
                   (val) => !!val || 'Campo requerido',
                   (val) => val > 0 || 'Seleccione una ciudad válida',
-                ]"
-                clearable
-              >
+                ]" clearable>
                 <template v-slot:prepend>
                   <q-icon name="location_on" />
                 </template>
@@ -245,21 +182,9 @@
           <div class="row q-col-gutter-sm">
             <div class="col-12">
               <label> Asignar miembros </label>
-              <q-select
-                v-model="vendorForm.members"
-                :options="membersOptions"
-                outlined
-                dense
-                multiple
-                use-chips
-                emit-value
-                map-options
-                option-value="id"
-                option-label="name"
-                class="mt-1"
-                behavior="menu"
-                placeholder="Busca por nombre de usuario o rol del miembro"
-              >
+              <q-select v-model="vendorForm.members" :options="membersOptions" outlined dense multiple use-chips
+                emit-value map-options option-value="id" option-label="name" class="mt-1" behavior="menu"
+                placeholder="Busca por nombre de usuario o rol del miembro">
                 <template v-slot:prepend>
                   <q-icon name="verified_user" />
                 </template>
@@ -268,25 +193,11 @@
           </div>
           <div class="row q-col-gutter-sm q-mt-lg">
             <div class="col-12 col-md-2 offset-md-8">
-              <q-btn
-                unelevated
-                type="submit"
-                :label="isEditing ? 'Guardar' : 'Crear'"
-                color="primary"
-                no-caps
-                class="full-width"
-                :loading="loading"
-              />
+              <q-btn unelevated type="submit" :label="isEditing ? 'Guardar' : 'Crear'" color="primary" no-caps
+                class="full-width" :loading="loading" />
             </div>
             <div class="col-12 col-md-2">
-              <q-btn
-                flat
-                label="Cancelar"
-                color="grey-7"
-                class="full-width"
-                no-caps
-                @click="closeModal"
-              />
+              <q-btn flat label="Cancelar" color="grey-7" class="full-width" no-caps @click="closeModal" />
             </div>
           </div>
         </q-card-section>
@@ -355,7 +266,7 @@ const emit = defineEmits([
   "open",
 ]);
 
-const profilePhotoSrc = computed(() => {
+const profilePhotoSrc: any = computed(() => {
   if (profilePhotoPreview.value) {
     return profilePhotoPreview.value;
   } else if (
@@ -472,7 +383,6 @@ watch(
     opacity: 1;
   }
 }
-
 
 
 label {

@@ -1,35 +1,18 @@
 <template>
   <section>
-    <q-table
-      flat
-      separator="none"
-      table-header-class="control-table-header"
-      :rows="dataPayments"
-      :columns="columns"
-      row-key="id"
-      hide-pagination
-    >
+    <q-table flat separator="none" table-header-class="control-table-header" :rows="dataPayments" :columns="columns"
+      row-key="id" hide-pagination>
       <template #body-cell-acciones="props">
         <q-td :props="props">
-          <q-btn
-            flat
-            dense
-            color="primary"
-            label="Ver Historial"
-            @click="$emit('view-history', props.row)"
-          />
+          <q-btn flat dense color="primary" label="Ver Historial" @click="$emit('view-history', props.row)" />
         </q-td>
       </template>
       <template #bottom-row>
         <q-tr class="bg-grey-3">
           <q-td :colspan="columns.length" class="text-center">
             <div class="row justify-center items-center">
-              <span class="text-weight-bold text-grey-8 q-mr-sm"
-                >Total abonado:</span
-              >
-              <span class="text-green text-weight-bold"
-                >$ {{ formatNumber(totalAmount) }}</span
-              >
+              <span class="text-weight-bold text-grey-8 q-mr-sm">Total abonado:</span>
+              <span class="text-green text-weight-bold">$ {{ formatNumber(totalAmount) }}</span>
             </div>
           </q-td>
         </q-tr>
@@ -45,14 +28,14 @@ const props = defineProps<{
   dataPayments: any;
 }>();
 
-const columns = ref([
+const columns: any = ref([
   { name: "cedula", label: "Cedula", field: "cedula", align: "left" },
   { name: "nombre", label: "Nombre", field: "nombre" },
   { name: "observaciones", label: "Observaciones", field: "observaciones" },
   {
     name: "cuotas",
     label: "Cuotas",
-    field: (row) => `${row.cuotaActual}/${row.totalCuotas}`,
+    field: (row: any) => `${row.cuotaActual}/${row.totalCuotas}`,
   },
   { name: "tipo", label: "Tipo", field: "tipo" },
   { name: "formaPago", label: "Forma de Pago", field: "formaPago" },
