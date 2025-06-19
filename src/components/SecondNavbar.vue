@@ -6,10 +6,10 @@
           <q-btn-dropdown flat square no-caps label="Generales" dropdown-icon="keyboard_arrow_down"
             class="h-full bg-blue-600 text-white">
             <q-list>
-              <q-item clickable v-close-popup to="/dashboard/sellers">
+              <q-item  v-if="role === 1 || role === 2" clickable v-close-popup to="/dashboard/sellers">
                 <q-item-section>Gestion de Vendedores</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup to="/dashboard/members">
+              <q-item  v-if="role === 1 || role === 2" clickable v-close-popup to="/dashboard/members">
                 <q-item-section>Gestion de Usuarios</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/dashboard/clients">
@@ -103,7 +103,10 @@
   </nav>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const user = JSON.parse(localStorage.getItem("user") as string) || null;
+const role = user?.role_id;
+</script>
 
 <style lang="scss" scoped>
 .border-nav {

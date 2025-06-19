@@ -12,16 +12,35 @@
         <q-card-section class="q-pt-none">
           <div class="row q-col-gutter-sm q-mb-md">
             <div class="col-12 col-md-4 flex justify-center items-center">
-              <div class="col-12 flex justify-center">
+                <div class="col-12 flex justify-center">
                 <div class="avatar-container relative-position">
                   <q-avatar size="100px">
                     <img :src="profilePhotoSrc || '/default.png'" />
                   </q-avatar>
-                  <div class="avatar-overlay flex justify-center items-center">
-                    <q-btn round dense unelevated padding="5px" icon="photo_camera" color="primary" class="q-mx-xs"
-                      @click.stop="openFileBrowser('profilePhotoInput')" />
-                    <q-btn round dense padding="5px" v-if="profilePhotoSrc" unelevated icon="close" color="red"
-                      class="q-mx-xs" @click.stop="clearProfilePhoto" />
+                  <div class="avatar-overlay flex justify-end items-end">
+                    <div class="button-group q-pa-xs">
+                      <q-btn
+                        round
+                        dense
+                        unelevated
+                        padding="5px"
+                        icon="photo_camera"
+                        color="primary"
+                        class="q-mx-xs"
+                        @click.stop="openFileBrowser('profilePhotoInput')"
+                      />
+                      <q-btn
+                        round
+                        dense
+                        padding="5px"
+                        v-if="profilePhotoSrc"
+                        unelevated
+                        icon="close"
+                        color="red"
+                        class="q-mx-xs"
+                        @click.stop="clearProfilePhoto"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -239,7 +258,6 @@ const props = defineProps({
   loading: Boolean,
 });
 
-
 const emit = defineEmits([
   "update:modelValue",
   "save-vendor",
@@ -323,7 +341,7 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.avatar-container {
+/* .avatar-container {
   position: relative;
   display: inline-block;
   cursor: pointer;
@@ -332,39 +350,40 @@ watch(
   .avatar-overlay {
     opacity: 1;
   }
-}
+} */
 
-.avatar-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
   border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
-.q-btn {
-  transition: transform 0.2s ease;
+  .avatar-overlay {
+    position: absolute;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: opacity 0.3s ease;
+    display: flex;
 
-  &:hover {
-    transform: scale(1.1);
+    .button-group {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      display: flex;
+    }
+  }
+
+  &:hover .avatar-overlay {
+    opacity: 1;
   }
 }
 
-.q-avatar {
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-}
 
 label {
   color: #424242;

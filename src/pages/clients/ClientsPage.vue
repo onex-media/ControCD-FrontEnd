@@ -9,63 +9,52 @@
       @save-client="saveClientHandler"
       @close-modal="closeModal"
     />
-    <GuarantorFormModal
-      v-if="showGuarantorModal"
-      v-model:modelValue="showGuarantorModal"
-      :isEditing="isEditingGuarantor"
-      :guarantorFormData="guarantorFormData"
-      @save-guarantor="saveGuarantorHandler"
-      @close-modal="closeGuarantorModal"
-    />
-    <div class="flex justify-end items-center mb-6">
-      <div class="flex items-center gap-4">
-        <div class="relative">
-          <q-input
-            outlined
-            dense
-            v-model="search"
-            placeholder="Buscar"
-            bg-color="white"
-          >
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
-        <q-btn
-          unelevated
-          color="primary"
-          label="Nuevo cliente"
-          no-caps
-          @click="showCreateModal = true"
-        >
-          <img
-            src="/icons/FolderSimpleStar.svg"
-            class="ml-4 svg-white"
-            alt=""
-          />
-        </q-btn>
-        <q-btn
-          unelevated
-          color="primary"
-          label="Nuevo fiador"
-          no-caps
-          @click="showGuarantorModal = true"
-        >
-          <img
-            src="/icons/FolderSimpleStar.svg"
-            class="ml-4 svg-white"
-            alt=""
-          />
-        </q-btn>
-      </div>
-    </div>
 
-    <div class="q-my-lg">
+    <div>
+      <div
+        :class="$q.screen.lt.md && 'q-px-md'"
+        class="flex justify-between items-center q-mb-md"
+      >
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl font-semibold">Clientes</h1>
+        </div>
+        <div class="flex gap-4 q-mt-md q-mb-sm">
+          <div :class="$q.screen.lt.md && 'w-full'">
+            <q-input
+              outlined
+              dense
+              v-model="search"
+              placeholder="Buscar"
+              bg-color="white"
+              debounce="500"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+
+          <q-btn
+            unelevated
+            v-if="!$q.screen.lt.md && role === 5"
+            color="primary"
+            label="Nuevo cliente"
+            no-caps
+            @click="showCreateModal = true"
+          >
+            <img
+              src="/icons/FolderSimpleStar.svg"
+              class="ml-4 svg-white"
+              alt=""
+            />
+          </q-btn>
+        </div>
+      </div>
+
       <TabletClients
         v-if="clients.data"
         :dataClients="clients"
-        :paginationClients="paginationClients"
+        :paginationcustom-client-table="paginationClients"
         @edit="editClient"
       />
     </div>
@@ -77,6 +66,31 @@
       :description="`¿Está seguro de que desea eliminar al cliente ${selectedClient?.name}? Esta acción es irreversible y eliminará permanentemente toda la información asociada a este cliente.`"
       @confirm="deleteClient"
     />
+
+    <q-page-sticky
+      v-if="$q.screen.lt.md && role === 5"
+      position="bottom-right"
+      :offset="[18, 18]"
+    >
+      <!--       <q-btn
+          unelevated
+          icon="add"
+          color="primary"
+          @click="showCreateModal = true"
+          label="Nuevo cliente"
+        /> -->
+
+      <q-btn
+        unelevated
+        v-if="role === 5"
+        color="primary"
+        label="Nuevo cliente"
+        no-caps
+        @click="showCreateModal = true"
+      >
+        <img src="/icons/FolderSimpleStar.svg" class="ml-4 svg-white" alt="" />
+      </q-btn>
+    </q-page-sticky>
   </section>
 </template>
 
@@ -86,8 +100,6 @@ import ClientsFormModal from "./components/ClientsFormModal.vue";
 import { useClients } from "src/composables/useClients";
 import DialogConfirmation from "src/components/DialogConfirmation.vue";
 import TabletClients from "./components/TabletClients.vue";
-import GuarantorFormModal from "./components/GuarantorFormModal.vue";
-import { useGuarantors } from "src/composables/useGuarantors";
 
 const {
   showCreateModal,
@@ -106,15 +118,6 @@ const {
   fetchClients,
 } = useClients();
 
-const {
-  showGuarantorModal,
-  isEditingGuarantor,
-  guarantorFormData,
-  closeGuarantorModalWithoutValidation,
-  saveGuarantor,
-  fetchGuarantorsSelect,
-} = useGuarantors();
-
 const search = ref("");
 
 const formatNumber = (value) => {
@@ -123,6 +126,9 @@ const formatNumber = (value) => {
     maximumFractionDigits: 2,
   }).format(value);
 };
+
+const user = JSON.parse(localStorage.getItem("user"));
+const role = user?.role_id;
 
 const saveClientHandler = async () => {
   await saveClient();
@@ -142,21 +148,12 @@ const closeModal = () => {
   closeModalWithoutValidation();
 };
 
-const saveGuarantorHandler = async () => {
-  await saveGuarantor();
-};
-
-const closeGuarantorModal = () => {
-  closeGuarantorModalWithoutValidation();
-};
-
 onMounted(async () => {
   await fetchClients();
-  await fetchGuarantorsSelect();
 });
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .pagination-custom {
   .q-btn {
     padding: 8px 12px;
@@ -189,4 +186,4 @@ onMounted(async () => {
 :deep(.q-dialog__inner--minimized > div) {
   max-width: 600px;
 }
-</style>
+</style> -->

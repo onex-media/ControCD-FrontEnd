@@ -1,5 +1,5 @@
 import { handleMessages } from "src/utils/notify";
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, Ref, ref, watch } from "vue";
 import { createClientReq, getClientReq } from "src/services/client.services";
 import {
   deleteData,
@@ -8,6 +8,9 @@ import {
   putData,
 } from "../services/api.services";
 import axios from "@/boot/axios";
+import { CreateCreditPayload } from "@/types/credits.types";
+import { createCreditReq, updateCreditReq } from "src/services/credit.service";
+import { Notify } from "quasar";
 
 interface CreditForm {
   client_id: string | null;
@@ -35,6 +38,20 @@ const pagination = reactive<Pagination>({
 });
 
 export function useCredits() {
+  const creditFormData: Ref<CreateCreditPayload> = ref({
+    sellerId: null,
+    creditValue: null,
+    interestRate: null,
+    installmentCount: null,
+    paymentFrequency: null,
+    excludedDays: [],
+    microInsurancePercentage: null,
+    microInsuranceAmount: null,
+    firstInstallmentDate: null,
+    clientId: null,
+    galleryPhotos: [] as File[],
+  });
+
   const creditForm = ref<CreditForm>({
     client_id: null,
     guarantor_id: null,
@@ -219,6 +236,132 @@ export function useCredits() {
     }
   };
 
+  const createCreditFormData = (
+    clientId: number,
+    sellerId: number,
+    guarantorId: number,
+  ) => {
+    const creditData = new FormData();
+    if (sellerId) {
+      creditData.append("seller_id", sellerId.toString());
+    }
+
+    if (guarantorId) {
+      creditData.append("guarantor_id", guarantorId.toString());
+    }
+
+    if (clientId) {
+      creditData.append("client_id", clientId.toString());
+    }
+
+    if (creditFormData.value.creditValue) {
+      creditData.append(
+        "credit_value",
+        creditFormData.value.creditValue.toString(),
+      );
+    }
+    if (creditFormData.value.interestRate) {
+      creditData.append(
+        "interest_rate",
+        creditFormData.value.interestRate.toString(),
+      );
+    }
+    if (creditFormData.value.installmentCount) {
+      creditData.append(
+        "installment_count",
+        creditFormData.value.installmentCount.toString(),
+      );
+    }
+    if (creditFormData.value.paymentFrequency) {
+      creditData.append(
+        "payment_frequency",
+        creditFormData.value.paymentFrequency,
+      );
+    }
+
+    if (creditFormData.value.excludedDays) {
+      creditFormData.value.excludedDays.forEach((day, index) => {
+        creditData.append(`excluded_days[${index}]`, day);
+      });
+    }
+    if (creditFormData.value.microInsurancePercentage) {
+      creditData.append(
+        "micro_insurance_percentage",
+        creditFormData.value.microInsurancePercentage.toString(),
+      );
+    }
+    if (creditFormData.value.microInsuranceAmount) {
+      creditData.append(
+        "micro_insurance_amount",
+        creditFormData.value.microInsuranceAmount.toString(),
+      );
+    }
+    if (creditFormData.value.firstInstallmentDate) {
+      creditData.append(
+        "first_installment_date",
+        creditFormData.value.firstInstallmentDate,
+      );
+    }
+
+    creditFormData.value.galleryPhotos.forEach((file, index) => {
+      if (file) {
+        creditData.append(
+          `images[${index + creditFormData.value.galleryPhotos.length}][file]`,
+          file,
+        );
+        creditData.append(
+          `images[${index + creditFormData.value.galleryPhotos.length}][type]`,
+          "gallery",
+        );
+      }
+    });
+
+    return creditData;
+  };
+
+  const saveC = async (
+    clientId: number,
+    sellerId: number,
+    guarantorId: number,
+  ) => {
+    try {
+      const creditData = createCreditFormData(clientId, sellerId, guarantorId);
+
+      console.log("creditData: ", creditData);
+
+      if (isEditing.value) {
+        await updateCreditReq(selectedCredit.value?.id, creditData);
+      } else {
+        const res = await createCreditReq(creditData);
+        if (res.code === "error")
+          return handleMessages({
+            message: res.error.message,
+            color: "red",
+            icon: "close",
+          });
+
+        handleMessages({
+          message: res.data.message,
+          color: "primary",
+          icon: "check",
+        });
+      }
+      await fetchCredits();
+      closeModal();
+      Notify.create({
+        type: "positive",
+        message: `Credito ${isEditing.value ? "actualizado" : "creado"} exitosamente`,
+      });
+      closeModal();
+    } catch (error) {
+      console.error("Error saving client:", error);
+      Notify.create({
+        type: "negative",
+        message: "Error al guardar el cliente",
+      });
+    }
+  };
+
   const handleErrorResponse = (error: any) => {
     let errorMessage = "Error al guardar el crédito";
     if (error?.response?.data?.errors) {
@@ -362,8 +505,6 @@ export function useCredits() {
     }));
   });
 
-
-
   const confirmDeleteCredit = (credit: any) => {
     selectedCredit.value = credit;
     showDeleteModal.value = true;
@@ -406,8 +547,9 @@ export function useCredits() {
       handleMessages({
         color: "green",
         icon: "close",
-        message: `Crédito ${credit.active ? "activado" : "desactivado"
-          } exitosamente`,
+        message: `Crédito ${
+          credit.active ? "activado" : "desactivado"
+        } exitosamente`,
       });
     } catch (error) {
       console.error("Error toggling credit:", error);
@@ -544,15 +686,14 @@ export function useCredits() {
   watch(
     () => credits.value,
     (newVal: any) => {
-      console.log('newVal: ', newVal);
+
       pagination.page = newVal.current_page;
       pagination.countPage = newVal.last_page;
       pagination.rowsNumber = newVal.total;
       pagination.rowsPerPage = newVal.per_page;
     },
-    { deep: true }
+    { deep: true },
   );
-
 
   onMounted(() => {
     fetchCredits();
@@ -575,7 +716,9 @@ export function useCredits() {
     isEditing,
     search,
     pagination,
+    creditFormData,
     /* filterClients, */
+    saveC,
     editCredit,
     confirmDeleteCredit,
     deleteCredit,

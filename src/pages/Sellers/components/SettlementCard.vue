@@ -1,54 +1,91 @@
 <template>
   <div class="row q-col-gutter-md">
-    <div class="col-12 col-md-4">
-      <SectionItem title="Caja Inicial" value="0.00" custom-class="grey-card">
+    <div class="col-12 col-md-6">
+      <SectionItem
+        title="Caja Inicial"
+        value="0.00"
+        icon="point_of_sale"
+        custom-class="grey-card"
+      >
       </SectionItem>
     </div>
 
-    <div class="col-12 col-md-4">
-      <SectionItem title="Caja final" value="2200.00" custom-class="green-card" icon="inventory" color="secondary" />
+    <div class="col-12 col-md-6">
+      <SectionItem
+        title="Caja final"
+        value="2200.00"
+        custom-class="green-card"
+        icon="inventory"
+        color="secondary"
+      />
     </div>
 
-    <div class="col-12 col-md-4">
-      <SectionItem title="Caja Microseguros" value="0.00" custom-class="blue-card" icon="point_of_sale"
-        color="primary" />
+
+
+    <div class="col-12 col-md-3">
+      <SectionItem
+        title="Pagos"
+        value="0.00"
+        custom-class="green-card"
+        color="secondary"
+        height="100px"
+        icon="payments"
+        :clickable="true"
+        @click="handleCardClick('pagos', $event)"
+      />
+    </div>
+    <div class="col-12 col-md-3">
+      <SectionItem
+        title="Ingreso"
+        value="0.00"
+        custom-class="green-card"
+        color="secondary"
+        height="100px"
+        icon="payments"
+        :clickable="true"
+        @click="handleCardClick('ingreso', $event)"
+      />
     </div>
 
-    <div class="col-12 col-md-2">
-      <SectionItem title="Pagos" value="0.00" custom-class="green-card" color="secondary" height="100px" icon="payments"
-        :clickable="true" @click="handleCardClick('pagos', $event)" />
+    <div class="col-12 col-md-3">
+      <SectionItem
+        title="Ventas"
+        value="100.00"
+        custom-class="card-white"
+        height="100px"
+        icon="point_of_sale"
+        :clickable="true"
+        @click="handleCardClick('ventas', $event)"
+      />
     </div>
-    <div class="col-12 col-md-2">
-      <SectionItem title="Ingreso" value="0.00" custom-class="green-card" color="secondary" height="100px"
-        icon="payments" :clickable="true" @click="handleCardClick('ingreso', $event)" />
-    </div>
-
-    <div class="col-12 col-md-2">
-      <SectionItem title="Ventas" value="100.00" custom-class="card-white" height="100px" icon="point_of_sale"
-        :clickable="true" @click="handleCardClick('ventas', $event)" />
-    </div>
-    <div class="col-12 col-md-2">
-      <SectionItem title="Egresos" value="0.00" custom-class="card-white" height="100px" icon="trending_down"
-        :clickable="true" @click="handleCardClick('egresos', $event)" />
-    </div>
-    <div class="col-12 col-md-2">
-      <SectionItem title="Retiros" value="0.00" custom-class="card-white" height="100px" icon="logout" :clickable="true"
-        @click="handleCardClick('retiros', $event)" />
-    </div>
-
-    <div class="col-12 col-md-2">
-      <SectionItem title="Ingreso" value="0.00" custom-class="green-card" color="secondary" height="100px"
-        icon="payments" :clickable="true" @click="handleCardClick('ingreso', $event)" />
+    <div class="col-12 col-md-3">
+      <SectionItem
+        title="Egresos"
+        value="0.00"
+        custom-class="card-white"
+        height="100px"
+        icon="trending_down"
+        :clickable="true"
+        @click="handleCardClick('egresos', $event)"
+      />
     </div>
 
     <div class="col-12 col-md-6">
       <SectionItem custom-class="card-white" height="110px">
         <template #additional-content>
           <div class="row q-col-gutter-xs">
-            <div v-for="(stat, index) in clientStatsFirst" :key="index"
-              class="col-12 col-sm-12 col-md-12 flex justify-between items-center">
+            <div
+              v-for="(stat, index) in clientStatsFirst"
+              :key="index"
+              class="col-12 col-sm-12 col-md-12 flex justify-between items-center"
+            >
               <div class="text-caption text-blue-grey-7 flex items-center">
-                <q-icon :name="stat.icon" size="20px" color="black" class="mr-2" />
+                <q-icon
+                  :name="stat.icon"
+                  size="20px"
+                  color="black"
+                  class="mr-2"
+                />
                 {{ stat.label }}:
               </div>
               <div class="text-subtitle2">{{ stat.value }}</div>
@@ -61,10 +98,18 @@
       <SectionItem custom-class="card-white" height="110px">
         <template #additional-content>
           <div class="row q-col-gutter-xs">
-            <div v-for="(stat, index) in clientStatsSecond" :key="index"
-              class="col-12 col-sm-12 col-md-12 flex justify-between items-center">
+            <div
+              v-for="(stat, index) in clientStatsSecond"
+              :key="index"
+              class="col-12 col-sm-12 col-md-12 flex justify-between items-center"
+            >
               <div class="text-caption text-blue-grey-7 flex items-center">
-                <q-icon :name="stat.icon" size="20px" color="black" class="mr-2" />
+                <q-icon
+                  :name="stat.icon"
+                  size="20px"
+                  color="black"
+                  class="mr-2"
+                />
                 {{ stat.label }}:
               </div>
               <div class="text-subtitle2">{{ stat.value }}</div>
@@ -73,6 +118,40 @@
         </template>
       </SectionItem>
     </div>
+    <div class="col-12 col-md-4">
+      <SectionItem
+        title="Caja Microseguros"
+        value="0.00"
+        custom-class="blue-card"
+        icon="point_of_sale"
+        color="primary"
+      />
+    </div>
+    <div class="col-12 col-md-4">
+      <SectionItem
+        title="Retiros de caja microseguros"
+        value="0.00"
+        custom-class="card-white"
+        height="100px"
+        icon="logout"
+        :clickable="true"
+        @click="handleCardClick('retiros', $event)"
+      />
+    </div>
+
+    <div class="col-12 col-md-4">
+      <SectionItem
+        title="Ingreso de caja microseguros"
+        value="0.00"
+        custom-class="green-card"
+        color="secondary"
+        height="100px"
+        icon="payments"
+        :clickable="true"
+        @click="handleCardClick('ingreso', $event)"
+      />
+    </div>
+
     <div class="col-12">
       <div class="text-h6 text-blue-grey-8">Observaciones</div>
       <q-card class="q-pa-sm shadow-none card-item">
@@ -87,39 +166,103 @@
       <div class="q-mb-lg full-width container-app q-pa-md">
         <div class="row no-wrap q-col-gutter-xs">
           <div v-for="option in periodOptions" :key="option.value" class="col">
-            <q-btn flat no-caps :label="option.label" color="dark" class="text-weight-medium full-width"
-              @click="selectedTable = option.value">
-              <div class="underline-indicator" :class="{ active: selectedTable === option.value }" />
+            <q-btn
+              flat
+              no-caps
+              :label="option.label"
+              color="dark"
+              class="text-weight-medium full-width"
+              @click="selectedTable = option.value"
+            >
+              <div
+                class="underline-indicator"
+                :class="{ active: selectedTable === option.value }"
+              />
             </q-btn>
           </div>
         </div>
       </div>
       <q-card flat>
         <q-card-section>
-          <q-table v-if="selectedTable === 'pagos'" flat separator="none" table-header-class="control-table-header"
-            :rows="pagos" :columns="columnsPagos" row-key="documento" rows-per-page-label="Filas por página"
-            :pagination-label="(first, end, total) => `${first}-${end} de ${total}`
-              " no-data-label="No hay datos disponibles" loading-label="Cargando..." />
+          <q-table
+            v-if="selectedTable === 'pagos'"
+            flat
+            separator="none"
+            table-header-class="control-table-header"
+            :rows="pagos"
+            :columns="columnsPagos"
+            row-key="documento"
+            rows-per-page-label="Filas por página"
+            :pagination-label="
+              (first, end, total) => `${first}-${end} de ${total}`
+            "
+            no-data-label="No hay datos disponibles"
+            loading-label="Cargando..."
+          />
 
-          <q-table v-if="selectedTable === 'ventas'" flat separator="none" table-header-class="control-table-header"
-            :rows="ventas" :columns="columnsVentas" row-key="documento" rows-per-page-label="Filas por página"
-            :pagination-label="(first, end, total) => `${first}-${end} de ${total}`
-              " no-data-label="No hay datos disponibles" loading-label="Cargando..." />
+          <q-table
+            v-if="selectedTable === 'ventas'"
+            flat
+            separator="none"
+            table-header-class="control-table-header"
+            :rows="ventas"
+            :columns="columnsVentas"
+            row-key="documento"
+            rows-per-page-label="Filas por página"
+            :pagination-label="
+              (first, end, total) => `${first}-${end} de ${total}`
+            "
+            no-data-label="No hay datos disponibles"
+            loading-label="Cargando..."
+          />
 
-          <q-table v-if="selectedTable === 'ingreso'" flat separator="none" table-header-class="control-table-header"
-            :rows="ingresosData" :columns="columns" row-key="id" rows-per-page-label="Filas por página"
-            :pagination-label="(first, end, total) => `${first}-${end} de ${total}`
-              " no-data-label="No hay datos disponibles" loading-label="Cargando..." />
+          <q-table
+            v-if="selectedTable === 'ingreso'"
+            flat
+            separator="none"
+            table-header-class="control-table-header"
+            :rows="ingresosData"
+            :columns="columns"
+            row-key="id"
+            rows-per-page-label="Filas por página"
+            :pagination-label="
+              (first, end, total) => `${first}-${end} de ${total}`
+            "
+            no-data-label="No hay datos disponibles"
+            loading-label="Cargando..."
+          />
 
-          <q-table v-if="selectedTable === 'egresos'" flat separator="none" table-header-class="control-table-header"
-            :rows="egresosData" :columns="columns" row-key="id" rows-per-page-label="Filas por página"
-            :pagination-label="(first, end, total) => `${first}-${end} de ${total}`
-              " no-data-label="No hay datos disponibles" loading-label="Cargando..." />
+          <q-table
+            v-if="selectedTable === 'egresos'"
+            flat
+            separator="none"
+            table-header-class="control-table-header"
+            :rows="egresosData"
+            :columns="columns"
+            row-key="id"
+            rows-per-page-label="Filas por página"
+            :pagination-label="
+              (first, end, total) => `${first}-${end} de ${total}`
+            "
+            no-data-label="No hay datos disponibles"
+            loading-label="Cargando..."
+          />
 
-          <q-table v-if="selectedTable === 'retiros'" flat separator="none" table-header-class="control-table-header"
-            :rows="retiros" :columns="columnsGenerico" row-key="id" rows-per-page-label="Filas por página"
-            :pagination-label="(first, end, total) => `${first}-${end} de ${total}`
-              " no-data-label="No hay datos disponibles" loading-label="Cargando..." />
+          <q-table
+            v-if="selectedTable === 'retiros'"
+            flat
+            separator="none"
+            table-header-class="control-table-header"
+            :rows="retiros"
+            :columns="columnsGenerico"
+            row-key="id"
+            rows-per-page-label="Filas por página"
+            :pagination-label="
+              (first, end, total) => `${first}-${end} de ${total}`
+            "
+            no-data-label="No hay datos disponibles"
+            loading-label="Cargando..."
+          />
         </q-card-section>
       </q-card>
     </div>
@@ -149,7 +292,7 @@ const observacionData = ref(
   `lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptate.`,
 );
 
-const columnsPagos: any = [
+const columnsPagos = [
   { name: "documento", label: "Documento", field: "documento" },
   { name: "cliente", label: "Nombre del cliente", field: "cliente" },
   { name: "observaciones", label: "Observaciones", field: "observaciones" },
@@ -168,7 +311,7 @@ const columnsPagos: any = [
   { name: "acciones", label: "Acciones", field: "acciones" },
 ];
 
-const columnsVentas: any = [
+const columnsVentas = [
   { name: "documento", label: "Documento", field: "documento" },
   { name: "cliente", label: "Nombre del cliente", field: "cliente" },
   {
@@ -199,35 +342,35 @@ const columnsVentas: any = [
   { name: "acciones", label: "Acciones", field: "acciones" },
 ];
 
-const columns: any = computed(() => {
+const columns = computed(() => {
   return selectedTable.value === "ingreso"
     ? [
-      { name: "date", label: "Fecha / Hora", field: "date", align: "left" },
-      { name: "route", label: "Ruta", field: "route", align: "left" },
+        { name: "date", label: "Fecha / Hora", field: "date", align: "left" },
+        { name: "route", label: "Ruta", field: "route", align: "left" },
 
-      {
-        name: "description",
-        label: "Descripción",
-        field: "description",
-        align: "left",
-      },
-      { name: "amount", label: "Valor", field: "amount", align: "center" },
-    ]
+        {
+          name: "description",
+          label: "Descripción",
+          field: "description",
+          align: "left",
+        },
+        { name: "amount", label: "Valor", field: "amount", align: "center" },
+      ]
     : [
-      { name: "name", label: "Nombre", field: "name", align: "left" },
-      { name: "category", label: "Categoria", field: "category" },
-      { name: "routes", label: "Rutas", field: "routes" },
-      { name: "amount", label: "Gastos", field: "amount", align: "right" },
-    ];
+        { name: "name", label: "Nombre", field: "name", align: "left" },
+        { name: "category", label: "Categoria", field: "category" },
+        { name: "routes", label: "Rutas", field: "routes" },
+        { name: "amount", label: "Gastos", field: "amount", align: "right" },
+      ];
 });
 
-const columnsGenerico: any = [
+const columnsGenerico = [
   { name: "concepto", label: "Concepto", field: "concepto", align: "left" },
   { name: "monto", label: "Monto", field: "monto" },
   { name: "fecha", label: "Fecha", field: "fecha" },
 ];
 
-const pagos: any = [
+const pagos = [
   {
     documento: "DOC-001",
     cliente: "Juan Pérez",
@@ -403,7 +546,6 @@ const clientStatsSecond = reactive([
   transition: transform 0.2s;
   border: 1px solid #e0e0e0;
 }
-
 .container-app {
   max-width: 100%;
 }
@@ -430,7 +572,6 @@ const clientStatsSecond = reactive([
   background: #2b69e8;
   height: 4px;
 }
-
 .grey-card {
   background: #f5f5f5;
 }
