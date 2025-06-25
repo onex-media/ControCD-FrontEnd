@@ -1,43 +1,20 @@
 <template>
   <div class="mobile-nav-container">
     <div class="mobile-nav">
-      <q-btn
-        flat
-        square
-        no-caps
-        class="nav-item"
-        :to="{ name: 'dashboard' }"
-        exact
-      >
-        <q-icon
-          name="home"
-          size="24px"
-          :color="$route.name === 'dashboard' ? 'primary' : 'grey-7'"
-        />
+      <q-btn flat square no-caps class="nav-item" :to="{ name: 'dashboard' }" exact>
+        <q-icon name="home" size="24px" :color="route.name === 'dashboard' ? 'primary' : 'grey-7'" />
       </q-btn>
 
       <q-btn flat square no-caps class="nav-item" to="/dashboard/clients">
-        <q-icon
-          name="people"
-          size="24px"
-          :color="isActive('/dashboard/clients') ? 'primary' : 'grey-7'"
-        />
+        <q-icon name="people" size="24px" :color="isActive('/dashboard/clients') ? 'primary' : 'grey-7'" />
       </q-btn>
 
       <q-btn flat square no-caps class="nav-item" to="/dashboard/creditos">
-        <q-icon
-          name="credit_card"
-          size="24px"
-          :color="isActive('/dashboard/creditos') ? 'primary' : 'grey-7'"
-        />
+        <q-icon name="credit_card" size="24px" :color="isActive('/dashboard/creditos') ? 'primary' : 'grey-7'" />
       </q-btn>
 
       <q-btn flat square no-caps class="nav-item" to="/liquidaciones">
-        <q-icon
-          name="payments"
-          size="24px"
-          :color="isActive('/liquidaciones') ? 'primary' : 'grey-7'"
-        />
+        <q-icon name="payments" size="24px" :color="isActive('/liquidaciones') ? 'primary' : 'grey-7'" />
       </q-btn>
     </div>
   </div>

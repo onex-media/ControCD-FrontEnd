@@ -45,7 +45,7 @@ export function useClients() {
     rowsPerPage: 50,
   });
 
-  const clientFormData: Ref<CreateClientPayload> = ref({
+  const clientFormData: Ref<CreateClientPayload> = ref<any>({
     name: "",
     dni: "",
     address: "",
@@ -70,7 +70,7 @@ export function useClients() {
     guarantorId: null,
   });
 
-  const creditFormData: Ref<CreateCreditPayload> = ref({
+  const creditFormData: Ref<CreateCreditPayload> = ref<any>({
     creditValue: null,
     interestRate: null,
     installmentCount: null,
@@ -360,7 +360,7 @@ export function useClients() {
         await updateClientReq(selectedClient.value?.id, clientData);
       } else {
         const res = await createClientReq(clientData);
-      /*   if (res.code === "error")
+        /*   if (res.code === "error")
           return handleMessages({
             message: res.error.message,
             color: "red",
@@ -374,7 +374,7 @@ export function useClients() {
         }); */
       }
       await fetchClients();
-   /*    Notify.create({
+      /*    Notify.create({
         type: "positive",
         message: `Cliente ${isEditing.value ? "actualizado" : "creado"} exitosamente`,
       }); */
@@ -491,7 +491,7 @@ export function useClients() {
     return creditData;
   };
 
-    const saveCredit = async () => {
+  const saveCredit = async () => {
     try {
       const creditData = createCreditFormData();
 

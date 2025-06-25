@@ -1,9 +1,5 @@
 <template>
-  <q-dialog
-    :model-value="modelValue"
-    persistent
-    @update:model-value="updateShow"
-  >
+  <q-dialog :model-value="modelValue" persistent @update:model-value="updateShow">
     <q-card class="credit-card">
       <q-card-section class="justify-between items-center">
         <div class="flex justify-between items-center">
@@ -16,16 +12,8 @@
 
       <q-card-section class="q-pt-none">
         <div style="overflow-x: auto">
-          <q-tabs
-            v-model="currentTab"
-            dense
-            class="text-grey"
-            active-color="primary"
-            indicator-color="primary"
-            align="justify"
-            no-caps
-            narrow-indicator
-          >
+          <q-tabs v-model="currentTab" dense class="text-grey" active-color="primary" indicator-color="primary"
+            align="justify" no-caps narrow-indicator>
             <q-tab name="credit" label="Crédito" />
             <q-tab name="images" label="Imágenes" />
           </q-tabs>
@@ -37,20 +25,11 @@
               <div class="col-12">
                 <div class="row q-col-gutter-sm">
                   <div class="col-12 col-md-6">
-                    <label
-                      >Valor del crédito
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      v-model="creditFormData.creditValue"
-                      outlined
-                      dense
-                      type="number"
-                      class="mt-1"
-                      placeholder="Ingrese el valor"
-                      :rules="[(val) => !!val || 'Valor requerido']"
-                      @update:model-value="calculateInstallmentValue"
-                    >
+                    <label>Valor del crédito
+                      <span class="text-red-500">*</span></label>
+                    <q-input v-model="creditFormData.creditValue" outlined dense type="number" class="mt-1"
+                      placeholder="Ingrese el valor" :rules="[(val) => !!val || 'Valor requerido']"
+                      @update:model-value="calculateInstallmentValue">
                       <template v-slot:prepend>
                         <q-icon name="attach_money" size="20px" />
                       </template>
@@ -58,20 +37,11 @@
                   </div>
 
                   <div class="col-12 col-md-6">
-                    <label
-                      >Tasa de interés (%)
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      v-model="creditFormData.interestRate"
-                      outlined
-                      dense
-                      type="number"
-                      class="mt-1"
-                      placeholder="Ingrese la tasa"
-                      :rules="[(val) => !!val || 'Tasa requerida']"
-                      @update:model-value="calculateInstallmentValue"
-                    >
+                    <label>Tasa de interés (%)
+                      <span class="text-red-500">*</span></label>
+                    <q-input v-model="creditFormData.interestRate" outlined dense type="number" class="mt-1"
+                      placeholder="Ingrese la tasa" :rules="[(val) => !!val || 'Tasa requerida']"
+                      @update:model-value="calculateInstallmentValue">
                       <template v-slot:prepend>
                         <q-icon name="percent" size="20px" />
                       </template>
@@ -79,19 +49,11 @@
                   </div>
 
                   <div class="col-12 col-md-6">
-                    <label
-                      >Cantidad de cuotas
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      v-model="creditFormData.installmentCount"
-                      outlined
-                      dense
-                      type="number"
-                      placeholder="Número de cuotas"
-                      :rules="[(val) => !!val || 'Cuotas requeridas']"
-                      @update:model-value="calculateInstallmentValue"
-                    >
+                    <label>Cantidad de cuotas
+                      <span class="text-red-500">*</span></label>
+                    <q-input v-model="creditFormData.installmentCount" outlined dense type="number"
+                      placeholder="Número de cuotas" :rules="[(val) => !!val || 'Cuotas requeridas']"
+                      @update:model-value="calculateInstallmentValue">
                       <template v-slot:prepend>
                         <q-icon name="list_alt" size="20px" />
                       </template>
@@ -99,19 +61,10 @@
                   </div>
 
                   <div class="col-12 col-md-6">
-                    <label
-                      >Valor de la cuota
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      :model-value="installmentValue"
-                      outlined
-                      dense
-                      type="number"
-                      disable
-                      placeholder="Valor de la cuota"
-                      :rules="[(val) => !!val || 'Valor requerido']"
-                    >
+                    <label>Valor de la cuota
+                      <span class="text-red-500">*</span></label>
+                    <q-input :model-value="installmentValue" outlined dense type="number" disable
+                      placeholder="Valor de la cuota" :rules="[(val) => !!val || 'Valor requerido']">
                       <template v-slot:prepend>
                         <q-icon name="list_alt" size="20px" />
                       </template>
@@ -119,62 +72,40 @@
                   </div>
 
                   <div class="col-12 col-md-6">
-                    <label
-                      >Frecuencia de pago
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-select
-                      v-model="creditFormData.paymentFrequency"
-                      :options="paymentFrequencyOptions"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Seleccione frecuencia"
-                      :rules="[(val) => !!val || 'Frecuencia requerida']"
-                    >
+                    <label>Frecuencia de pago
+                      <span class="text-red-500">*</span></label>
+                    <q-select v-model="creditFormData.paymentFrequency" :options="paymentFrequencyOptions" outlined
+                      dense class="mt-1" placeholder="Seleccione frecuencia"
+                      :rules="[(val) => !!val || 'Frecuencia requerida']">
                       <template v-slot:prepend>
                         <q-icon name="repeat" size="20px" />
                       </template>
                     </q-select>
                   </div>
 
-                  <div
-                    class="col-12 col-md-6"
-                    v-if="creditFormData.paymentFrequency === 'Diaria'"
-                  >
+                  <div class="col-12 col-md-6" v-if="creditFormData.paymentFrequency === 'Diaria'">
                     <label>
                       Excepto los días
                       <span class="text-red-500">*</span>
                     </label>
                     <div class="q-gutter-sm q-mt-sm">
-                      <q-chip
-                        v-for="day in weekDays"
-                        :key="day"
-                        clickable
-                        :color="
-                          creditFormData.excludedDays?.includes(day)
-                            ? 'primary'
-                            : 'grey-5'
-                        "
-                        text-color="white"
-                        @click="toggleExcludedDay(day)"
-                        class="q-pa-xs flex justify-center items-center"
-                        style="
+                      <q-chip v-for="day in weekDays" :key="day" clickable :color="creditFormData.excludedDays?.includes(day)
+                          ? 'primary'
+                          : 'grey-5'
+                        " text-color="white" @click="toggleExcludedDay(day)"
+                        class="q-pa-xs flex justify-center items-center" style="
                           min-width: 75px;
                           height: 30px;
                           padding: 0;
                           line-height: normal;
-                        "
-                      >
-                        <span
-                          style="
+                        ">
+                        <span style="
                             display: flex;
                             align-items: center;
                             justify-content: center;
                             width: 100%;
                             font-size: 12px;
-                          "
-                        >
+                          ">
                           {{ day }}
                         </span>
                       </q-chip>
@@ -182,26 +113,13 @@
                   </div>
 
                   <div class="col-12">
-                    <q-expansion-item
-                      v-model="microInsuranceExpanded"
-                      label="Microseguros"
-                      header-class=" custom-expansion-header q-mb-md"
-                      dense
-                      expand-icon-class="text-primary"
-                    >
+                    <q-expansion-item v-model="microInsuranceExpanded" label="Microseguros"
+                      header-class=" custom-expansion-header q-mb-md" dense expand-icon-class="text-primary">
                       <div class="row q-col-gutter-sm">
                         <div class="col-12 col-md-6">
                           <label>Porcentaje de microseguro</label>
-                          <q-input
-                            v-model="creditFormData.microInsurancePercentage"
-                            outlined
-                            dense
-                            type="number"
-                            class="mt-1"
-                            placeholder="0-100%"
-                            min="0"
-                            max="100"
-                          >
+                          <q-input v-model="creditFormData.microInsurancePercentage" outlined dense type="number"
+                            class="mt-1" placeholder="0-100%" min="0" max="100">
                             <template v-slot:prepend>
                               <q-icon name="percent" size="20px" />
                             </template>
@@ -209,16 +127,8 @@
                         </div>
                         <div class="col-12 col-md-6">
                           <label>Monto de microseguro</label>
-                          <q-input
-                            :model-value="microInsuranceAmountCalculated"
-                            outlined
-                            dense
-                            type="number"
-                            class="mt-1"
-                            placeholder="Monto"
-                            disable
-                            
-                          >
+                          <q-input :model-value="microInsuranceAmountCalculated" outlined dense type="number"
+                            class="mt-1" placeholder="Monto" disable>
                             <template v-slot:prepend>
                               <q-icon name="attach_money" />
                             </template>
@@ -229,10 +139,7 @@
                   </div>
 
                   <div class="col-12 col-md-6">
-                    <q-checkbox
-                      :model-value="advancedPayment"
-                      @update:model-value="toggleAdvancedPayment"
-                    />
+                    <q-checkbox :model-value="advancedPayment" @update:model-value="toggleAdvancedPayment" />
                     <label class=""> Pago adelantado </label>
                   </div>
 
@@ -265,63 +172,28 @@
               <div class="col-12">
                 <div class="row q-col-gutter-sm q-mb-md">
                   <!-- Inputs de archivo ocultos -->
-                  <input
-                    type="file"
-                    ref="galleryPhotoInput1"
-                    accept="image/*"
-                    style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 0)"
-                  />
-                  <input
-                    type="file"
-                    ref="galleryPhotoInput2"
-                    accept="image/*"
-                    style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 1)"
-                  />
-                  <input
-                    type="file"
-                    ref="galleryPhotoInput3"
-                    accept="image/*"
-                    style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 2)"
-                  />
+                  <input type="file" ref="galleryPhotoInput1" accept="image/*" style="display: none"
+                    @change="(event) => handleGalleryPhotoChange(event, 0)" />
+                  <input type="file" ref="galleryPhotoInput2" accept="image/*" style="display: none"
+                    @change="(event) => handleGalleryPhotoChange(event, 1)" />
+                  <input type="file" ref="galleryPhotoInput3" accept="image/*" style="display: none"
+                    @change="(event) => handleGalleryPhotoChange(event, 2)" />
 
                   <!-- Contenedor para las tres imágenes -->
                   <div class="col-12 flex justify-center q-gutter-sm">
-                    <div
-                      v-for="(item, index) in galleryItems"
-                      :key="index"
-                      class="image-container text-center"
-                    >
+                    <div v-for="(item, index) in galleryItems" :key="index" class="image-container text-center">
                       <div class="text-caption q-mb-xs">{{ item.label }}</div>
                       <div v-if="galleryPhotosPreview[index]">
-                        <q-img
-                          :src="galleryPhotosPreview[index]"
-                          style="
+                        <q-img :src="galleryPhotosPreview[index]" style="
                             width: 150px;
                             height: 150px;
                             border-radius: 8px;
-                          "
-                        />
-                        <q-btn
-                          class="btn-delete q-mt-md"
-                          size="md"
-                          color="red-5"
-                          dense
-                          round
-                          icon="close"
-                          @click="removeGalleryPhoto(index)"
-                        />
+                          " />
+                        <q-btn class="btn-delete q-mt-md" size="md" color="red-5" dense round icon="close"
+                          @click="removeGalleryPhoto(index)" />
                       </div>
-                      <q-btn
-                        v-else
-                        unelevated
-                        color="primary"
-                        class="custom-upload-btn"
-                        :disable="index >= 1 && !isCreditComplete"
-                        @click="openFileBrowser(item.ref)"
-                      >
+                      <q-btn v-else unelevated color="primary" class="custom-upload-btn"
+                        :disable="index >= 1 && !isCreditComplete" @click="openFileBrowser(item.ref)">
                         <q-icon name="photo_camera" />
                       </q-btn>
                     </div>
@@ -333,24 +205,10 @@
         </q-tab-panels>
         <div class="row q-col-gutter-sm">
           <div class="col-12 col-md-6">
-            <q-btn
-              flat
-              no-caps
-              :label="previousTabLabel()"
-              color="grey"
-              class="full-width"
-              @click="previousTab"
-            />
+            <q-btn flat no-caps :label="previousTabLabel()" color="grey" class="full-width" @click="previousTab" />
           </div>
           <div class="col-12 col-md-6">
-            <q-btn
-              unelevated
-              class="full-width"
-              no-caps
-              :label="nextTab()"
-              color="primary"
-              @click="saveCredit"
-            />
+            <q-btn unelevated class="full-width" no-caps :label="nextTab()" color="primary" @click="saveCredit" />
           </div>
         </div>
       </q-card-section>
@@ -540,7 +398,7 @@ const handleGalleryPhotoChange = (event: Event, index: number) => {
 
 const removeGalleryPhoto = (index: number) => {
   galleryPhotosPreview.value[index] = null;
-  props.creditFormData.galleryPhotos[index] = null;
+  props.creditFormData.galleryPhotos[index] = null as any;
 };
 
 onMounted(() => {
@@ -644,10 +502,8 @@ onMounted(() => {
     height: 33px !important;
   }
 
-  :deep(
-    .q-field--auto-height.q-field--dense .q-field__control,
-    .q-field--auto-height.q-field--dense .q-field__native
-  ) {
+  :deep(.q-field--auto-height.q-field--dense .q-field__control,
+    .q-field--auto-height.q-field--dense .q-field__native) {
     min-height: 33px !important;
   }
 }

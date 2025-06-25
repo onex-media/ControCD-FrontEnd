@@ -1,9 +1,5 @@
 <template>
-  <q-dialog
-    :model-value="modelValue"
-    persistent
-    @update:model-value="updateShow"
-  >
+  <q-dialog :model-value="modelValue" persistent @update:model-value="updateShow">
     <q-card class="credit-card">
       <q-card-section class="justify-between items-center">
         <div class="flex justify-between items-center">
@@ -23,16 +19,8 @@
 
       <q-card-section class="q-pt-none">
         <div style="overflow-x: auto">
-          <q-tabs
-            v-model="currentTab"
-            dense
-            class="text-grey"
-            active-color="primary"
-            indicator-color="primary"
-            align="justify"
-            no-caps
-            narrow-indicator
-          >
+          <q-tabs v-model="currentTab" dense class="text-grey" active-color="primary" indicator-color="primary"
+            align="justify" no-caps narrow-indicator>
             <q-tab name="client" label="Deudor" />
             <q-tab name="guarantor" label="Fiador" />
             <q-tab name="credit" label="Crédito" />
@@ -51,39 +39,16 @@
                     </q-avatar>
                     <div class="avatar-overlay flex justify-end items-end">
                       <div class="button-group q-pa-xs">
-                        <q-btn
-                          round
-                          dense
-                          unelevated
-                          padding="5px"
-                          icon="photo_camera"
-                          color="primary"
-                          class="q-mx-xs"
-                          @click.stop="openFileBrowser('profilePhotoInput')"
-                        />
-                        <q-btn
-                          round
-                          dense
-                          padding="5px"
-                          v-if="profilePhotoSrc"
-                          unelevated
-                          icon="close"
-                          color="red"
-                          class="q-mx-xs"
-                          @click.stop="clearProfilePhoto"
-                        />
+                        <q-btn round dense unelevated padding="5px" icon="photo_camera" color="primary" class="q-mx-xs"
+                          @click.stop="openFileBrowser('profilePhotoInput')" />
+                        <q-btn round dense padding="5px" v-if="profilePhotoSrc" unelevated icon="close" color="red"
+                          class="q-mx-xs" @click.stop="clearProfilePhoto" />
                       </div>
                     </div>
                   </div>
                 </div>
-                <input
-                  type="file"
-                  ref="profilePhotoInput"
-                  accept="image/*"
-                  style="display: none"
-                  class="q-mx-xs"
-                  @change="handleProfilePhotoChange"
-                />
+                <input type="file" ref="profilePhotoInput" accept="image/*" style="display: none" class="q-mx-xs"
+                  @change="handleProfilePhotoChange" />
               </div>
               <div class="col-12">
                 <div class="row q-col-gutter-sm">
@@ -92,18 +57,12 @@
                       Documento
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.dni"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Ingrese el documento"
+                    <q-input v-model="clientFormData.dni" outlined dense class="mt-1" placeholder="Ingrese el documento"
                       :rules="[
                         (val) => !!val || 'Documento requerido',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="badge" size="20px" />
                       </template>
@@ -114,21 +73,14 @@
                       Nombre
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.name"
-                      outlined
-                      dense
-                      maxlength="25"
-                      class="mt-1"
-                      placeholder="Ingrese el nombre"
-                      :rules="[
+                    <q-input v-model="clientFormData.name" outlined dense maxlength="25" class="mt-1"
+                      placeholder="Ingrese el nombre" :rules="[
                         (val) => !!val || 'Campo requerido',
                         (val) => val.length <= 45 || 'Máximo 45 caracteres',
                         (val) =>
                           /^[a-zA-Z ]+$/.test(val) ||
                           'Solo letras y espacios permitidos',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="person" size="20px" />
                       </template>
@@ -140,24 +92,12 @@
                       Dirección de cobro
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.address"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Haga clic para seleccionar en el mapa"
-                      :rules="[
+                    <q-input v-model="clientFormData.address" outlined dense class="mt-1"
+                      placeholder="Haga clic para seleccionar en el mapa" :rules="[
                         (val) => !!val || 'Dirección de cobro requerida',
-                      ]"
-                      @click="openMapDialog"
-                    >
+                      ]" @click="openMapDialog">
                       <template v-slot:prepend>
-                        <q-icon
-                          name="place"
-                          class="cursor-pointer"
-                          size="20px"
-                          @click.stop="openMapDialog"
-                        />
+                        <q-icon name="place" class="cursor-pointer" size="20px" @click.stop="openMapDialog" />
                       </template>
                     </q-input>
                   </div>
@@ -166,19 +106,13 @@
                       Teléfono
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.phone"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Ingrese el teléfono"
-                      :rules="[
+                    <q-input v-model="clientFormData.phone" outlined dense class="mt-1"
+                      placeholder="Ingrese el teléfono" :rules="[
                         (val) => !!val || 'Teléfono requerido',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
                         (val) => val.length <= 13 || 'Máximo 13 caracteres',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="phone" size="20px" />
                       </template>
@@ -189,18 +123,11 @@
                       Correo
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.email"
-                      outlined
-                      dense
-                      type="email"
-                      class="mt-1"
-                      placeholder="Ingrese el correo"
-                      :rules="[
+                    <q-input v-model="clientFormData.email" outlined dense type="email" class="mt-1"
+                      placeholder="Ingrese el correo" :rules="[
                         (val) => !!val || 'Email requerido',
                         (val) => /.+@.+\..+/.test(val) || 'Email inválido',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="mail" size="20px" />
                       </template>
@@ -211,17 +138,11 @@
                       Nombre de la empresa
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.companyName"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Ingrese el nombre de la empresa"
-                      :rules="[
+                    <q-input v-model="clientFormData.companyName" outlined dense class="mt-1"
+                      placeholder="Ingrese el nombre de la empresa" :rules="[
                         (val) => !!val || 'Nombre de la empresa requerido',
                         (val) => val.length <= 45 || 'Máximo 45 caracteres',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="business" size="20px" />
                       </template>
@@ -241,18 +162,12 @@
                       Documento del fiador
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.guarantorDni"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Ingrese el documento del fiador"
-                      :rules="[
+                    <q-input v-model="clientFormData.guarantorDni" outlined dense class="mt-1"
+                      placeholder="Ingrese el documento del fiador" :rules="[
                         (val) => !!val || 'Documento del fiador requerido',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="badge" size="20px" />
                       </template>
@@ -263,21 +178,14 @@
                       Nombre del fiador
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.guarantorName"
-                      outlined
-                      dense
-                      maxlength="25"
-                      class="mt-1"
-                      placeholder="Ingrese el nombre del fiador"
-                      :rules="[
+                    <q-input v-model="clientFormData.guarantorName" outlined dense maxlength="25" class="mt-1"
+                      placeholder="Ingrese el nombre del fiador" :rules="[
                         (val) => !!val || 'Nombre del fiador requerido',
                         (val) => val.length <= 45 || 'Máximo 45 caracteres',
                         (val) =>
                           /^[a-zA-Z ]+$/.test(val) ||
                           'Solo letras y espacios permitidos',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="person" size="20px" />
                       </template>
@@ -289,19 +197,13 @@
                       Teléfono
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.guarantorPhone"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Ingrese el teléfono"
-                      :rules="[
+                    <q-input v-model="clientFormData.guarantorPhone" outlined dense class="mt-1"
+                      placeholder="Ingrese el teléfono" :rules="[
                         (val) => !!val || 'Teléfono del fiador requerido',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
                         (val) => val.length <= 13 || 'Máximo 13 caracteres',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="phone" size="20px" />
                       </template>
@@ -312,17 +214,11 @@
                       Dirección
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input
-                      v-model="clientFormData.guarantorAddress"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Ingrese la dirección del fiador"
-                      :rules="[
+                    <q-input v-model="clientFormData.guarantorAddress" outlined dense class="mt-1"
+                      placeholder="Ingrese la dirección del fiador" :rules="[
                         (val) => !!val || 'Dirección del fiador requerida',
                         (val) => val.length <= 45 || 'Máximo 45 caracteres',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="location_on" size="20px" />
                       </template>
@@ -338,24 +234,14 @@
                 <div class="row q-col-gutter-sm">
                   <!-- Valor del crédito -->
                   <div class="col-12 col-md-6">
-                    <label
-                      >Valor del crédito
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      v-model="clientFormData.creditValue"
-                      outlined
-                      dense
-                      type="number"
-                      class="mt-1"
-                      placeholder="Ingrese el valor"
-                      :rules="[
+                    <label>Valor del crédito
+                      <span class="text-red-500">*</span></label>
+                    <q-input v-model="clientFormData.creditValue" outlined dense type="number" class="mt-1"
+                      placeholder="Ingrese el valor" :rules="[
                         (val) => !!val || 'Valor requerido',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
-                      ]"
-                      @update:model-value="calculateInstallmentValue"
-                    >
+                      ]" @update:model-value="calculateInstallmentValue">
                       <template v-slot:prepend>
                         <q-icon name="attach_money" size="20px" />
                       </template>
@@ -364,23 +250,13 @@
 
                   <!-- Tasa de interés -->
                   <div class="col-12 col-md-6">
-                    <label
-                      >Tasa de interés (%)
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      v-model="clientFormData.interestRate"
-                      outlined
-                      dense
-                      type="number"
-                      class="mt-1"
-                      placeholder="Ingrese la tasa"
-                      :rules="[
+                    <label>Tasa de interés (%)
+                      <span class="text-red-500">*</span></label>
+                    <q-input v-model="clientFormData.interestRate" outlined dense type="number" class="mt-1"
+                      placeholder="Ingrese la tasa" :rules="[
                         (val) => !!val || 'Tasa requerida',
                         (val) => val <= 100 || 'Máximo 100%',
-                      ]"
-                      @update:model-value="calculateInstallmentValue"
-                    >
+                      ]" @update:model-value="calculateInstallmentValue">
                       <template v-slot:prepend>
                         <q-icon name="percent" size="20px" />
                       </template>
@@ -389,48 +265,28 @@
 
                   <!-- Cantidad de cuotas -->
                   <div class="col-12 col-md-6">
-                    <label
-                      >Cantidad de cuotas
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      v-model="clientFormData.installmentCount"
-                      outlined
-                      dense
-                      type="number"
-                      class="mt-1"
-                      placeholder="Número de cuotas"
-                      :rules="[
+                    <label>Cantidad de cuotas
+                      <span class="text-red-500">*</span></label>
+                    <q-input v-model="clientFormData.installmentCount" outlined dense type="number" class="mt-1"
+                      placeholder="Número de cuotas" :rules="[
                         (val) => !!val || 'Cuotas requeridas',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
-                      ]"
-                      @update:model-value="calculateInstallmentValue"
-                    >
+                      ]" @update:model-value="calculateInstallmentValue">
                       <template v-slot:prepend>
                         <q-icon name="list_alt" size="20px" />
                       </template>
                     </q-input>
                   </div>
                   <div class="col-12 col-md-6">
-                    <label
-                      >Valor de la cuota
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-input
-                      :model-value="installmentValue"
-                      outlined
-                      dense
-                      type="number"
-                      class="mt-1"
-                      disable
-                      placeholder="Valor de la cuota"
-                      :rules="[
+                    <label>Valor de la cuota
+                      <span class="text-red-500">*</span></label>
+                    <q-input :model-value="installmentValue" outlined dense type="number" class="mt-1" disable
+                      placeholder="Valor de la cuota" :rules="[
                         (val) => !!val || 'Valor requerido',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
-                      ]"
-                    >
+                      ]">
                       <template v-slot:prepend>
                         <q-icon name="list_alt" size="20px" />
                       </template>
@@ -438,63 +294,41 @@
                   </div>
                   <!-- Frecuencia de pago -->
                   <div class="col-12 col-md-6">
-                    <label
-                      >Frecuencia de pago
-                      <span class="text-red-500">*</span></label
-                    >
-                    <q-select
-                      v-model="clientFormData.paymentFrequency"
-                      :options="paymentFrequencyOptions"
-                      outlined
-                      dense
-                      class="mt-1"
-                      placeholder="Seleccione frecuencia"
-                      :rules="[(val) => !!val || 'Frecuencia requerida']"
-                    >
+                    <label>Frecuencia de pago
+                      <span class="text-red-500">*</span></label>
+                    <q-select v-model="clientFormData.paymentFrequency" :options="paymentFrequencyOptions" outlined
+                      dense class="mt-1" placeholder="Seleccione frecuencia"
+                      :rules="[(val) => !!val || 'Frecuencia requerida']">
                       <template v-slot:prepend>
                         <q-icon name="repeat" size="20px" />
                       </template>
                     </q-select>
                   </div>
 
-                  <div
-                    class="col-12 col-md-6"
-                    v-if="clientFormData.paymentFrequency === 'Diaria'"
-                  >
+                  <div class="col-12 col-md-6" v-if="clientFormData.paymentFrequency === 'Diaria'">
                     <label>
                       Excepto los días
                       <span class="text-red-500">*</span>
                     </label>
 
                     <div class="q-gutter-sm q-mt-sm">
-                      <q-chip
-                        v-for="day in weekDays"
-                        :key="day"
-                        clickable
-                        :color="
-                          clientFormData.excludedDays?.includes(day)
-                            ? 'primary'
-                            : 'grey-5'
-                        "
-                        text-color="white"
-                        @click="toggleExcludedDay(day)"
-                        class="q-pa-xs flex justify-center items-center"
-                        style="
+                      <q-chip v-for="day in weekDays" :key="day" clickable :color="clientFormData.excludedDays?.includes(day)
+                          ? 'primary'
+                          : 'grey-5'
+                        " text-color="white" @click="toggleExcludedDay(day)"
+                        class="q-pa-xs flex justify-center items-center" style="
                           min-width: 75px;
                           height: 30px;
                           padding: 0;
                           line-height: normal;
-                        "
-                      >
-                        <span
-                          style="
+                        ">
+                        <span style="
                             display: flex;
                             align-items: center;
                             justify-content: center;
                             width: 100%;
                             font-size: 12px;
-                          "
-                        >
+                          ">
                           {{ day }}
                         </span>
                       </q-chip>
@@ -503,32 +337,18 @@
 
                   <!-- Sección de microseguros -->
                   <div class="col-12">
-                    <q-expansion-item
-                      v-model="microInsuranceExpanded"
-                      header-class=" custom-expansion-header"
-                      label="Microseguros"
-                      dense
-                      expand-icon-class="text-primary"
-                    >
+                    <q-expansion-item v-model="microInsuranceExpanded" header-class=" custom-expansion-header"
+                      label="Microseguros" dense expand-icon-class="text-primary">
                       <div class="row q-col-gutter-sm q-mt-sm">
                         <div class="col-12 col-md-6">
                           <label>Porcentaje de microseguro</label>
-                          <q-input
-                            v-model="clientFormData.microInsurancePercentage"
-                            outlined
-                            dense
-                            type="number"
-                            class="mt-1"
-                            placeholder="0-100%"
-                            min="0"
-                            max="100"
-                            :rules="[
+                          <q-input v-model="clientFormData.microInsurancePercentage" outlined dense type="number"
+                            class="mt-1" placeholder="0-100%" min="0" max="100" :rules="[
                               (val) =>
                                 /^[0-9]+$/.test(val) ||
                                 'Solo números permitidos',
                               (val) => val <= 100 || 'Máximo 100%',
-                            ]"
-                          >
+                            ]">
                             <template v-slot:prepend>
                               <q-icon name="percent" size="20px" />
                             </template>
@@ -536,15 +356,8 @@
                         </div>
                         <div class="col-12 col-md-6">
                           <label>Monto de microseguro</label>
-                          <q-input
-                            v-model="microInsuranceAmountCalculated"
-                            outlined
-                            dense
-                            type="number"
-                            class="mt-1"
-                            placeholder="Monto"
-                            disable
-                          >
+                          <q-input v-model="microInsuranceAmountCalculated" outlined dense type="number" class="mt-1"
+                            placeholder="Monto" disable>
                             <template v-slot:prepend>
                               <q-icon name="attach_money" size="20px" />
                             </template>
@@ -555,10 +368,7 @@
                   </div>
 
                   <div class="col-12 col-md-6 q-mt-lg">
-                    <q-checkbox
-                      :model-value="advancedPayment"
-                      @update:model-value="toggleAdvancedPayment"
-                    />
+                    <q-checkbox :model-value="advancedPayment" @update:model-value="toggleAdvancedPayment" />
                     <label class="text-caption"> Pago adelantado </label>
                   </div>
 
@@ -589,62 +399,27 @@
             <div class="row flex items-center q-col-gutter-sm mb-5">
               <div class="col-12">
                 <div class="row q-col-gutter-sm q-mb-md">
-                  <input
-                    type="file"
-                    ref="galleryPhotoInput1"
-                    accept="image/*"
-                    style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 0)"
-                  />
-                  <input
-                    type="file"
-                    ref="galleryPhotoInput2"
-                    accept="image/*"
-                    style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 1)"
-                  />
-                  <input
-                    type="file"
-                    ref="galleryPhotoInput3"
-                    accept="image/*"
-                    style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 2)"
-                  />
+                  <input type="file" ref="galleryPhotoInput1" accept="image/*" style="display: none"
+                    @change="(event) => handleGalleryPhotoChange(event, 0)" />
+                  <input type="file" ref="galleryPhotoInput2" accept="image/*" style="display: none"
+                    @change="(event) => handleGalleryPhotoChange(event, 1)" />
+                  <input type="file" ref="galleryPhotoInput3" accept="image/*" style="display: none"
+                    @change="(event) => handleGalleryPhotoChange(event, 2)" />
 
                   <div class="col-12 flex justify-center q-gutter-sm">
-                    <div
-                      v-for="(item, index) in galleryItems"
-                      :key="index"
-                      class="image-container text-center"
-                    >
+                    <div v-for="(item, index) in galleryItems" :key="index" class="image-container text-center">
                       <div class="text-caption q-mb-xs">{{ item.label }}</div>
                       <div v-if="galleryPhotosPreview[index]">
-                        <q-img
-                          :src="galleryPhotosPreview[index]"
-                          style="
+                        <q-img :src="galleryPhotosPreview[index]" style="
                             width: 150px;
                             height: 150px;
                             border-radius: 8px;
-                          "
-                        />
-                        <q-btn
-                          class="btn-delete q-mt-md"
-                          size="md"
-                          color="red-5"
-                          dense
-                          round
-                          icon="close"
-                          @click="removeGalleryPhoto(index)"
-                        />
+                          " />
+                        <q-btn class="btn-delete q-mt-md" size="md" color="red-5" dense round icon="close"
+                          @click="removeGalleryPhoto(index)" />
                       </div>
-                      <q-btn
-                        v-else
-                        unelevated
-                        color="primary"
-                        class="custom-upload-btn"
-                        :disable="index >= 1 && !isCreditComplete"
-                        @click="openFileBrowser(item.ref)"
-                      >
+                      <q-btn v-else unelevated color="primary" class="custom-upload-btn"
+                        :disable="index >= 1 && !isCreditComplete" @click="openFileBrowser(item.ref)">
                         <q-icon name="photo_camera" />
                       </q-btn>
                     </div>
@@ -656,24 +431,10 @@
         </q-tab-panels>
         <div class="row q-col-gutter-sm">
           <div class="col-12 col-md-6">
-            <q-btn
-              flat
-              no-caps
-              :label="previousTabLabel()"
-              color="grey"
-              class="full-width"
-              @click="previousTab"
-            />
+            <q-btn flat no-caps :label="previousTabLabel()" color="grey" class="full-width" @click="previousTab" />
           </div>
           <div class="col-12 col-md-6">
-            <q-btn
-              unelevated
-              class="full-width"
-              no-caps
-              :label="nextTab()"
-              color="primary"
-              @click="saveClient"
-            />
+            <q-btn unelevated class="full-width" no-caps :label="nextTab()" color="primary" @click="saveClient" />
           </div>
         </div>
       </q-card-section>
@@ -681,30 +442,17 @@
   </q-dialog>
 
   <q-dialog v-model="showMapDialog" persistent>
-    <q-card
-      style="width: 90vw; max-width: 400px; height: auto; max-height: 80vh"
-    >
+    <q-card style="width: 90vw; max-width: 400px; height: auto; max-height: 80vh">
       <q-card-section class="flex justify-between items-center">
         <h6>Seleccione la dirección de cobro en el mapa</h6>
         <q-btn flat round dense icon="close" @click="showMapDialog = false" />
       </q-card-section>
       <q-card-section class="q-pt-none" style="height: calc(100% - 100px)">
-        <Map
-          ref="mapRef"
-          :geolocation="addressGeolocation"
-          :isEditing="true"
-          @location-selected="updateAddressLocation"
-        />
+        <Map ref="mapRef" :geolocation="addressGeolocation" :isEditing="true"
+          @location-selected="updateAddressLocation" />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn
-          unelevated
-          label="Confirmar"
-          color="primary"
-          no-caps
-          @click="confirmAddressSelection"
-          v-close-popup
-        />
+        <q-btn unelevated label="Confirmar" color="primary" no-caps @click="confirmAddressSelection" v-close-popup />
         <q-btn flat label="Cancelar" color="grey-7" no-caps v-close-popup />
       </q-card-actions>
     </q-card>
@@ -859,7 +607,7 @@ const microInsuranceAmount = computed(() => {
   console.log(
     ((props.clientFormData.creditValue ?? 0) *
       (props.clientFormData.microInsurancePercentage ?? 0)) /
-      100,
+    100,
   );
   const creditValue = parseFloat(props.clientFormData.creditValue as any) || 0;
   const percentage =
@@ -1162,7 +910,7 @@ const removeImage = (index: number) => {
 
 const removeGalleryPhoto = (index: number) => {
   galleryPhotosPreview.value[index] = null;
-  props.clientFormData.galleryPhotos[index] = null;
+  props.clientFormData.galleryPhotos[index] = null as any;
 };
 
 const updateClientGeolocation = (location: any) => {
@@ -1292,6 +1040,7 @@ watch(
     color 0.3s,
     background-color 0.3s;
 }
+
 .custom-expansion-header {
   padding: 0 !important;
 }
@@ -1299,6 +1048,7 @@ watch(
 :deep(.custom-expansion-header) {
   padding: 0 !important;
 }
+
 /* :deep(.q-card__section--vert) {
   padding: 16px 0;
 } */
@@ -1308,10 +1058,8 @@ watch(
     height: 33px !important;
   }
 
-  :deep(
-    .q-field--auto-height.q-field--dense .q-field__control,
-    .q-field--auto-height.q-field--dense .q-field__native
-  ) {
+  :deep(.q-field--auto-height.q-field--dense .q-field__control,
+    .q-field--auto-height.q-field--dense .q-field__native) {
     min-height: 33px !important;
   }
 }

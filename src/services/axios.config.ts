@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: process.env.BASE_URL || "https://api.controlcd.com/public/api/",
+  baseURL: process.env.BASE_URL || "https://controlcd.com/back/public/api/",
   withCredentials: true,
   headers: {
     "X-Request-With": "XMLHttpRequest",
@@ -20,7 +20,7 @@ instance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export default instance;
