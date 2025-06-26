@@ -129,7 +129,9 @@
                       <div class="col-9 text-end text-wrap">
                         <div>{{ props.row.address }}</div>
                         <div class="text-gray-500 q-mt-xs">
-                          {{ props.row.seller.city.name }}
+                          {{
+                            props.row.seller ? props.row.seller.city.name : ""
+                          }}
                         </div>
                       </div>
                     </div>
@@ -258,7 +260,7 @@
               {{ props.row.address }}
             </div>
             <div class="text-sm text-gray-500">
-              {{ props.row.seller.city.name }}
+              {{ props.row.seller ? props.row.seller.city.name : "" }}
             </div>
           </div>
         </td>
