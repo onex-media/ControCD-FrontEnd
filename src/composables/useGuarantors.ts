@@ -26,14 +26,14 @@ export function useGuarantors() {
     clients_ids: [],
   });
 
-  const fetchGuarantors = async () => {
+/*   const fetchGuarantors = async () => {
     try {
       const response: any = await getData({ path: "/guarantors" });
       return response.data;
     } catch (error) {
       console.error("Error fetching guarantors:", error);
     }
-  };
+  }; */
   const fetchGuarantorsSelect = async () => {
     try {
       const response: any = await getData({ path: "/guarantors/select" });
@@ -60,7 +60,7 @@ export function useGuarantors() {
         };
         await postData(payload);
       }
-      fetchGuarantors();
+/*       fetchGuarantors(); */
       fetchGuarantorsSelect();
       showGuarantorModal.value = false;
     } catch (error) {
@@ -73,7 +73,7 @@ export function useGuarantors() {
   };
 
   onMounted(() => {
-    fetchGuarantors();
+   /*  fetchGuarantors(); */
     fetchGuarantorsSelect();
   });
 

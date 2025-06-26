@@ -12,10 +12,15 @@
 
     <div>
       <div
-        :class="$q.screen.lt.md && 'q-px-md'"
-        class="flex justify-between items-center q-mb-md"
+        :class="
+          $q.screen.lt.md ? 'q-px-md column' : 'justify-between items-center'
+        "
+        class="flex q-mb-md"
       >
-        <div class="flex items-center gap-2">
+        <div
+          :class="$q.screen.lt.md ? 'items-start' : 'items-center'"
+          class="flex gap-2"
+        >
           <h1 class="text-2xl font-semibold">Clientes</h1>
         </div>
         <div class="flex gap-4 q-mt-md q-mb-sm">
@@ -69,8 +74,8 @@
 
     <q-page-sticky
       v-if="$q.screen.lt.md && role === 5"
-      position="bottom-right"
-      :offset="[18, 18]"
+      position="bottom"
+      :offset="[0, 0]"
     >
       <!--       <q-btn
           unelevated
@@ -79,17 +84,27 @@
           @click="showCreateModal = true"
           label="Nuevo cliente"
         /> -->
-
-      <q-btn
-        unelevated
-        v-if="role === 5"
-        color="primary"
-        label="Nuevo cliente"
-        no-caps
-        @click="showCreateModal = true"
-      >
-        <img src="/icons/FolderSimpleStar.svg" class="ml-4 svg-white" alt="" />
-      </q-btn>
+      <div class="row justify-center q-pb-md">
+        <q-btn
+          unelevated
+          v-if="role === 5"
+          color="primary"
+          label="Nuevo cliente"
+          no-caps
+            style="
+    min-width: 90vw;
+    height: 50px;
+    font-size: 1rem;
+  "
+          @click="showCreateModal = true"
+        >
+          <img
+            src="/icons/FolderSimpleStar.svg"
+            class="ml-4 svg-white"
+            alt=""
+          />
+        </q-btn>
+      </div>
     </q-page-sticky>
   </section>
 </template>

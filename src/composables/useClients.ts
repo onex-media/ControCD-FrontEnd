@@ -33,7 +33,7 @@ export function useClients() {
   const client = ref<any>({});
   const totalClients = ref(0);
   const user = JSON.parse(localStorage.getItem("user") as string);
-  const sellerId = user?.seller.id || null;
+  const sellerId = user?.seller ? user.seller.id : null;
   const totalClientsBySeller = ref(0);
 
   const paginationClients = reactive<Pagination>({
@@ -81,6 +81,7 @@ export function useClients() {
     firstInstallmentDate: null,
     clientId: null,
     galleryPhotos: [] as File[],
+    sellerId: null,
   });
 
   const fiadorFormData: Ref<any> = ref({

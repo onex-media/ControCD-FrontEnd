@@ -1,36 +1,46 @@
 <template>
   <q-dialog :model-value="modelValue" persistent @update:model-value="updateShow">
     <q-card class="credit-card">
-      <q-card-section class="justify-between items-center">
-        <div class="flex justify-between items-center">
-          <h3 class="client-card__title">
-            {{ isEditing ? "Editar cliente" : "Nuevo cliente" }}
-          </h3>
-          <q-btn flat round dense icon="close" @click="closeModal" />
-        </div>
-        <!--   <div>
+      <div class="sticky-tabs">
+        <q-card-section class="justify-between items-center">
+          <div class="flex justify-between items-center">
+            <h3 class="credit-card__title">
+              {{ isEditing ? "Editar cliente" : "Nuevo cliente" }}
+            </h3>
+            <q-btn flat round dense icon="close" @click="closeModal" />
+          </div>
+          <!--   <div>
           <p class="client-card__description">
             Estás a punto de crear un nuevo cliente. Al hacerlo, el cliente tendrá acceso a las
             funcionalidades y beneficios de la ruta, incluyendo acceso a
             Créditos y Otras funcionalidades.
           </p>
         </div> -->
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
+        </q-card-section>
         <div style="overflow-x: auto">
-          <q-tabs v-model="currentTab" dense class="text-grey" active-color="primary" indicator-color="primary"
-            align="justify" no-caps narrow-indicator>
-            <q-tab name="client" label="Deudor" />
-            <q-tab name="guarantor" label="Fiador" />
-            <q-tab name="credit" label="Crédito" />
-            <q-tab name="images" label="Imágenes" />
+          <q-tabs
+            v-model="currentTab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            no-caps
+            narrow-indicator
+            
+          >
+            <q-tab name="client" label="Deudor"  />
+            <q-tab name="guarantor" label="Fiador" :disable="!clientTabInvalid" />
+            <q-tab name="credit" label="Crédito" :disable="!guarantorTabInvalid" />
+            <q-tab name="images" label="Imágenes" :disable="!creditTabInvalid" />
           </q-tabs>
         </div>
+      </div>
 
+      <q-card-section class="q-pt-none">
         <q-tab-panels v-model="currentTab" animated class="q-mt-lg">
           <q-tab-panel name="client">
-            <div class="row">
+            <div class="row" ref="clientForm">
               <div class="col-12 flex justify-center items-center q-mb-md">
                 <div class="col-12 flex justify-center">
                   <div class="avatar-container relative-position">
@@ -57,7 +67,13 @@
                       Documento
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input v-model="clientFormData.dni" outlined dense class="mt-1" placeholder="Ingrese el documento"
+                    <q-input
+                      v-model="clientFormData.dni"
+                      ref="dniInput"
+                      outlined
+                      dense
+                      class="mt-1"
+                      placeholder="Ingrese el documento"
                       :rules="[
                         (val) => !!val || 'Documento requerido',
                         (val) =>
@@ -73,8 +89,15 @@
                       Nombre
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input v-model="clientFormData.name" outlined dense maxlength="25" class="mt-1"
-                      placeholder="Ingrese el nombre" :rules="[
+                    <q-input
+                      v-model="clientFormData.name"
+                      ref="nameInput"
+                      outlined
+                      dense
+                      maxlength="25"
+                      class="mt-1"
+                      placeholder="Ingrese el nombre"
+                      :rules="[
                         (val) => !!val || 'Campo requerido',
                         (val) => val.length <= 45 || 'Máximo 45 caracteres',
                         (val) =>
@@ -92,8 +115,14 @@
                       Dirección de cobro
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input v-model="clientFormData.address" outlined dense class="mt-1"
-                      placeholder="Haga clic para seleccionar en el mapa" :rules="[
+                    <q-input
+                      v-model="clientFormData.address"
+                      ref="addressInput"
+                      outlined
+                      dense
+                      class="mt-1"
+                      placeholder="Haga clic para seleccionar en el mapa"
+                      :rules="[
                         (val) => !!val || 'Dirección de cobro requerida',
                       ]" @click="openMapDialog">
                       <template v-slot:prepend>
@@ -106,8 +135,14 @@
                       Teléfono
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input v-model="clientFormData.phone" outlined dense class="mt-1"
-                      placeholder="Ingrese el teléfono" :rules="[
+                    <q-input
+                      v-model="clientFormData.phone"
+                      ref="phoneInput"
+                      outlined
+                      dense
+                      class="mt-1"
+                      placeholder="Ingrese el teléfono"
+                      :rules="[
                         (val) => !!val || 'Teléfono requerido',
                         (val) =>
                           /^[0-9]+$/.test(val) || 'Solo números permitidos',
@@ -123,8 +158,15 @@
                       Correo
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input v-model="clientFormData.email" outlined dense type="email" class="mt-1"
-                      placeholder="Ingrese el correo" :rules="[
+                    <q-input
+                      v-model="clientFormData.email"
+                      ref="emailInput"
+                      outlined
+                      dense
+                      type="email"
+                      class="mt-1"
+                      placeholder="Ingrese el correo"
+                      :rules="[
                         (val) => !!val || 'Email requerido',
                         (val) => /.+@.+\..+/.test(val) || 'Email inválido',
                       ]">
@@ -133,13 +175,19 @@
                       </template>
                     </q-input>
                   </div>
-                  <div class="col-12 col-md-6">
+                  <div class="col-12">
                     <label>
                       Nombre de la empresa
                       <span class="text-red-500" v-if="!isEditing">*</span>
                     </label>
-                    <q-input v-model="clientFormData.companyName" outlined dense class="mt-1"
-                      placeholder="Ingrese el nombre de la empresa" :rules="[
+                    <q-input
+                      v-model="clientFormData.companyName"
+                      ref="companyNameInput"
+                      outlined
+                      dense
+                      class="mt-1"
+                      placeholder="Ingrese el nombre de la empresa"
+                      :rules="[
                         (val) => !!val || 'Nombre de la empresa requerido',
                         (val) => val.length <= 45 || 'Máximo 45 caracteres',
                       ]">
@@ -232,7 +280,6 @@
             <div class="row">
               <div class="col-12">
                 <div class="row q-col-gutter-sm">
-                  <!-- Valor del crédito -->
                   <div class="col-12 col-md-6">
                     <label>Valor del crédito
                       <span class="text-red-500">*</span></label>
@@ -248,7 +295,6 @@
                     </q-input>
                   </div>
 
-                  <!-- Tasa de interés -->
                   <div class="col-12 col-md-6">
                     <label>Tasa de interés (%)
                       <span class="text-red-500">*</span></label>
@@ -263,7 +309,6 @@
                     </q-input>
                   </div>
 
-                  <!-- Cantidad de cuotas -->
                   <div class="col-12 col-md-6">
                     <label>Cantidad de cuotas
                       <span class="text-red-500">*</span></label>
@@ -292,7 +337,6 @@
                       </template>
                     </q-input>
                   </div>
-                  <!-- Frecuencia de pago -->
                   <div class="col-12 col-md-6">
                     <label>Frecuencia de pago
                       <span class="text-red-500">*</span></label>
@@ -305,18 +349,29 @@
                     </q-select>
                   </div>
 
-                  <div class="col-12 col-md-6" v-if="clientFormData.paymentFrequency === 'Diaria'">
+                  <div
+                    class="col-12"
+                    v-if="clientFormData.paymentFrequency === 'Diaria'"
+                  >
                     <label>
                       Excepto los días
                       <span class="text-red-500">*</span>
                     </label>
 
-                    <div class="q-gutter-sm q-mt-sm">
-                      <q-chip v-for="day in weekDays" :key="day" clickable :color="clientFormData.excludedDays?.includes(day)
-                          ? 'primary'
-                          : 'grey-5'
-                        " text-color="white" @click="toggleExcludedDay(day)"
-                        class="q-pa-xs flex justify-center items-center" style="
+                    <div class="q-gutter-sm q-mt-sm q-px-sm">
+                      <q-chip
+                        v-for="day in weekDays"
+                        :key="day"
+                        clickable
+                        :color="
+                          clientFormData.excludedDays?.includes(day)
+                            ? 'primary'
+                            : 'grey-5'
+                        "
+                        text-color="white"
+                        @click="toggleExcludedDay(day)"
+                        class="q-pa-xs flex justify-center items-center"
+                        style="
                           min-width: 75px;
                           height: 30px;
                           padding: 0;
@@ -334,8 +389,10 @@
                       </q-chip>
                     </div>
                   </div>
+                  <div class="col-12">
+                    <hr />
+                  </div>
 
-                  <!-- Sección de microseguros -->
                   <div class="col-12">
                     <q-expansion-item v-model="microInsuranceExpanded" header-class=" custom-expansion-header"
                       label="Microseguros" dense expand-icon-class="text-primary">
@@ -397,31 +454,72 @@
           </q-tab-panel>
           <q-tab-panel name="images">
             <div class="row flex items-center q-col-gutter-sm mb-5">
-              <div class="col-12">
-                <div class="row q-col-gutter-sm q-mb-md">
-                  <input type="file" ref="galleryPhotoInput1" accept="image/*" style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 0)" />
-                  <input type="file" ref="galleryPhotoInput2" accept="image/*" style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 1)" />
-                  <input type="file" ref="galleryPhotoInput3" accept="image/*" style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 2)" />
+              <input
+                type="file"
+                ref="galleryPhotoInput1"
+                accept="image/*"
+                style="display: none"
+                @change="(event) => handleGalleryPhotoChange(event, 0)"
+              />
+              <input
+                type="file"
+                ref="galleryPhotoInput2"
+                accept="image/*"
+                style="display: none"
+                @change="(event) => handleGalleryPhotoChange(event, 1)"
+              />
+              <input
+                type="file"
+                ref="galleryPhotoInput3"
+                accept="image/*"
+                style="display: none"
+                @change="(event) => handleGalleryPhotoChange(event, 2)"
+              />
 
-                  <div class="col-12 flex justify-center q-gutter-sm">
-                    <div v-for="(item, index) in galleryItems" :key="index" class="image-container text-center">
-                      <div class="text-caption q-mb-xs">{{ item.label }}</div>
-                      <div v-if="galleryPhotosPreview[index]">
-                        <q-img :src="galleryPhotosPreview[index]" style="
-                            width: 150px;
-                            height: 150px;
-                            border-radius: 8px;
-                          " />
-                        <q-btn class="btn-delete q-mt-md" size="md" color="red-5" dense round icon="close"
-                          @click="removeGalleryPhoto(index)" />
+              <!-- Nueva interfaz para subida de imágenes -->
+              <div class="col-12">
+                <div class="row q-col-gutter-sm q-mb-md justify-center">
+                  <div
+                    v-for="(item, index) in galleryItems"
+                    :key="index"
+                    class="column items-center q-pa-sm"
+                  >
+                    <div class="q-mb-xs">{{ item.label }}</div>
+                    <div
+                      class="upload-container"
+                      @click="openFileBrowser(item.ref)"
+                      style="position: relative"
+                    >
+                      <template v-if="galleryPhotosPreview[index]">
+                        <q-img
+                          :src="galleryPhotosPreview[index]"
+                          class="upload-preview"
+                        />
+                        <q-btn
+                          class="btn-delete"
+                          size="sm"
+                          color="red"
+                          round
+                          dense
+                          icon="close"
+                          @click.stop="removeGalleryPhoto(index)"
+                          style="position: absolute; top: 5px; right: 5px"
+                        />
+                      </template>
+
+                      <div v-else class="upload-area flex flex-center column">
+                        <q-img
+                          src="/icons/archivo.png"
+                          class="svg-white"
+                          width="50px"
+                        />
+                        <div class="text-weight-medium q-mt-sm">
+                          SELECCIONAR ARCHIVO
+                        </div>
+                        <div class="text-caption text-grey-7 q-mt-xs">
+                          JPG, PNG - Máx. 2 MB
+                        </div>
                       </div>
-                      <q-btn v-else unelevated color="primary" class="custom-upload-btn"
-                        :disable="index >= 1 && !isCreditComplete" @click="openFileBrowser(item.ref)">
-                        <q-icon name="photo_camera" />
-                      </q-btn>
                     </div>
                   </div>
                 </div>
@@ -429,12 +527,49 @@
             </div>
           </q-tab-panel>
         </q-tab-panels>
-        <div class="row q-col-gutter-sm">
-          <div class="col-12 col-md-6">
-            <q-btn flat no-caps :label="previousTabLabel()" color="grey" class="full-width" @click="previousTab" />
+        <div class="sticky-buttons">
+          <div v-if="!q.screen.lt.md" class="row q-col-gutter-sm mr-4">
+            <div class="col-12 flex justify-end">
+              <q-btn
+                unelevated
+                no-caps
+                :label="nextTab()"
+                color="primary"
+                @click="saveClient"
+                class="mr-2"
+              />
+              <q-btn
+                unelevated
+                no-caps
+                :label="previousTabLabel()"
+                color="grey-3"
+                text-color="primary"
+                @click="previousTab"
+              />
+            </div>
           </div>
-          <div class="col-12 col-md-6">
-            <q-btn unelevated class="full-width" no-caps :label="nextTab()" color="primary" @click="saveClient" />
+          <div v-else class="row q-col-gutter-sm q-pa-md">
+            <div class="col-12 col-md-6">
+              <q-btn
+                unelevated
+                class="full-width"
+                no-caps
+                :label="nextTab()"
+                color="primary"
+                @click="saveClient"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <q-btn
+                unelevated
+                no-caps
+                :label="previousTabLabel()"
+                color="grey-3"
+                text-color="primary"
+                class="full-width"
+                @click="previousTab"
+              />
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -466,10 +601,18 @@ import { CreateClientPayload } from "src/types/clients.types";
 import Map from "src/components/Map.vue";
 import { pathImage } from "src/boot/axios";
 import { useMap } from "src/composables/useMap";
+import { useQuasar } from "quasar";
 
+const q = useQuasar();
 const { setMarker } = useMap();
 const { rules, closeModalWithoutValidation } = useClients();
 const emit = defineEmits(["update:modelValue", "save-client", "close-modal"]);
+const clientForm = ref<any>(null);
+
+const clientTabInvalid = ref(false);
+const guarantorTabInvalid = ref(false);
+const creditTabInvalid = ref(false);
+
 
 const props = defineProps({
   modelValue: Boolean,
@@ -479,8 +622,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-console.log("clientFormData", props.clientFormData);
 
 const currentTab = ref("client");
 const profilePhotoInput = ref<HTMLInputElement | null>(null);
@@ -496,14 +637,37 @@ const galleryPhotoInput1 = ref<HTMLInputElement | null>(null);
 const galleryPhotoInput2 = ref<HTMLInputElement | null>(null);
 const galleryPhotoInput3 = ref<HTMLInputElement | null>(null);
 
+const galleryPhotosPreview = ref<(string | null)[]>([null, null, null]);
+
 const galleryItems = ref([
   { label: "Documento", ref: "galleryPhotoInput1" },
   { label: "Foto Empresa", ref: "galleryPhotoInput2" },
   { label: "Cliente Dinero en mano", ref: "galleryPhotoInput3" },
 ]);
 
+const dniInput = ref<any>(null);
+const nameInput = ref<any>(null);
+const addressInput = ref<any>(null);
+const phoneInput = ref<any>(null);
+const emailInput = ref<any>(null);
+const companyNameInput = ref<any>(null);
+
+const validateClientTab = async () => {
+  const validations = await Promise.all([
+    dniInput.value?.validate(),
+    nameInput.value?.validate(),
+    addressInput.value?.validate(),
+    phoneInput.value?.validate(),
+    emailInput.value?.validate(),
+    companyNameInput.value?.validate(),
+  ]);
+  
+
+  return validations.every((valid) => valid === true);
+};
+
 const microInsuranceAmountCalculated = computed(() => {
-  const amount = Number(props.clientFormData.microInsuranceAmount) || 0;
+  const amount = Number(props.clientFormData.microInsurancePercentage) || 0;
   const credit = Number(props.clientFormData.creditValue) || 0;
   return (amount * credit) / 100;
 });
@@ -679,14 +843,21 @@ const handleGalleryPhotoChange = (event: Event, index: number) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files[0]) {
     const file = input.files[0];
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("El archivo excede 10 MB");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
-      // Actualizamos la vista previa en la posición index
       galleryPhotosPreview.value[index] = e.target?.result as string;
     };
     reader.readAsDataURL(file);
 
-    // Actualizamos los datos del formulario
+    if (!props.clientFormData.galleryPhotos) {
+      props.clientFormData.galleryPhotos = [];
+    }
     props.clientFormData.galleryPhotos[index] = file;
   }
   input.value = "";
@@ -783,8 +954,6 @@ const isCreditComplete = computed(() => {
   );
 });
 
-const galleryPhotosPreview = ref<(string | null)[]>([null, null, null]);
-
 const closeModal = () => {
   closeModalWithoutValidation();
   emit("update:modelValue", false);
@@ -797,24 +966,50 @@ const updateShow = (value: boolean) => {
   emit("update:modelValue", value);
 };
 
-const saveClient = () => {
-  /*  if (!validateGuarantor()) {
-    alert("Por favor complete todos los campos del fiador o deje todos vacíos");
-    return;
-  }
-
-  if (!validateCredit()) {
-    alert(
-      "Por favor complete todos los campos del crédito o deje todos vacíos",
-    );
-    return;
-  } */
-
+const saveClient = async () => {
   if (currentTab.value === "client") {
+    const isValid = await validateClientTab();
+
+    if (!isValid) {
+      q.notify({
+        type: "negative",
+        message: "Por favor complete todos los campos obligatorios",
+        position: "bottom",
+      });
+      clientTabInvalid.value = false
+      return;
+    }
+    clientTabInvalid.value = true;
     currentTab.value = "guarantor";
   } else if (currentTab.value === "guarantor") {
+    const isValid = await validateGuarantor();
+
+    if (!isValid) {
+      q.notify({
+        type: "negative",
+        message:
+          "Por favor complete todos los campos obligatorios del fiador o deje todos vacíos",
+        position: "bottom",
+      });
+      guarantorTabInvalid.value = false
+      return;
+    }
+    guarantorTabInvalid.value = true;
     currentTab.value = "credit";
   } else if (currentTab.value === "credit") {
+    const isValid = await validateCredit();
+
+    if (!isValid) {
+      q.notify({
+        type: "negative",
+        message:
+          "Por favor complete todos los campos obligatorios del crédito o deje todos vacíos",
+        position: "bottom",
+      });
+      creditTabInvalid.value = false
+      return;
+    }
+    creditTabInvalid.value = true;
     currentTab.value = "images";
   } else {
     emit("save-client");
@@ -838,6 +1033,8 @@ const previousTab = () => {
     currentTab.value = "guarantor";
   } else if (currentTab.value === "guarantor") {
     currentTab.value = "client";
+  } else if (currentTab.value === "images") {
+    currentTab.value = "credit";
   } else {
     closeModal();
   }
@@ -910,7 +1107,19 @@ const removeImage = (index: number) => {
 
 const removeGalleryPhoto = (index: number) => {
   galleryPhotosPreview.value[index] = null;
-  props.clientFormData.galleryPhotos[index] = null as any;
+
+  if (props.clientFormData.galleryPhotos) {
+    props.clientFormData.galleryPhotos[index] = null;
+  }
+
+  // Limpiar input específico
+  if (index === 0 && galleryPhotoInput1.value) {
+    galleryPhotoInput1.value.value = "";
+  } else if (index === 1 && galleryPhotoInput2.value) {
+    galleryPhotoInput2.value.value = "";
+  } else if (index === 2 && galleryPhotoInput3.value) {
+    galleryPhotoInput3.value.value = "";
+  }
 };
 
 const updateClientGeolocation = (location: any) => {
@@ -995,10 +1204,34 @@ watch(
   }
 }
 
-.client-card {
-  width: 96%;
-  max-width: 700px;
-  padding: 16px;
+.sticky-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  /*   border-bottom: 1px solid #e0e0e0; */
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.sticky-buttons {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  background: white;
+  /* border-top: 1px solid #e0e0e0; */
+  padding-top: 12px;
+  padding-bottom: 15px;
+}
+
+.q-tab-panels {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.credit-card {
+  width: 100%;
+  max-width: 600px;
 
   &__title {
     font-size: 24px;
@@ -1045,22 +1278,174 @@ watch(
   padding: 0 !important;
 }
 
+.upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  width: 200px;
+  height: 150px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.upload-area:hover {
+  border-color: #1976d2;
+  background-color: #f5f9ff;
+}
+
+.upload-preview {
+  width: 200px;
+  height: 150px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+.btn-delete {
+  margin-top: -12px;
+  margin-right: -12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 :deep(.custom-expansion-header) {
   padding: 0 !important;
 }
 
-/* :deep(.q-card__section--vert) {
-  padding: 16px 0;
-} */
+:deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
+  height: 30px !important;
+}
 
-@media (max-width: 600px) {
-  :deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
-    height: 33px !important;
+:deep(
+  .q-field--auto-height.q-field--dense .q-field__control,
+  .q-field--auto-height.q-field--dense .q-field__native
+) {
+  min-height: 30px !important;
+}
+:deep(.q-field--dense) {
+  .q-field__control {
+    height: 30px !important;
+    min-height: 30px !important;
   }
 
-  :deep(.q-field--auto-height.q-field--dense .q-field__control,
-    .q-field--auto-height.q-field--dense .q-field__native) {
+  .q-field__control-container {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 100% !important;
+  }
+
+  .q-field__prepend,
+  .q-field__append {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .q-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: none !important;
+    top: 0 !important;
+    font-size: 18px;
+  }
+}
+
+:deep(.q-field--dense .q-field__append .q-icon) {
+  position: relative !important;
+  transform: translateY(0) !important;
+}
+
+:deep(.q-field__messages) {
+  line-height: 1.2 !important;
+  min-height: 18px !important;
+  padding-top: 2px !important;
+}
+
+:deep(.q-field--dense .q-select) {
+  .q-field__control {
+    height: 30px !important;
+  }
+
+  .q-field__inner {
+    min-height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .q-field__control-container {
+    height: 100% !important;
+    min-height: 30px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .q-field__native {
+    min-height: 100% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    margin-top: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .q-field__input {
+    padding: 0 !important;
+    top: 0 !important;
+    min-height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .q-field__native > span {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    min-height: 30px !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    transform: none !important;
+    margin-top: 0 !important;
+  }
+
+  .q-field__prepend {
+    height: 100% !important;
     min-height: 33px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+
+    .q-icon {
+      margin: 0 !important;
+      top: 0 !important;
+      transform: none !important;
+    }
   }
+
+  .q-field__append {
+    height: 100% !important;
+    min-height: 30px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+
+    .q-icon {
+      margin: 0 !important;
+      top: 0 !important;
+      transform: none !important;
+    }
+  }
+}
+
+:deep(.q-field--dense .q-select *) {
+  transform: none !important;
+  top: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 </style>

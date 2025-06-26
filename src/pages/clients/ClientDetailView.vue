@@ -7,16 +7,49 @@
       @save-credit="saveCreditHandler"
       :creditFormData="creditFormData"
     />
+    <CreditDetailModal
+      v-model="showDetailModal"
+      :credit="selectedCredit"
+      :client="client"
+      :closeModal="closeDetailModal"
+    />
     <div class="q-pa-md">
-      <div class="row items-center q-mb-lg q-gutter-sm">
-        <q-breadcrumbs separator=">" class="text-h6">
-          <q-breadcrumbs-el
-            active-color="primary"
-            label="Clientes"
-            @click="goBack"
-          />
-          <q-breadcrumbs-el :label="client?.name" />
-        </q-breadcrumbs>
+      <div class="row items-center justify-between q-mb-lg">
+        <div class="row items-center q-gutter-sm">
+          <q-breadcrumbs separator=">" class="text-h6">
+            <q-breadcrumbs-el
+              active-color="primary"
+              label="Clientes"
+              @click="goBack"
+            />
+            <q-breadcrumbs-el :label="client?.name" />
+          </q-breadcrumbs>
+        </div>
+
+        <div
+          v-if="!$q.screen.lt.md && role === 5"
+          class="row items-center q-gutter-sm"
+        >
+          <q-btn
+            unelevated
+            color="grey-3"
+            text-color="primary"
+            label="Editar"
+            no-caps
+            @click="editClient"
+          >
+            <q-icon name="edit" class="ml-2" />
+          </q-btn>
+          <q-btn
+            unelevated
+            color="primary"
+            label="Nuevo crédito"
+            no-caps
+            @click="showCreateModal = true"
+          >
+            <img src="/icons/Wallet.svg" class="ml-4 svg-white" alt="" />
+          </q-btn>
+        </div>
       </div>
 
       <div class="vendor-info-card q-mb-lg">
@@ -62,8 +95,16 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="debtor" label="Info. Deudor" class="text-capitalize" />
-        <q-tab name="guarantor" label="Info. Fiador" class="text-capitalize" />
+        <q-tab
+          name="debtor"
+          :label="$q.screen.lt.md ? 'Info. Deudor' : 'Información del deudor'"
+          class="text-capitalize"
+        />
+        <q-tab
+          name="guarantor"
+          :label="$q.screen.lt.md ? 'Info. Fiador' : 'Información del fiador'"
+          class="text-capitalize"
+        />
         <q-tab name="credit" label="Créditos" class="text-capitalize" />
       </q-tabs>
 
@@ -358,7 +399,7 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="credit">
-          <div class="rounded-table-container">
+          <div v-if="$q.screen.lt.md" class="rounded-table-container">
             <q-table
               class="custom-credit-table"
               flat
@@ -513,6 +554,120 @@
               </template>
             </q-table>
           </div>
+          <q-table
+            v-else
+            flat
+            separator="none"
+            table-header-class="control-table-header"
+            :rows="formattedCredits"
+            :columns="columnsDesktop"
+            row-key="id"
+            hide-pagination
+            no-data-label="No hay créditos disponibles"
+            @row-click="(evt, row) => viewCreditDetail(row)"
+          >
+            <template #body-cell-number="props">
+              <td
+                :props="props"
+                :rowspan="props.row.__rowspan"
+                class="text-center"
+              >
+                <div class="text-bold">{{ props.row.number }}</div>
+              </td>
+            </template>
+
+            <template #body-cell-date="props">
+              <td :props="props">
+                <div class="column">
+                  <div class="text-gray-900">
+                    {{ props.row.startDate || "N/A" }}
+                  </div>
+                  <div class="text-gray-500">
+                    {{ props.row.dueDate || "N/A" }}
+                  </div>
+                </div>
+              </td>
+            </template>
+
+            <template #body-cell-status="props">
+              <td :props="props" class="text-left">
+                <div
+                  class="q-px-sm q-py-xs rounded-borders text-left"
+                  :style="getStatusStyle(props.row.status)"
+                >
+                  <span :style="{ color: getStatusColor(props.row.status) }">
+                    {{ getStatusText(props.row.status) }}
+                  </span>
+                </div>
+              </td>
+            </template>
+
+            <template #body-cell-value="props">
+              <td :props="props" class="text-left">
+                <div class="text-bold">
+                  {{ formatCurrency(props.row.value) }}
+                </div>
+              </td>
+            </template>
+
+            <template #body-cell-costs="props">
+              <td :props="props">
+                <div class="column">
+                  <div class="text-bold">
+                    {{ props.row.installments || "N/A" }}
+                  </div>
+                  <div>
+                    {{ formatCurrency(props.row.installmentValue || 0) }}
+                  </div>
+                </div>
+              </td>
+            </template>
+
+            <template #body-cell-frequency="props">
+              <td :props="props">
+                <q-chip dense outline color="grey-8" class="frequency-chip">
+                  {{ props.row.frequency || "N/A" }}
+                  <q-icon name="event" size="16px" class="q-ml-xs" />
+                </q-chip>
+              </td>
+            </template>
+
+            <template #body-cell-actions="props">
+              <td :props="props">
+                <q-btn
+                  flat
+                  dense
+                  round
+                  icon="more_vert"
+                  @click.stop="openMenu(props.row.id)"
+                >
+                  <q-menu
+                    v-model="menuStates[props.row.id]"
+                    anchor="bottom right"
+                    self="top right"
+                    auto-close
+                  >
+                    <q-list dense style="min-width: 150px">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="editCredit(props.row)"
+                      >
+                        <q-item-section>Editar</q-item-section>
+                      </q-item>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="deleteCredit(props.row)"
+                      >
+                        <q-item-section>Eliminar</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </td>
+            </template>
+          </q-table>
           <div class="flex justify-end items-center q-mt-md">
             <q-pagination
               v-model="page"
@@ -532,19 +687,23 @@
         </q-tab-panel>
       </q-tab-panels>
       <q-page-sticky
-        v-if="activeTab === 'credit'"
-        position="bottom-right"
-        :offset="[18, 18]"
+        v-if="$q.screen.lt.md && role === 5 && activeTab === 'credit'"
+        position="bottom"
+        :offset="[0, 0]"
       >
-        <q-btn
-          unelevated
-          color="primary"
-          label="Nuevo crédito"
-          no-caps
-          @click="showCreateModal = true"
-        >
-          <img src="/icons/Wallet.svg" class="ml-4 svg-white" alt="" />
-        </q-btn>
+        <div class="row justify-center q-pb-md">
+          <q-btn
+            unelevated
+            color="primary"
+            label="Nuevo crédito"
+            no-caps
+            style="min-width: 90vw; height: 50px; font-size: 1rem"
+            @click="showCreateModal = true"
+            class="q-px-lg"
+          >
+            <img src="/icons/Wallet.svg" class="ml-4 svg-white" alt="" />
+          </q-btn>
+        </div>
       </q-page-sticky>
     </div>
   </q-page>
@@ -554,12 +713,15 @@
 import { ref, computed, reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import CreditsFormModal from "src/pages/clients/components/CreditsFormModal.vue";
+import CreditDetailModal from "src/pages/clients/CreditDetailModal.vue";
 import { useClients } from "src/composables/useClients";
 import { useCredits } from "src/composables/useCredit";
 import { pathImage } from "src/boot/axios";
 
 const route = useRoute();
 const router = useRouter();
+const user = JSON.parse(localStorage.getItem("user"));
+const role = user?.role_id;
 const { getClient, client } = useClients();
 const activeTab = ref("credit");
 const page = ref(1);
@@ -567,6 +729,29 @@ const maxPages = 1;
 
 const expandedRow = ref(null);
 const menuStates = reactive({});
+
+const showDetailModal = ref(false);
+const selectedCredit = ref(null);
+
+const columnsDesktop = [
+  { name: "number", label: "N° Crédito", field: "number", align: "center" },
+  {
+    name: "date",
+    label: "Fecha (Desde / Hasta)",
+    field: "startDate",
+    align: "left",
+  },
+  { name: "status", label: "Estado", field: "status", align: "left" },
+  { name: "value", label: "Valor del crédito", field: "value", align: "left" },
+  { name: "costs", label: "Cuotas", field: "installments", align: "left" },
+  {
+    name: "frequency",
+    label: "Frecuencia de pago",
+    field: "frequency",
+    align: "left",
+  },
+  { name: "actions", label: "Acciones", field: "", align: "center" },
+];
 
 const {
   showDeleteModal,
@@ -609,12 +794,19 @@ const formattedCredits = computed(() => {
     id: credit.id,
     value: parseFloat(credit.credit_value),
     pendingValue: parseFloat(credit.remaining_amount),
-    startDate: credit.first_quota_date,
+    startDate: credit.created_at,
     dueDate: credit.end_date,
     status: credit.status,
     installments: credit.number_installments,
+    first_quota_date: credit.first_quota_date,
+    number_installments: credit.number_installments,
+    total_interest: credit.total_interest,
     frequency: credit.payment_frequency,
+    excluded_days: credit.excluded_days,
     number: `${credit.id}`,
+    installmentValue:
+      parseFloat(credit.credit_value) / credit.number_installments,
+    __rowspan: 1,
   }));
 });
 
@@ -676,11 +868,21 @@ const toggleExpand = (id) => {
 };
 
 const openMenu = (id) => {
+  if (!(id in menuStates)) {
+    menuStates[id] = false;
+  }
   menuStates[id] = !menuStates[id];
 };
 
 const viewCreditDetail = (credit) => {
-  console.log("Ver detalle del crédito:", credit);
+  selectedCredit.value = credit;
+  
+  console.log("Crédito seleccionado:", credit);
+  showDetailModal.value = true;
+};
+
+const closeDetailModal = () => {
+  showDetailModal.value = false;
 };
 
 const editCredit = (credit) => {
@@ -695,7 +897,8 @@ const formatCurrency = (value) => {
   return new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
-    minimumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value);
 };
 
@@ -721,6 +924,7 @@ onMounted(async () => {
   const clientId = route.params.id;
   if (clientId) {
     await getClient(clientId);
+    console.log("Créditos del cliente:", client.value.credits);
   }
 });
 </script>
@@ -800,5 +1004,17 @@ onMounted(async () => {
 }
 .q-btn__wrapper {
   padding: 0 16px 0 8px;
+}
+
+.frequency-chip {
+  font-weight: 600;
+  border-width: 1px;
+  border-radius: 50px;
+  padding: 4px 8px;
+  background-color: #f9f9f9;
+  border: 1px solid #9e9e9e;
+}
+.q-menu {
+  z-index: 9999 !important;
 }
 </style>

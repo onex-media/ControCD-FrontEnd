@@ -1,16 +1,15 @@
 <template>
   <q-dialog :model-value="modelValue" persistent @update:model-value="updateShow">
     <q-card class="credit-card">
-      <q-card-section class="justify-between items-center">
-        <div class="flex justify-between items-center">
-          <h3 class="credit-card__title">
-            {{ isEditing ? "Editar crédito" : "Nuevo crédito" }}
-          </h3>
-          <q-btn flat round dense icon="close" @click="closeModal" />
-        </div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
+      <div class="sticky-tabs">
+        <q-card-section class="justify-between items-center">
+          <div class="flex justify-between items-center">
+            <h3 class="credit-card__title">
+              {{ isEditing ? "Editar crédito" : "Nuevo crédito" }}
+            </h3>
+            <q-btn flat round dense icon="close" @click="closeModal" />
+          </div>
+        </q-card-section>
         <div style="overflow-x: auto">
           <q-tabs v-model="currentTab" dense class="text-grey" active-color="primary" indicator-color="primary"
             align="justify" no-caps narrow-indicator>
@@ -18,7 +17,9 @@
             <q-tab name="images" label="Imágenes" />
           </q-tabs>
         </div>
+      </div>
 
+      <q-card-section class="q-pt-none">
         <q-tab-panels v-model="currentTab" animated class="q-mt-lg">
           <q-tab-panel name="credit">
             <div class="row">
@@ -83,7 +84,10 @@
                     </q-select>
                   </div>
 
-                  <div class="col-12 col-md-6" v-if="creditFormData.paymentFrequency === 'Diaria'">
+                  <div
+                    class="col-12"
+                    v-if="creditFormData.paymentFrequency === 'Diaria'"
+                  >
                     <label>
                       Excepto los días
                       <span class="text-red-500">*</span>
@@ -111,6 +115,9 @@
                       </q-chip>
                     </div>
                   </div>
+                  <div class="col-12">
+                    <hr />
+                  </div>
 
                   <div class="col-12">
                     <q-expansion-item v-model="microInsuranceExpanded" label="Microseguros"
@@ -127,8 +134,15 @@
                         </div>
                         <div class="col-12 col-md-6">
                           <label>Monto de microseguro</label>
-                          <q-input :model-value="microInsuranceAmountCalculated" outlined dense type="number"
-                            class="mt-1" placeholder="Monto" disable>
+                          <q-input
+                            :model-value="microInsuranceAmountCalculated"
+                            outlined
+                            dense
+                            type="number"
+                            class="mt-1"
+                            placeholder="Monto"
+                            disable
+                          >
                             <template v-slot:prepend>
                               <q-icon name="attach_money" />
                             </template>
@@ -169,33 +183,72 @@
 
           <q-tab-panel name="images">
             <div class="row flex items-center q-col-gutter-sm mb-5">
-              <div class="col-12">
-                <div class="row q-col-gutter-sm q-mb-md">
-                  <!-- Inputs de archivo ocultos -->
-                  <input type="file" ref="galleryPhotoInput1" accept="image/*" style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 0)" />
-                  <input type="file" ref="galleryPhotoInput2" accept="image/*" style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 1)" />
-                  <input type="file" ref="galleryPhotoInput3" accept="image/*" style="display: none"
-                    @change="(event) => handleGalleryPhotoChange(event, 2)" />
+              <input
+                type="file"
+                ref="galleryPhotoInput1"
+                accept="image/*"
+                style="display: none"
+                @change="(event) => handleGalleryPhotoChange(event, 0)"
+              />
+              <input
+                type="file"
+                ref="galleryPhotoInput2"
+                accept="image/*"
+                style="display: none"
+                @change="(event) => handleGalleryPhotoChange(event, 1)"
+              />
+              <input
+                type="file"
+                ref="galleryPhotoInput3"
+                accept="image/*"
+                style="display: none"
+                @change="(event) => handleGalleryPhotoChange(event, 2)"
+              />
 
-                  <!-- Contenedor para las tres imágenes -->
-                  <div class="col-12 flex justify-center q-gutter-sm">
-                    <div v-for="(item, index) in galleryItems" :key="index" class="image-container text-center">
-                      <div class="text-caption q-mb-xs">{{ item.label }}</div>
-                      <div v-if="galleryPhotosPreview[index]">
-                        <q-img :src="galleryPhotosPreview[index]" style="
-                            width: 150px;
-                            height: 150px;
-                            border-radius: 8px;
-                          " />
-                        <q-btn class="btn-delete q-mt-md" size="md" color="red-5" dense round icon="close"
-                          @click="removeGalleryPhoto(index)" />
+              <!-- Nueva interfaz para subida de imágenes -->
+              <div class="col-12">
+                <div class="row q-col-gutter-sm q-mb-md justify-center">
+                  <div
+                    v-for="(item, index) in galleryItems"
+                    :key="index"
+                    class="column items-center q-pa-sm"
+                  >
+                    <div class="q-mb-xs">{{ item.label }}</div>
+                    <div
+                      class="upload-container"
+                      @click="openFileBrowser(item.ref)"
+                      style="position: relative"
+                    >
+                      <template v-if="galleryPhotosPreview[index]">
+                        <q-img
+                          :src="galleryPhotosPreview[index]"
+                          class="upload-preview"
+                        />
+                        <q-btn
+                          class="btn-delete"
+                          size="sm"
+                          color="red"
+                          round
+                          dense
+                          icon="close"
+                          @click.stop="removeGalleryPhoto(index)"
+                          style="position: absolute; top: 5px; right: 5px"
+                        />
+                      </template>
+
+                      <div v-else class="upload-area flex flex-center column">
+                        <q-img
+                          src="/icons/archivo.png"
+                          class="svg-white"
+                          width="50px"
+                        />
+                        <div class="text-weight-medium q-mt-sm">
+                          SELECCIONAR ARCHIVO
+                        </div>
+                        <div class="text-caption text-grey-7 q-mt-xs">
+                          JPG, PNG - Máx. 2 MB
+                        </div>
                       </div>
-                      <q-btn v-else unelevated color="primary" class="custom-upload-btn"
-                        :disable="index >= 1 && !isCreditComplete" @click="openFileBrowser(item.ref)">
-                        <q-icon name="photo_camera" />
-                      </q-btn>
                     </div>
                   </div>
                 </div>
@@ -203,12 +256,49 @@
             </div>
           </q-tab-panel>
         </q-tab-panels>
-        <div class="row q-col-gutter-sm">
-          <div class="col-12 col-md-6">
-            <q-btn flat no-caps :label="previousTabLabel()" color="grey" class="full-width" @click="previousTab" />
+        <div class="sticky-buttons">
+          <div v-if="!$q.screen.lt.md" class="row q-col-gutter-sm mr-4">
+            <div class="col-12 flex justify-end">
+              <q-btn
+                unelevated
+                no-caps
+                :label="nextTab()"
+                color="primary"
+                @click="saveCredit"
+                class="mr-2"
+              />
+              <q-btn
+                unelevated
+                no-caps
+                :label="previousTabLabel()"
+                color="grey-3"
+                text-color="primary"
+                @click="previousTab"
+              />
+            </div>
           </div>
-          <div class="col-12 col-md-6">
-            <q-btn unelevated class="full-width" no-caps :label="nextTab()" color="primary" @click="saveCredit" />
+          <div v-else class="row q-col-gutter-sm q-pa-md">
+            <div class="col-12 col-md-6">
+              <q-btn
+                unelevated
+                class="full-width"
+                no-caps
+                :label="nextTab()"
+                color="primary"
+                @click="saveCredit"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <q-btn
+                unelevated
+                no-caps
+                :label="previousTabLabel()"
+                color="grey-3"
+                text-color="primary"
+                class="full-width"
+                @click="previousTab"
+              />
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -219,8 +309,9 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { CreateCreditPayload } from "src/types/credits.types";
-
+import { useQuasar } from "quasar";
 const emit = defineEmits(["update:modelValue", "save-credit", "close-modal"]);
+const $q = useQuasar();
 
 const props = defineProps({
   modelValue: Boolean,
@@ -241,8 +332,8 @@ const galleryPhotoInput2 = ref<HTMLInputElement | null>(null);
 const galleryPhotoInput3 = ref<HTMLInputElement | null>(null);
 
 const galleryItems = ref([
-  { label: "Foto Empresa", ref: "galleryPhotoInput1" },
-  { label: "Cliente Dinero en mano", ref: "galleryPhotoInput2" },
+  /* { label: "Foto Empresa", ref: "galleryPhotoInput1" }, */
+  { label: "Cliente Dinero en mano", ref: "galleryPhotoInput1" },
 ]);
 
 const microInsuranceAmountCalculated = computed(() => {
@@ -422,9 +513,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .credit-card {
-  width: 96%;
-  max-width: 700px;
-  padding: 16px;
+  width: 100%;
+  max-width: 600px;
 
   &__title {
     font-size: 24px;
@@ -432,6 +522,35 @@ onMounted(() => {
     color: #000;
     font-weight: 500;
   }
+
+  .q-separator {
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.sticky-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  /*   border-bottom: 1px solid #e0e0e0; */
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.sticky-buttons {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  background: white;
+  /* border-top: 1px solid #e0e0e0; */
+  padding-top: 12px;
+  padding-bottom: 15px;
+}
+
+.q-tab-panels {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 .btn-delete {
@@ -441,6 +560,10 @@ onMounted(() => {
   top: 0px;
 }
 
+.hg-photo {
+  height: 400px;
+}
+
 .custom-upload-btn {
   width: 150px;
   height: 150px;
@@ -448,63 +571,188 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
 }
 
-.q-chip {
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
+.q-item {
+  min-height: 48px;
+  padding: 8px 0px !important;
+  color: inherit;
+  transition:
+    color 0.3s,
+    background-color 0.3s;
 }
-
-/* .image-container {
-  position: relative;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 10px;
-  background: #f9fafb;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.q-expansion-item {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 0 10px;
-  margin-top: 16px;
-} */
 .custom-expansion-header {
   padding: 0 !important;
+}
+
+.upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  width: 200px;
+  height: 150px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.upload-area:hover {
+  border-color: #1976d2;
+  background-color: #f5f9ff;
+}
+
+.upload-preview {
+  width: 200px;
+  height: 150px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+.btn-delete {
+  margin-top: -12px;
+  margin-right: -12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 :deep(.custom-expansion-header) {
   padding: 0 !important;
 }
 
-/* :deep(.q-card__section--vert) {
-  padding: 16px 0;
-}
- */
-
-:deep(.q-tab-panel) {
-  padding: 0 !important;
+:deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
+  height: 30px !important;
 }
 
-@media (max-width: 600px) {
-  :deep(.q-field--dense .q-field__control, .q-field--dense .q-field__marginal) {
-    height: 33px !important;
+:deep(
+  .q-field--auto-height.q-field--dense .q-field__control,
+  .q-field--auto-height.q-field--dense .q-field__native
+) {
+  min-height: 30px !important;
+}
+:deep(.q-field--dense) {
+  .q-field__control {
+    height: 30px !important;
+    min-height: 30px !important;
   }
 
-  :deep(.q-field--auto-height.q-field--dense .q-field__control,
-    .q-field--auto-height.q-field--dense .q-field__native) {
+  .q-field__control-container {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    height: 100% !important;
+  }
+
+  .q-field__prepend,
+  .q-field__append {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .q-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform: none !important;
+    top: 0 !important;
+    font-size: 18px;
+  }
+}
+
+:deep(.q-field--dense .q-field__append .q-icon) {
+  position: relative !important;
+  transform: translateY(0) !important;
+}
+
+:deep(.q-field__messages) {
+  line-height: 1.2 !important;
+  min-height: 18px !important;
+  padding-top: 2px !important;
+}
+
+:deep(.q-field--dense .q-select) {
+  .q-field__control {
+    height: 30px !important;
+  }
+
+  .q-field__inner {
+    min-height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .q-field__control-container {
+    height: 100% !important;
+    min-height: 30px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .q-field__native {
+    min-height: 100% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    margin-top: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .q-field__input {
+    padding: 0 !important;
+    top: 0 !important;
+    min-height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .q-field__native > span {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    min-height: 30px !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    transform: none !important;
+    margin-top: 0 !important;
+  }
+
+  .q-field__prepend {
+    height: 100% !important;
     min-height: 33px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+
+    .q-icon {
+      margin: 0 !important;
+      top: 0 !important;
+      transform: none !important;
+    }
   }
+
+  .q-field__append {
+    height: 100% !important;
+    min-height: 30px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+
+    .q-icon {
+      margin: 0 !important;
+      top: 0 !important;
+      transform: none !important;
+    }
+  }
+}
+
+:deep(.q-field--dense .q-select *) {
+  transform: none !important;
+  top: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 </style>

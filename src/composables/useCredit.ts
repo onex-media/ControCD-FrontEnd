@@ -216,11 +216,11 @@ export function useCredits() {
         };
         try {
           response = await postData(data);
-          handleMessages({
+        /*   handleMessages({
             color: "green",
             icon: "check",
             message: "Crédito creado exitosamente",
-          });
+          }); */
           fetchCredits();
           closeModal();
         } catch (error: any) {
