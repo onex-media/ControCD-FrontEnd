@@ -4,6 +4,10 @@ const routes = [
     component: () => import("src/pages/auth/LoginPage.vue"),
   },
   {
+    path: "/demo",
+    component: () => import("src/pages/CarouselDemoPage.vue"),
+  },
+  {
     path: "/login",
     component: () => import("src/pages/auth/LoginPage.vue"),
   },
