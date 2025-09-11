@@ -1,0 +1,175 @@
+.member-card {
+  max-width: 640px !important;
+  border-radius: 4px !important;
+
+  .q-tab-panel {
+    padding: 0px;
+  }
+
+  &__title {
+    font-size: 24px;
+    line-height: 125%;
+    color: #000;
+    font-weight: 500;
+  }
+
+  &__description {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+    color: #424242;
+    margin-top: 8px;
+  }
+
+  .q-tab__content {
+    width: 100%;
+  }
+
+  .q-tab {
+    padding: 0px;
+  }
+
+  .q-tab--active {
+    color: #424242 !important;
+  }
+
+  label {
+    color: #424242;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+  }
+
+  .cancel-button {
+    background-color: #efefef;
+    color: #2b69e8;
+  }
+}
+
+.breadcrumb {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 125%;
+  color: #000;
+
+  .no-active {
+    color: #000;
+  }
+
+  .separator-icon {
+    color: #424242;
+  }
+}
+
+.member-information {
+  padding: 16px 24px;
+  flex-direction: column;
+  &__column {
+    display: flex;
+    gap: 24px;
+
+    .name {
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 125%;
+      color: #000;
+    }
+  }
+}
+
+.name-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+
+.user-presentation {
+  gap: 24px;
+}
+
+.identification {
+  font-size: 16px;
+  color: #757575;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+.delete-button {
+  border-radius: 8px !important;
+  background: #a82525 !important;
+  color: white !important;
+  padding: 8px 16px !important;
+}
+
+.edit-button {
+  border-radius: 8px !important;
+  background: #2b69e8 !important;
+  color: white !important;
+  padding: 8px 16px !important;
+}
+
+.users-details {
+  .q-tab__content {
+    width: 100%;
+    padding: 12px 8px;
+  }
+
+  .q-tab-panel {
+    padding: 24px 16px;
+  }
+
+  .q-tab {
+    padding: 0px;
+  }
+
+  .q-tab--active {
+    color: #424242 !important;
+  }
+
+  &__data {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    .field-card {
+      display: flex;
+      width: 100%;
+      padding: 8px;
+      align-items: center;
+      gap: 24px;
+
+      &__icon {
+        width: 50px;
+        height: 50px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        font-size: 20px;
+        color: #555;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+      }
+
+      &__content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      &__label {
+        font-size: 24px;
+        font-weight: 500;
+        color: #000;
+        margin: 0;
+        line-height: 125%;
+      }
+
+      &__description {
+        font-size: 16px;
+        color: #757575;
+        margin-top: 8px;
+      }
+    }
+  }
+}

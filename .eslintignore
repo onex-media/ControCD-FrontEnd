@@ -1,0 +1,12 @@
+/dist
+/src-capacitor
+/src-cordova
+/.quasar
+/node_modules
+.eslintrc.cjs
+/quasar.config.*.temporary.compiled*
+/src
+src
+quasar.config.js
+tailwind.config.js
+## to do fix

@@ -1,0 +1,68 @@
+.conformation-card {
+  padding: 24px;
+  border-radius: 4px !important;
+  background: #fff;
+  box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    color: #000;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 125%; /* 30px */
+  }
+
+  p {
+    margin-top: 8px;
+    color: #424242;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 24px */
+  }
+
+  .actions {
+    margin-top: 24px;
+
+    .danger-button {
+      border-radius: 4px;
+      background: #a82525;
+      display: flex;
+      padding: 8px 16px;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .danger-button-cancel {
+      display: flex;
+      padding: 8px 16px;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      border-radius: 4px;
+      background: #ffe8e8;
+      color: #a82525;
+    }
+
+    .atention-button {
+      border-radius: 4px;
+      background: #0023dd;
+      display: flex;
+      padding: 8px 16px;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .atention-button-cancel {
+      border-radius: 4px;
+      background: #ebeeff;
+      color: #0023dd;
+    }
+  }
+}

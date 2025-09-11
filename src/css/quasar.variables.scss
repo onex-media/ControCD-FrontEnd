@@ -1,0 +1,118 @@
+$extra-tiny: 8px;
+$tiny: 10px;
+$small: 12px;
+$smallplus: 13px;
+$regular: 14px;
+$regularplus: 15px;
+$medium: 16px;
+$large: 18px;
+$largeplus: 20px;
+$largeplusplus: 22px;
+$extralarge: 24px;
+$extralargeplus: 25px;
+$homecardhuge: 26px;
+$huge: 28px;
+$morehuge: 30px;
+$hometitletablet: 32px;
+$hugeplus: 34px;
+$hugeplustitle: 35px;
+$extrahuge: 36px;
+$extrahugetitle: 40px;
+$extratextmore: 46px;
+$extrahugeplus: 48px;
+$extrahugeplustitle: 50px;
+$hometitlesize: 56px;
+$humongous: 60px;
+$extraextrahuge: 72px;
+$giant: 100px;
+$extragiant: 150px;
+
+$smallphone: 320px;
+$mobile: 375px;
+$phone: 576px;
+$tablet: 768px;
+$desktop: 1024px;
+$widescreen: 1200px;
+$extrascreen: 1400px;
+$extralargescreen: 1920px;
+$quadhdscreen: 2048px;
+
+$white: #ffffff;
+$black: #000000;
+$blue: #2563eb;
+$darkBlue: #2b69e8;
+$darkerBlue: #001db8;
+$navyBlue: #0023dd;
+$lightGrey: #c2c2c2;
+$darkGrey: #424242;
+
+@mixin flex($align: initial, $justify: initial, $direction: row) {
+  display: flex !important;
+  align-items: $align;
+  justify-content: $justify;
+  flex-direction: $direction;
+}
+
+@mixin flexCenter($direction: row) {
+  @include flex(center, center, $direction);
+}
+
+@mixin square($value) {
+  height: $value;
+  width: $value;
+}
+
+@mixin fullSize() {
+  @include square(100%);
+}
+
+@mixin truncateText($lines, $break: false) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @if $break {
+    word-break: break-all;
+  }
+}
+
+@mixin absoluteCenter($horizontal: true, $vertical: true) {
+  position: absolute;
+
+  @if ($vertical) {
+    top: 0;
+    bottom: 0;
+  }
+
+  @if ($horizontal) {
+    left: 0;
+    right: 0;
+  }
+
+  margin: auto;
+}
+
+@mixin absoluteOffset($size, $top: true, $right: true) {
+  position: absolute;
+
+  @if ($top) {
+    top: $size;
+  } @else {
+    bottom: $size;
+  }
+
+  @if ($right) {
+    right: $size;
+  } @else {
+    left: $size;
+  }
+}
+
+@mixin absoluteBackdrop($top: 0, $left: 0) {
+  @include fullSize();
+  position: absolute;
+  top: $top;
+  left: $left;
+}
